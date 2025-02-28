@@ -1,40 +1,4 @@
-<style>
-    /* Hide submenu by default */
-    .submenu {
-        display: none;
-        list-style: none;
-        padding-left: 20px;
-    }
-
-    /* Show submenu when active */
-    .submenu.show {
-        display: block;
-    }
-
-    .menu-item {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 200px;
-        padding: 10px;
-    }
-
-    .submenu-item {
-        display: block;
-        text-decoration: none;
-        color: #333;
-    }
-
-    .submenu-item:hover {
-        background-color: #ddd;
-    }
-
-    form {
-        margin-top: auto;
-    }
-</style>
-
+<link rel="stylesheet" href="{{ asset('css/driver.css') }}">
 <li><a href="{{route ('driver.deliveryrecords')}}">Delivery Records</a></li>
 <li><a href="{{route ('driver.fuel')}}">Fuel Management</a></li>
 <li><a href="{{route ('driver.shipment')}}">Shipment Progress</a></li>
