@@ -76,10 +76,12 @@
         }
 
         .add-consumption-btn {
-            margin: 7px -7px;  /* spacing above and below */
+            display: flex;
+            align-items: center;
+            margin: 7px -7px;
             padding: 8px 10px;
-            background-color: #2f385f;
-            color: white;
+            background-color: transparent;
+            color: black;
             border: none;
             border-radius: 14px;
             font-size: 17px;
@@ -89,6 +91,21 @@
         .add-consumption-btn:hover {
             background-color: #485379;
             color: white;
+        }
+
+        .add-consumption-btn .plus-circle {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background-color: white;
+            color: #2f385f;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid black;
         }
 
         #fuelChart {
@@ -109,12 +126,16 @@
     <div class="content">
         <div id="fuel-management" class="section">
             <h3>Fuel Management</h3>
-            <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">add consumption</button>
+            <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
+                <span class="plus-circle">+</span>
+                Add Consumption
+            </button>
             <div class="chart-container">
                 <canvas id="fuelChart"></canvas>
             </div>
         </div>
     </div>
+    @include('Manager.modals.fuelmodal')
 </body>
 <script>
     let fuelChart = null;
@@ -146,8 +167,18 @@
         });
     });
 
-    document.getElementById('fuelManagementBtn').addEventListener('click', function () {
-        document.getElementById('fuel-management').style.display = 'block';
-    });
+    function openFuelModal() {
+        document.getElementById('fuelModal').style.display = 'block';
+    }
+
+    function closeFuelModal() {
+        document.getElementById('fuelModal').style.display = 'none';
+    }
+
+    function addFuelConsumption() {
+        // Add your logic to handle the add action
+        alert('Fuel consumption added successfully!');
+        closeFuelModal();
+    }
 </script>
 </html>
