@@ -54,3 +54,7 @@ Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver
 Route::get('driver/helpdriver', [HelpDriverController::class, 'showHelpDriver'])->name('driver.helpdriver');
 Route::post('/trips/store', [DeliveryDriverController::class, 'store'])->name('trips.store');
 Route::get('/get-trip-counts', [DeliveryDriverController::class, 'getTripCounts']);
+Route::get('/cargo', [ShipmentDriverController::class, 'index']);
+Route::post('/cargo', [ShipmentDriverController::class, 'store']);
+Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
+Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
