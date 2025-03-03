@@ -24,7 +24,7 @@ use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
 
-Route::get('/', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
+Route::get('/', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 
 // Admin
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');

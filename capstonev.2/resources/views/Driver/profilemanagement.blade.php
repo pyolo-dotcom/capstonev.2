@@ -61,8 +61,39 @@
         </ul>
     </div>
     <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
+        <div class="profile-container">
+            <!-- Left Side: Profile Picture & Personal Information -->
+            <div class="profile-left">
+                <div class="profile-picture-holder">
+                    <button class="profile-button">
+                        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
+                    </button>
+                </div>
+                <div class="driver-name">
+                    <h2>Reginald Apellado</h2>
+                    <p>Driver's name</p>
+                </div>
+                <div class="personal-info">
+                    <h2>Personal Information</h2>
+                    <p><strong>Birthdate:</strong> March 19, 1995</p>
+                    <p><strong>Gender:</strong> Male</p>
+                    <p><strong>Contact Number:</strong> 09123456789</p>
+                    <p><strong>Email:</strong> apellado@gmail.com</p>
+                    <p><strong>Address:</strong> Cabanatuan, Nueva Ecija</p>
+                </div>
+            </div>
+
+            <!-- Right Side: License Information -->
+            <div class="info-right">
+                <div class="license-info">
+                    <h2>License Information</h2>
+                    <p><strong>Driver's License Number:</strong> D123456789</p>
+                    <p><strong>License Expiry Date:</strong> April 10, 2026</p>
+                    <p><strong>License Type:</strong> Professional</p>
+                    <p><strong>Issued By:</strong> Land Transportation Office</p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

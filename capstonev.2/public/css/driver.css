@@ -79,20 +79,21 @@ body {
 }
 
 .add-trip-btn {
-    background: #3498db;
-    color: white;
+    background-color: transparent;
+    color: black;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    margin-top: 20px;
+    border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 5px;
+    font-size: 20px;
 }
 
 .add-trip-btn i {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 /* Trip Summary */
@@ -119,8 +120,9 @@ body {
     border-radius: 8px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    min-width: 100% !important;
-    height: 600px;
+    min-width: 73% !important;
+    height: 170px;
+    position: relative;
 }
 
 .trip-card h3 {
@@ -131,8 +133,8 @@ body {
 }
 
 .trip-card p {
-    font-size: 125px;
-    font-weight: 700;
+    font-size: 5rem;
+    font-weight: bold;
 }
 
 /* Modal Styling */
@@ -158,6 +160,9 @@ body {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: left;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .modal-content h2 {
@@ -167,6 +172,7 @@ body {
 .modal-content form {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .modal-content label {
@@ -374,6 +380,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 30%; /* Adjust width if necessary */
+    margin-top: 15px;
 }
 
 h3 {
@@ -406,7 +413,7 @@ h3 {
     border-radius: 5px;
     position: relative;
     margin-bottom: 20px;
-    
+    margin-left: -20px;
     margin-top: 20px;
 }
 
@@ -428,7 +435,7 @@ h3 {
 }
 
 .cargo-details {
-    height: 60vh;
+    height: 70vh;
     background-color: white;
     border: 0.5px solid rgb(78, 78, 78);
     border-radius: 20px;
@@ -437,6 +444,7 @@ h3 {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-left: -45px;
 }
 
 .cargo-details h2 {
@@ -446,8 +454,8 @@ h3 {
 }
 
 .cargo-details p {
-    margin-bottom: 0;
-    font-size: 17px;
+    margin-bottom: 13px;
+    font-size: 20px;
     margin-left: 30px;
 }
 
@@ -457,19 +465,6 @@ h3 {
     /* Optional: add some right margin if needed */
     margin-right: 20px;
 }
-
-.cargo-qr {
-    display: flex;
-    flex-direction: column; /* Needed for vertical centering */
-    justify-content: center; /* Centers the QR code vertically */
-    flex-shrink: 0;          /* Prevents the QR code container from shrinking */
-  }
-
-  .cargo-qr img {
-    width: 150px;
-    height: auto;
-    margin-top: 200px;
-  }
 
 .fuel-stats {
     display: flex;
@@ -483,26 +478,6 @@ h3 {
 
 .stat {
     text-align: center;
-}
-
-.chart-container {
-    width: 90%;
-    height: 70vh;
-    margin: auto;
-    background: transparent; /* Ensure visibility */
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Ensure the canvas takes up the full container */
-.chart-container canvas {
-    width: 100% !important;
-    max-width: 100%;
-    display: block;
 }
 
 /* Profile Management Layout */
@@ -634,22 +609,6 @@ h3 {
         background-color: rgba(0, 0, 0, 0.5);
     }
 
-    .modal-content {
-        background-color: white;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        width: 300px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
-    }
-
-    .modal-content img {
-        width: 150px;
-        height: 150px;
-    }
-
     .close {
         position: absolute;
         top: 10px;
@@ -659,17 +618,18 @@ h3 {
     }
 
     .qr-btn {
-        background-color: #28a745;
+        background-color: #2F4156;
         color: white;
         border: none;
         font-size: 20px;
         padding: 8px 15px;
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 20px;
         align-self: center;
         margin-right: 20%;
+        margin-top: -15rem;
     }
 
     .qr-btn:hover {
-        background-color: #218838;
+        background-color: #1c2631;
     }
