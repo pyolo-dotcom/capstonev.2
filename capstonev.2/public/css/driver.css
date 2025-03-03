@@ -1,0 +1,675 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #f5f7fa;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    font-size: 12px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    width: 100%;
+}
+
+.sidebar nav ul li {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.sidebar nav ul li:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 230px; /* Adjusted to fit sidebar */
+    padding: 20px;
+    width: calc(100% - 230px);
+}
+
+/* Top Bar */
+.top-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-trip-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.add-trip-btn i {
+    font-size: 18px;
+}
+
+/* Trip Summary */
+.trips-overview {
+    margin-bottom: 20px;
+}
+
+.trips-overview h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.trip-summary {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.trip-card {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 100% !important;
+    height: 600px;
+}
+
+.trip-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.trip-card p {
+    font-size: 125px;
+    font-weight: 700;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; /* Hide by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Background blur */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.modal-content select, 
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    background-color: #0047ab;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-btn:hover {
+    background-color: #00338d;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Place the small cards in the first row */
+#delivery-records .card:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#delivery-records .card:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#delivery-records .card:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+/* Style for the Total Trip heading */
+.section-header {
+    width: 100%;
+    text-align: left;
+    margin-top: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 26px;
+    margin-top: -20px;
+    font-weight: normal;
+}
+
+/* Style for the large card */
+.largee-card {
+    flex: 1;
+    min-width: 200px;
+    height: 305px;
+    background: #f8f8f8;
+    border: 0.1px solid gray;
+    border-width: thin;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding-top: 20px;
+}
+
+/* Style for the h2 elements inside the large card */
+.largee-card h2 {
+    flex: 1;
+    margin: 0;
+    font-weight: normal;
+    text-align: center;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.card-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px; /* Space between the header and content */
+    font-size: 22px; /* Adjust as needed */
+    color: #2f4156; /* Adjust as needed */
+}
+
+.card h3 {
+    margin: 0; /* Remove any default margins */
+    font-size: 22px; /* Adjust as needed */
+    font-weight: normal;
+    margin-top: -28vh;
+}
+
+.add-btn {
+    position: absolute; /* Position the button absolutely within the card */
+    bottom: 10px; /* Distance from the bottom of the card */
+    left: 10px; /* Distance from the left of the card */
+    background-color: white;
+    color: black;
+    border: bold;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    background-color: rgb(204, 198, 198);
+}
+
+.submenu {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+    display: none; /* Hidden by default */
+}
+
+.submenu.show {
+    display: block; /* Show submenu when dropdown is toggled */
+}
+
+.submenu a {
+    font-size: 14px;
+    color: #a8dadc;
+}
+
+.submenu a:hover {
+    color: white;
+}
+
+.user-role {
+    margin-top: auto;
+    text-align: center;
+    font-size: 14px;
+    color: #a8dadc;
+}
+
+.main-content {
+    padding: 20px;
+    background-color: #f8f8f8;
+}
+
+.dropdown-arrow {
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+    font-size: 15px;
+    margin-top: 4px;
+}
+
+.dropdown-arrow.rotate {
+    transform: rotate(180deg); /* Rotate the arrow */
+}
+
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+    background-color: transparent;
+}
+
+#shipment-progress {
+    padding: 13px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.status-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.status-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%; /* Adjust width if necessary */
+}
+
+h3 {
+    font-size: 25px;
+}
+
+.status-item p {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+.status-number {
+    background-color: #2f4156;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-bar {
+    width: 100%;
+    height: 16px;
+    background-color: #ddd;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 20px;
+    
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #2f4156;
+    width: 0%; /* Default to 0% (Pending) */
+    border-radius: 5px;
+    transition: width 0.5s ease; /* Smooth transition */
+}
+
+.fa-solid.fa-truck {
+    position: absolute;
+    left: 0;
+    top: -17px; /* Adjust height */
+    font-size: 30px;
+    color: red;
+    transition: left 2s linear;
+}
+
+.cargo-details {
+    height: 60vh;
+    background-color: white;
+    border: 0.5px solid rgb(78, 78, 78);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cargo-details h2 {
+    margin: 0;
+    font-size: 25px;
+    text-align: center;
+}
+
+.cargo-details p {
+    margin-bottom: 0;
+    font-size: 17px;
+    margin-left: 30px;
+}
+
+.cargo-info {
+    /* This will take up the remaining space on the left */
+    flex: 1;
+    /* Optional: add some right margin if needed */
+    margin-right: 20px;
+}
+
+.cargo-qr {
+    display: flex;
+    flex-direction: column; /* Needed for vertical centering */
+    justify-content: center; /* Centers the QR code vertically */
+    flex-shrink: 0;          /* Prevents the QR code container from shrinking */
+  }
+
+  .cargo-qr img {
+    width: 150px;
+    height: auto;
+    margin-top: 200px;
+  }
+
+.fuel-stats {
+    display: flex;
+    justify-content: space-around;
+    background: #2f4156;
+    color: white;
+    padding: 10px;
+    border-radius: 40px;
+    margin-bottom: 10px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.chart-container {
+    width: 90%;
+    height: 70vh;
+    margin: auto;
+    background: transparent; /* Ensure visibility */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ensure the canvas takes up the full container */
+.chart-container canvas {
+    width: 100% !important;
+    max-width: 100%;
+    display: block;
+}
+
+/* Profile Management Layout */
+.profile-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 25px;
+}
+
+/* Left Section */
+.profile-left {
+    width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Profile Picture Holder as a Button */
+.profile-button {
+    width: 160px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.profile-button:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Click Effect */
+.profile-button:active {
+    transform: scale(0.95);
+}
+
+/* Profile Picture */
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px; /* Box style */
+    border: 3px solid transparent;
+    object-fit: cover;
+}
+
+.profile-picture-holder {
+    width: 160px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent; /* Light background for contrast */
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+/* Driver Name */
+.driver-name h2 {
+    margin: 0;
+    font-size: 1.4em;
+    color: #2c3e50;
+}
+
+.driver-name p {
+    color: #6c757d;
+    margin: 5px 0;
+}
+
+/* Personal Information */
+.personal-info {
+    text-align: left;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Right Section: License Information */
+.info-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* License Information */
+.license-info {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Logout Button */
+.logout {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.logout-btn {
+    background: transparent;
+    color: red;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+.modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 300px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .modal-content img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .qr-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        font-size: 20px;
+        padding: 8px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        align-self: center;
+        margin-right: 20%;
+    }
+
+    .qr-btn:hover {
+        background-color: #218838;
+    }
