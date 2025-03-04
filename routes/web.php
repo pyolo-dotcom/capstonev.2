@@ -8,6 +8,7 @@ use App\Http\Controllers\FuelController;
 use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ActiveController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DeliveryManagerController;
@@ -22,10 +23,13 @@ use App\Http\Controllers\FuelDriverController;
 use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
+use App\Http\Controllers\AuthController;
 
+// Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
 
-//Admin
+// Admin Routes
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
 Route::get('admin/managetrip', [ManageTripController::class, 'showManageTrip'])->name('admin.managetrip');
 Route::get('admin/managegps', [ManageGPS::class, 'showManageGPS'])->name('admin.managegps');
@@ -36,7 +40,7 @@ Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name
 Route::get('admin/archive', [ArchiveController::class, 'showArchive'])->name('admin.archive');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
 
-//Manager
+// Manager Routes
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
 Route::get('manager/managetrip', [ManageTripManagerController::class, 'showManageTripManager'])->name('manager.managetrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
@@ -45,9 +49,23 @@ Route::get('manager/profile', [ProfileManagerController::class, 'showProfileMana
 Route::get('manager/archive', [ArchiveManagerController::class, 'showArchiveManager'])->name('manager.archive');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
 
-//Driver
+// Driver Routes
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'showDeliveryDriver'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
 Route::get('driver/shipment', [ShipmentDriverController::class, 'showShipmentDriver'])->name('driver.shipment');
 Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
 Route::get('driver/helpdriver', [HelpDriverController::class, 'showHelpDriver'])->name('driver.helpdriver');
+
+// Profit Reporting Routes
+Route::get('/admin/profit-reports', [ProfitController::class, 'showProfit'])->name('admin.profitreports');
+Route::post('/admin/profit-reports', [ProfitController::class, 'store'])->name('profit.store');
+
+// Authentication & Dashboard Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin');
+    Route::get('/manager/dashboard', [ManagerDashboardController::class, 'index'])->name('manager');
+    Route::get('/driver/dashboard', [DriverDashboardController::class, 'index'])->name('dashboard');
+});
+
+// Create Account Route
+Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');

@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Menu</title>
+    <title>Active Accounts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
@@ -12,7 +16,7 @@
             font-family: Arial, sans-serif;
         }
         body {
-            display:q flex;
+            display: flex;
         }
         .sidebar {
             width: 250px;
@@ -22,6 +26,7 @@
             position: fixed;
             left: 0;
             top: 0;
+            overflow-y: auto;
         }
         .sidebar h2 {
             color: #fff;
@@ -51,18 +56,59 @@
             padding: 20px;
             flex-grow: 1;
         }
+        .table-container {
+            height: 800px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-navbar/>
         </ul>
     </div>
     <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
+        <div class="container">
+            <div class="bahalana">
+                <h2 class="text-center mb-4">Active Accounts</h2>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">Create New Account</button>
+            </div>
+            
+
+            <div class="card p-4 shadow relative">
+                <div class="table-container">
+                    <table class="table text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="active-accounts-body">
+                            @foreach($users as $user)
+                            <tr>
+                                <td>{{$user -> id}}</td>
+                                <td>{{$user -> username}}</td>
+                                <td>{{$user -> fullname}}</td>
+                                <td>{{$user -> email}}</td>
+                                <td>{{$user -> role}}</td>
+                                <td>
+                                    <button>Edit</button>
+                                    <button>Delete</button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+    @include('Admin.modals.create_account_modal')
 </body>
 </html>
