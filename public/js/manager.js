@@ -291,3 +291,32 @@ function closeTripModal() {
     document.getElementById("tripModal").style.display = "none";
 }
 
+function archiveTrip(tripId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This trip will be archived and moved to the Archive Page.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Archive it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/manager/archive-trip/${tripId}`,
+                type: "POST",
+                data: {
+                    _token: document.querySelector('meta[name="csrf-token"]').content
+                },
+                success: function(response) {
+                    Swal.fire("Archived!", "The trip has been archived.", "success");
+                    setTimeout(() => location.reload(), 1000); // Reload the page
+                },
+                error: function(error) {
+                    Swal.fire("Error!", "Failed to archive trip.", "error");
+                    console.log(error);
+                }
+            });
+        }
+    });
+}

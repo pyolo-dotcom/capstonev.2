@@ -84,17 +84,17 @@
 
     /* Close button */
     .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 25px;
-        color: #333;
-        cursor: pointer;
-    }
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 25px;
+    color: #333;
+    cursor: pointer;
+}
 
-    .close-btn:hover {
-        color: #000;
-    }
+.close-btn:hover {
+    color: #000;
+}
 
     /* Form styling */
     .form-group {

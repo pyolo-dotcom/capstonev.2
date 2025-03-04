@@ -11,6 +11,6 @@ class Cargo extends Model
     protected $fillable = [
         'plate_no', 'eir_no', 'container_van_no', 'size', 
         'shipper_consignee', 'voyage_vessel','voyage_no', 'pickup_location', 
-        'delivery_location', 'status'
+        'delivery_location', 'status', 'is_archived'
     ];
 }

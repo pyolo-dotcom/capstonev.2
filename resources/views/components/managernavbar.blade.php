@@ -47,7 +47,7 @@
         </a>
         <ul class="submenu" id="settings-submenu">
             <li><a href="{{route ('manager.profile')}}" class="submenu-item"><i class="bi bi-book"></i> Profile Management</a></li>
-            <li><a href="{{route ('manager.archive')}}" class="submenu-item"><i class="bi bi-archive"></i> Archive</a></li>
+            <a href="{{ route('manager.archive') }}">Archive</a>
             <li><a href="{{route ('manager.helpmanager')}}" class="submenu-item"><i class="bi bi-question-circle"></i> Help & Support</a></li>
         </ul>
     </li>

@@ -171,6 +171,8 @@
         <option value="UVP 353" {{ request('plate_no') == 'UVP 353' ? 'selected' : '' }}>UVP 353</option>
         <option value="TQE 262" {{ request('plate_no') == 'TQE 262' ? 'selected' : '' }}>TQE 262</option>
         <option value="NBB 7212" {{ request('plate_no') == 'NBB 7212' ? 'selected' : '' }}>NBB 7212</option>
+        <option value="APA 3309" {{ request('plate_no') == 'APA 3309' ? 'selected' : '' }}>APA 3309</option>
+        <option value="WIE 914" {{ request('plate_no') == 'WIE 914' ? 'selected' : '' }}>WIE 914</option>
     </select>
 
     <!-- Date Filter Buttons -->
@@ -181,45 +183,52 @@
     </div>
 </form>
 
-            <div class="table-container">
-                <table class="trip-table">
-                    <thead>
-                        <tr>
-                            <th>Plate No.</th>
-                            <th>Date</th>
-                            <th>EIR No.</th>
-                            <th>Container Van No.</th>
-                            <th>Size</th>
-                            <th>Shipper/Consignee</th>
-                            <th>Voyage Vessel</th>
-                            <th>No.</th>
-                            <th>Pickup Location</th>
-                            <th>Delivery Location</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    @foreach ($cargos as $cargo)
+<table class="trip-table">
+    <thead>
         <tr>
-            <td>{{ $cargo->plate_no }}</td>
-            <td class="trip-date">{{ $cargo->created_at->format('Y-m-d') }}</td>
-            <td>{{ $cargo->eir_no }}</td>
-            <td>{{ $cargo->container_van_no }}</td>
-            <td>{{ $cargo->size }}</td>
-            <td>{{ $cargo->shipper_consignee }}</td>
-            <td>{{ $cargo->voyage_vessel }}</td>
-            <td>{{ $cargo->voyage_no }}</td>
-            <td>{{ $cargo->pickup_location }}</td>
-            <td>{{ $cargo->delivery_location }}</td>
-            <td class="actions">
-                <button class="edit-btn" onclick="openTripModal('{{ $cargo->id }}', '{{ $cargo->created_at }}', '{{ $cargo->eir_no }}', '{{ $cargo->container_van_no }}', '{{ $cargo->size }}', '{{ $cargo->shipper_consignee }}', '{{ $cargo->voyage_vessel }}', '{{ $cargo->voyage_no }}', '{{ $cargo->pickup_location }}', '{{ $cargo->delivery_location }}')">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-            </td>
+            <th>Plate No.</th>
+            <th>Date</th>
+            <th>EIR No.</th>
+            <th>Container Van No.</th>
+            <th>Size</th>
+            <th>Shipper/Consignee</th>
+            <th>Voyage Vessel</th>
+            <th>No.</th>
+            <th>Pickup Location</th>
+            <th>Delivery Location</th>
+            <th>Actions</th>
         </tr>
-    @endforeach
-                </tbody>
-                </table>
+    </thead>
+    <tbody>
+        @foreach ($cargos as $cargo)
+            <tr>
+                <td>{{ $cargo->plate_no }}</td>
+                <td class="trip-date">{{ $cargo->created_at->format('Y-m-d') }}</td>
+                <td>{{ $cargo->eir_no }}</td>
+                <td>{{ $cargo->container_van_no }}</td>
+                <td>{{ $cargo->size }}</td>
+                <td>{{ $cargo->shipper_consignee }}</td>
+                <td>{{ $cargo->voyage_vessel }}</td>
+                <td>{{ $cargo->voyage_no }}</td>
+                <td>{{ $cargo->pickup_location }}</td>
+                <td>{{ $cargo->delivery_location }}</td>
+                <td class="actions">
+                    <!-- Edit Button -->
+                    <button class="edit-btn"
+                        onclick="openTripModal('{{ $cargo->id }}', '{{ $cargo->created_at }}', '{{ $cargo->eir_no }}', '{{ $cargo->container_van_no }}', '{{ $cargo->size }}', '{{ $cargo->shipper_consignee }}', '{{ $cargo->voyage_vessel }}', '{{ $cargo->voyage_no }}', '{{ $cargo->pickup_location }}', '{{ $cargo->delivery_location }}')">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+
+                    <!-- Archive Button -->
+                    <form action="{{ route('trip.archive', $cargo->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="archive-btn">Archive</button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
             </div>
         </div>
     </div>

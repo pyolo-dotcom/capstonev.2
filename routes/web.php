@@ -44,12 +44,16 @@ Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'up
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
 Route::get('manager/fuel', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
 Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
-Route::get('manager/archive', [ArchiveManagerController::class, 'showArchiveManager'])->name('manager.archive');
+Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
 Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
 Route::post('/trips/store', [DeliveryManagerController::class, 'store'])->name('trips.store');
 Route::put('/trips/update/{id}', [DeliveryManagerController::class, 'update'])->name('trips.update');
 Route::delete('/trips/reset', [DeliveryManagerController::class, 'reset'])->name('trips.reset');
+Route::post('/manager/archive-trip/{id}', [ManageTripManagerController::class, 'archive'])->name('trip.archive');
+Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('manager.archive');
+Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'])->name('cargo.restore');
+Route::delete('/cargo/{id}/delete', [ManageTripManagerController::class, 'destroy'])->name('cargo.delete');
 
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');

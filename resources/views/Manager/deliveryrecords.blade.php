@@ -29,6 +29,8 @@
                 <option value="UVP 353">UVP353</option>
                 <option value="TQE 262">TQE262</option>
                 <option value="NBB 7212">NBB7212</option>
+                <option value="APA 3309">APA3309</option>
+                <option value="WIE 914">WIE914</option>
             </select>
         </div>
 
@@ -98,6 +100,8 @@
                     <option value="UVP353">UVP353</option>
                     <option value="TQE262">TQE262</option>
                     <option value="NBB7212">NBB7212</option>
+                    <option value="APA3309">APA3309</option>
+                    <option value="WIE914">WIE914</option>
                 </select>
 
                 <label for="update_trip_type">Trip Type:</label>
@@ -129,6 +133,8 @@
                     <option value="UVP353">UVP353</option>
                     <option value="TQE262">TQE262</option>
                     <option value="NBB7212">NBB7212</option>
+                    <option value="APA3309">APA3309</option>
+                    <option value="WIE914">WIE914</option>
                 </select>
 
                 <label for="trip_type">Trip Type:</label>
