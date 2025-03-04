@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trucking Services Login</title>
-  <!-- Include CSS -->
-  <link rel="stylesheet" href="{{ asset('css/capstone.css') }}">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <!-- Add favicon (optional) -->
@@ -121,7 +119,7 @@
       </div>
 
       <!-- Login Form -->
-      <form method="POST" action="" class="login-form">
+      <form method="POST" action="{{ route('login') }}" class="login-form">
         @csrf
         <input type="text" name="username" placeholder="username" class="input-field" required>
         <input type="password" name="password" placeholder="password" class="input-field" required>

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Menu</title>
+    <title>Manager Trip Records</title>
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
@@ -55,14 +56,82 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-navbar/>
         </ul>
     </div>
-    <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
-    </div>
+    <div class="main-content" id="main-content">
+        <div id="trip-records" class="section" style="display: grid;">
+            <div class="content-header">
+                <h2>View and Update Trip Records
+                <div class="fuel-tab">
+                    <button class="fuel-tabs-btn active">Weekly</button>
+                    <button class="fuel-tabs-btn">Monthly</button>
+                    <button class="fuel-tabs-btn">Yearly</button>
+                </div>
+                </h2>
+                <select class="driver-select" style="
+                    font-size: 17px;
+                    margin-left: 16px;
+                    border-radius: 8px;">
+                    <option disabled selected>-- Plate Number --</option>
+                    <option>123</option>
+                    <option>456</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="trip-table">
+                    <thead>
+                        <tr>
+                            <th>Trip ID</th>
+                            <th>Date</th>
+                            <th>Start Location</th>
+                            <th>End Location</th>
+                            <th>Kilometers</th>
+                            <th>Fuel Consumed</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                    <tbody>
+                        <tr>
+                            <td>TRP-001</td>
+                            <td>2025-01-20</td>
+                            <td>Station A</td>
+                            <td>Station B</td>
+                            <td>120</td>
+                            <td>30</td>
+                            <td class="actions">
+                                <button class="edit-btn"
+                                    onclick="openTripModal('TRP-001', '2025-01-20', 'Station A', 'Station B', 120, 30)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="delete-btn" onclick="openDeleteModal()"><i
+                                        class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TRP-002</td>
+                            <td>2025-02-15</td>
+                            <td>Station C</td>
+                            <td>Station D</td>
+                            <td>150</td>
+                            <td>40</td>
+                            <td class="actions">
+                                <button class="edit-btn"
+                                    onclick="openTripModal('TRP-002', '2025-02-15', 'Station C', 'Station D', 150, 40)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="delete-btn" onclick="openDeleteModal()"><i
+                                        class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Repeat for other rows as needed -->
+                    </tbody>
+                    </thead>
+                </table>
+            </div>
+        </div>
 </body>
 </html>

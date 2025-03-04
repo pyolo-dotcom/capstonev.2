@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ActiveController;
+// use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DeliveryManagerController;
@@ -23,10 +24,13 @@ use App\Http\Controllers\FuelDriverController;
 use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
+use App\Http\Controllers\AuthController;
 
+// Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
 
-//Admin
+// Admin Routes
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
 Route::get('admin/managetrip', [ManageTripController::class, 'showManageTrip'])->name('admin.managetrip');
 Route::get('admin/managegps', [ManageGPS::class, 'showManageGPS'])->name('admin.managegps');
@@ -37,7 +41,7 @@ Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name
 Route::get('admin/archive', [ArchiveController::class, 'showArchive'])->name('admin.archive');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
 
-//Manager
+// Manager Routes
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
 Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
 Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
