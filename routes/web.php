@@ -39,12 +39,17 @@ Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help'
 
 //Manager
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
-Route::get('manager/managetrip', [ManageTripManagerController::class, 'showManageTripManager'])->name('manager.managetrip');
+Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
+Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
 Route::get('manager/fuel', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
 Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
 Route::get('manager/archive', [ArchiveManagerController::class, 'showArchiveManager'])->name('manager.archive');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
+Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
+Route::post('/trips/store', [DeliveryManagerController::class, 'store'])->name('trips.store');
+Route::put('/trips/update/{id}', [DeliveryManagerController::class, 'update'])->name('trips.update');
+Route::delete('/trips/reset', [DeliveryManagerController::class, 'reset'])->name('trips.reset');
 
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');

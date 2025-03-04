@@ -51,6 +51,27 @@
             padding: 20px;
             flex-grow: 1;
         }
+        .map-container {
+    height: 350px;
+    width: 90%;
+    margin-left: 53px;
+    background-color: #e0e0e0;
+    border-radius: 30px;
+    margin-bottom: 20px;
+}
+
+.driver-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 20px;
+}
+
+.driver {
+    background-color: #f9f9f9;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+}
     </style>
 </head>
 <body>
@@ -61,8 +82,42 @@
         </ul>
     </div>
     <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
+        <div id="gps-control" class="section">
+            <h3>GPS Control</h3>
+            <div id="live-trucks">
+                <h4>Live Trucks</h4>
+                <div class="map-container">
+                    <!-- Map-like area with location pins -->
+                </div>
+                <div class="driver-details">
+                    <div class="driver">
+                        <p><strong>Name: Reginald Apelado</p></strong>
+                        <p>Speed: 50 km/h</p>
+                        <p>Coordinates: (40.7542, -34.756)</p>
+                    </div>
+                    <div class="driver">
+                        <p><strong>Name: Piolo Dionisio</p></strong>
+                        <p>Speed: 50 km/h</p>
+                        <p>Coordinates: (40.7542, -34.756)</p>
+                    </div>
+                    <div class="driver">
+                        <p><strong>Name: John Carlo C.</p></strong>
+                        <p>Speed: 50 km/h</p>
+                        <p>Coordinates: (40.7542, -34.756)</p>
+                    </div>
+                    <div class="driver">
+                        <p><strong>Name: Noriel Salonga</p></strong>
+                        <p>Speed: 50 km/h</p>
+                        <p>Coordinates: (40.7542, -34.756)</p>
+                    </div>
+                    <div class="driver">
+                        <p><strong>Name: Jaira Braza</p></strong>
+                        <p>Speed: 50 km/h</p>
+                        <p>Coordinates: (40.7542, -34.756)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
