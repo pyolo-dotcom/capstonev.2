@@ -4,33 +4,38 @@
         <span class="close" onclick="closeFuelModal()">&times;</span>
         <h2 style="margin-bottom: 20px;">Add Consumption</h2>
         <form id="fuelForm">
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date">
-            </div>
-            <div class="form-group">
-                <label for="plateNo">Plate No.:</label>
-                <select id="plateNo" name="plateNo">
-                    <option value="123">123</option>
-                    <option value="456">456</option>
-                    <!-- Add more options as needed -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="totalKm">Total Kilometers Traveled:</label>
-                <input type="number" id="totalKm" name="totalKm">
-            </div>
-            <div class="form-group">
-                <label for="avgKmL">Average Km/L:</label>
-                <input type="number" id="avgKmL" name="avgKmL">
-            </div>
-            <div class="form-group">
-                <label for="totalLiters">Total Liters:</label>
-            </div>
-            <div class="form-row">
-                <button type="button" onclick="addFuelConsumption()">Add</button>
-            </div>
-        </form>
+    @csrf
+    <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+    </div>
+    <div class="form-group">
+        <label for="plateNo">Plate No.:</label>
+        <select id="plateNo" name="plateNo" required>
+            <option disabled selected>-- Plate Number --</option>
+            <option value="UVP353">UVP353</option>
+            <option value="TQE262">TQE262</option>
+            <option value="NBB7212">NBB7212</option>
+            <option value="APA3309">APA3309</option>
+            <option value="WIE914">WIE914</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="totalKm">Total Kilometers Traveled:</label>
+        <input type="number" id="totalKm" name="totalKm" required>
+    </div>
+    <div class="form-group">
+        <label for="avgKmL">Average Km/L:</label>
+        <input type="number" id="avgKmL" name="avgKmL" step="0.01" required>
+    </div>
+    <div class="form-group">
+        <label for="totalLiters">Total Liters (Auto-calculated):</label>
+        <input type="text" id="totalLiters" name="totalLiters" readonly>
+    </div>
+    <div class="form-row">
+        <button type="button" onclick="addFuelConsumption()">Add</button>
+    </div>
+</form>
     </div>
 </div>
 

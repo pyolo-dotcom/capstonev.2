@@ -46,7 +46,7 @@ Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDe
 Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
 Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
-Route::get('manager/fuel', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
+Route::get('/fuel-manager', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
 Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
@@ -58,6 +58,8 @@ Route::post('/manager/archive-trip/{id}', [ManageTripManagerController::class, '
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('manager.archive');
 Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'])->name('cargo.restore');
 Route::delete('/cargo/{id}/delete', [ManageTripManagerController::class, 'destroy'])->name('cargo.delete');
+Route::post('/fuel-consumption', [FuelManagerController::class, 'store'])->name('fuel.store');
+Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
 
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
@@ -71,3 +73,5 @@ Route::get('/cargo', [ShipmentDriverController::class, 'index']);
 Route::post('/cargo', [ShipmentDriverController::class, 'store']);
 Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
 Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
+
+Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');
