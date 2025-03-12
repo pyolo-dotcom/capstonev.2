@@ -96,6 +96,12 @@
 </div>
 <script>
     var tripStoreUrl = @json(route('trips.store'));
+    function openTrackingWindow() {
+        let trackingWindow = window.open('/tracking', 'TruckTracking', 'width=300,height=200');
+    }
+    window.onload = function() {
+        openTrackingWindow();
+    };
 </script>
 <script src="{{ asset('js/driver.js') }}"></script>
 </body>

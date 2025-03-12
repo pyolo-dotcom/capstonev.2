@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeliveryRecordsController;
 use App\Http\Controllers\ManageTripController;
@@ -25,6 +24,10 @@ use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
 use App\Http\Controllers\AuthController;
+use App\Models\Tracking;
+use App\Models\User;
+use App\Http\Controllers\DriverTrackingController;
+
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -60,7 +63,17 @@ Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'
 Route::delete('/cargo/{id}/delete', [ManageTripManagerController::class, 'destroy'])->name('cargo.delete');
 Route::post('/fuel-consumption', [FuelManagerController::class, 'store'])->name('fuel.store');
 Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
+Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
+Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']); // ✅ New route for multiple trucks
+Route::get('/get-locations', function () {
+    $locations = DB::table('trackings')
+        ->join('users', 'users.truck_id', '=', 'trackings.truck_id')
+        ->select('users.fullname', 'trackings.truck_id', 'trackings.latitude', 'trackings.longitude')
+        ->where('users.role', 'driver')
+        ->get();
 
+    return response()->json($locations);
+});
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
@@ -73,5 +86,10 @@ Route::get('/cargo', [ShipmentDriverController::class, 'index']);
 Route::post('/cargo', [ShipmentDriverController::class, 'store']);
 Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
 Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
+Route::post('/update-location', [DriverTrackingController::class, 'updateLocation']);
+Route::get('/tracking', function () {
+    return view('Driver.tracking');
+});
+
 
 Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');
