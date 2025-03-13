@@ -30,7 +30,7 @@ use App\Http\Controllers\DriverTrackingController;
 
 
 // Login Routes
-Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+Route::get('/', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
 Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
 
 // Admin Routes

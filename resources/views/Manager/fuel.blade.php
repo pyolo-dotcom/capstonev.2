@@ -91,7 +91,7 @@ body {
     border: none;
     background-color: #ECF0F1;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     border-radius: 5px;
     transition: 0.3s;
 }
@@ -101,7 +101,7 @@ body {
 }
 
 .time-filter-btn.active {
-    background-color: #3498DB;
+    background-color: #1d2d3d;
     color: white;
 }
 
@@ -129,12 +129,18 @@ body {
     width: 24px;
     height: 24px;
     margin-right: 8px;
-    background-color: white;
-    color: #2f385f;
+    background-color: transparent;
+    color: black;
     border-radius: 50%;
     font-size: 16px;
     font-weight: bold;
     border: 1px solid black;
+}
+
+.add-consumption-btn:hover .plus-circle {
+    background-color: transparent;
+    color: white;
+    border: none;
 }
 #fuelChart {
     width: 100%;

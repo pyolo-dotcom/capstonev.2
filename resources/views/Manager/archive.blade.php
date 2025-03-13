@@ -126,7 +126,7 @@
         margin-top: 20px;
         max-height: calc(100vh - 200px);
         overflow-y: auto;
-        background-color: #fff;
+        background-color: transparent;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -141,13 +141,13 @@
 
     .archive-table th,
     .archive-table td {
-        border: 1px solid #ddd;
+        border: 1px solid #a1a1a1;
         padding: 12px;
         text-align: left;
     }
 
     .archive-table th {
-        background-color: #333;
+        background-color: gray;
         color: #fff;
         text-transform: uppercase;
     }
@@ -187,13 +187,15 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
+        <h2><i>SYA</i></h2>
+        <h2>Trucking Services</h2>
+        <h2><i>Since</i> 2018</h2>
         <ul>
             <x-managernavbar />
         </ul>
     </div>
     <div class="content">
-        <h3>Archive Trips</h3>
+        <h3>Archived Page</h3>
         <div class="records-Tab">
             <div class="records-buttons">
                 <button class="records-Tab-btn active" data-title="Archived Trips Records">Trip Records</button>
@@ -273,7 +275,7 @@
             row.style.display = match ? '' : 'none';
         });
     });
-    
+
 </script>
 
 </html>

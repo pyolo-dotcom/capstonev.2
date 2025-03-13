@@ -65,7 +65,7 @@ body {
 .add-trip-btn {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #09325e;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -73,7 +73,7 @@ body {
 }
 
 .add-trip-btn:hover {
-    background-color: #0056b3;
+    background-color: #0d1e30;
 }
 
 /* Trips Overview */
@@ -106,19 +106,15 @@ font-size: 24px; /* Increase number size */
 font-weight: bold;
 }
 .reset-btn {
-background-color: #dc3545; /* Red button */
-color: white;
+background-color: transparent; /* Red button */
+color: red;
 border: none;
 padding: 8px 15px;
 margin-top: 10px;
 border-radius: 5px;
 cursor: pointer;
-font-size: 14px;
-transition: background 0.3s ease-in-out;
-}
-
-.reset-btn:hover {
-background-color: #c82333; /* Darker red on hover */
+font-size: 16px;
+transition: text 0.3s ease-in-out;
 }
 
 /* Modal Styles */
@@ -160,7 +156,7 @@ font-weight: bold;
 margin-top: 10px;
 }
 
-.modal-content select, 
+.modal-content select,
 .modal-content input {
 width: 100%;
 padding: 8px;
@@ -204,12 +200,12 @@ cursor: pointer;
 
 .trip-table th, .trip-table td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #2d4661;
     text-align: center;
 }
 
 .trip-table th {
-    background: #007bff;
+    background: #15293f;
     color: white;
 }
 

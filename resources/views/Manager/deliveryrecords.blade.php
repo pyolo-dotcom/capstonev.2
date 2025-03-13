@@ -16,7 +16,7 @@
 <body>
 
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
+        <h2><i>SYA</i></h2>
         <ul>
             <x-managernavbar />
         </ul>
