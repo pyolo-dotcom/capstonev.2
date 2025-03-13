@@ -97,7 +97,6 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-navbar/>
         </ul>
@@ -105,17 +104,29 @@
 
     <div class="content">
         <div class="header-buttons">
-            <button class="tab-button">WEEKLY</button>
-            <button class="tab-button">MONTHLY</button>
-            <button class="tab-button">YEARLY</button>
+            <button class="tab-button" id="weeklyFilter">WEEKLY</button>
+            <button class="tab-button" id="monthlyFilter">MONTHLY</button>
+            <button class="tab-button" id="yearlyFilter">YEARLY</button>
         </div>
 
         <div class="table-container">
-            <button class="tab-button">+ Add Profits</button>
+            @include('Admin.modals.profit_modal')
+            @foreach($profits as $profit)
+                @include('Admin.modals.edit_profit_modal', ['profit' => $profit])
+            @endforeach
+            <label for="plateNumber">Select Plate Number:</label>
+            <select id="plateNumber">
+                <option value="ALL">All</option>
+                @foreach($plateNumbers as $plateNumber)
+                    <option value="{{ $plateNumber }}">{{ $plateNumber }}</option>
+                @endforeach
+            </select>
+
             <table>
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Plate Number</th>
                         <th>Total Income</th>
                         <th>Total Expenses</th>
                         <th>Total Profit</th>
@@ -124,20 +135,32 @@
                 </thead>
                 <tbody>
                     @foreach($profits as $profit)
-                    <tr>
+                    <tr data-id="{{ $profit->id }}">
                         <td>{{ $profit->date }}</td>
-                        <td>P {{ number_format($profit->income, 2) }}</td>
-                        <td>P {{ number_format($profit->expenses, 2) }}</td>
-                        <td>P {{ number_format($profit->profit, 2) }}</td>
+                        <td>{{ $profit->plate_number }}</td>
+                        <td>P {{ number_format($profit->total_income, 2) }}</td>
+                        <td>P {{ number_format($profit->total_expenses, 2) }}</td>
+                        <td>P {{ number_format($profit->total_profit, 2) }}</td>
                         <td>
-                            <a href="#"><i class="bi bi-pencil-square"></i> edit</a>
-                            <a href="#"><i class="bi bi-archive"></i> archive</a>
+                            <!-- Edit Button -->
+                            <a href="#" class="edit-btn" onclick="openEditModal({{ $profit->id }}, '{{ $profit->date }}', '{{ $profit->plate_number }}', {{ $profit->total_income }}, {{ $profit->total_expenses }}, {{ $profit->total_profit }})">
+                                <i class="bi bi-pencil-square"></i> edit
+                            </a>
+                        
+                            <!-- Archive Button -->
+                            <form action="{{ route('admin.profit.archive', $profit->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="archive-btn" onclick="return confirm('Are you sure you want to archive this record?')">
+                                    <i class="bi bi-archive"></i> archive
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-        </div>
+        </div>        
 
         <div class="chart-container">
             <h3>Profit Analysis</h3>
@@ -146,35 +169,89 @@
     </div>
 
     <script>
+        const profitData = @json($profits);
         const ctx = document.getElementById('profitChart').getContext('2d');
-        const profitChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['1', '2', '3', '4'],
-                datasets: [
-                    {
-                        label: 'Total Income',
-                        data: [5, 10, 15, 20],
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                    },
-                    {
-                        label: 'Total Expenses',
-                        data: [4, 9, 14, 18],
-                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
-                    },
-                    {
-                        label: 'Total Profit',
-                        data: [3, 8, 12, 15],
-                        backgroundColor: 'rgba(153, 102, 255, 0.7)'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
+        let profitChart;
+
+        function renderChart(filteredData) {
+            const labels = filteredData.map(profit => profit.date);
+            const incomeData = filteredData.map(profit => profit.total_income);
+            const expensesData = filteredData.map(profit => profit.total_expenses);
+            const profitDataSet = filteredData.map(profit => profit.total_profit);
+
+            if (profitChart) {
+                profitChart.destroy();
             }
+
+            profitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Total Income', data: incomeData, backgroundColor: 'rgba(54, 162, 235, 0.7)' },
+                        { label: 'Total Expenses', data: expensesData, backgroundColor: 'rgba(75, 192, 192, 0.7)' },
+                        { label: 'Total Profit', data: profitDataSet, backgroundColor: 'rgba(153, 102, 255, 0.7)' }
+                    ]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        document.getElementById('plateNumber').addEventListener('change', function() {
+            const selectedPlateNumber = this.value;
+            const rows = document.querySelectorAll('table tbody tr');
+            const filteredData = [];
+
+            rows.forEach(row => {
+                const plateNumberCell = row.querySelector('td:nth-child(2)');
+                if (plateNumberCell) {
+                    const plateNumber = plateNumberCell.textContent.trim();
+                    if (selectedPlateNumber === 'ALL' || plateNumber === selectedPlateNumber) {
+                        row.style.display = '';
+                        if (selectedPlateNumber !== 'ALL') {
+                            const profitId = row.getAttribute('data-id');
+                            const profit = profitData.find(p => p.id == profitId);
+                            if (profit) {
+                                filteredData.push(profit);
+                            }
+                        }
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+
+            if (selectedPlateNumber === 'ALL') {
+                renderChart(profitData);
+            } else {
+                renderChart(filteredData);
+            }
+        });
+
+        // Initial chart render
+        renderChart(profitData);
+
+        // Function to open edit modal and populate data
+        function openEditModal(id, date, plateNumber, totalIncome, totalExpenses, totalProfit) {
+            document.getElementById('editProfitModal').style.display = 'block';
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_date').value = date;
+            document.getElementById('edit_plate_number').value = plateNumber;
+            document.getElementById('edit_total_income').value = totalIncome;
+            document.getElementById('edit_total_expenses').value = totalExpenses;
+            document.getElementById('edit_total_profit').value = totalProfit;
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target == document.getElementById('editProfitModal')) {
+                document.getElementById('editProfitModal').style.display = 'none';
+            }
+        });
+
+        // Close modal when clicking the close button
+        document.querySelector('#editProfitModal .close').addEventListener('click', function() {
+            document.getElementById('editProfitModal').style.display = 'none';
         });
     </script>
 </body>

@@ -44,6 +44,9 @@
                         <input type="password" id="password_confirmation" name="password_confirmation" class="form-control input-box" placeholder="Confirm Password" required>
                     </div>
 
+                    <!-- Error message for password mismatch -->
+                    <div id="password-error" class="text-danger" style="display: none;">Passwords do not match.</div>
+
                     <button type="submit" class="btn btn-primary w-100 submit-button">Create Account</button>
                 </form>
             </div>
@@ -72,12 +75,11 @@
         font-size: 20px;
         cursor: pointer;
         color: #000;
-}
+    }
 
     .close-button:hover {
         color: #ff0000;
-}
-
+    }
 
     .input-box {
         border-radius: 20px;
@@ -103,3 +105,18 @@
         background-color: #00308f;
     }
 </style>
+
+<script>
+    document.getElementById('create-account-form').addEventListener('submit', function(event) {
+        var password = document.getElementById('password').value;
+        var passwordConfirmation = document.getElementById('password_confirmation').value;
+        var errorDiv = document.getElementById('password-error');
+
+        if (password !== passwordConfirmation) {
+            errorDiv.style.display = 'block';
+            event.preventDefault(); // Prevent form submission
+        } else {
+            errorDiv.style.display = 'none';
+        }
+    });
+</script>
