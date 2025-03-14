@@ -70,4 +70,45 @@ class DeliveryManagerController extends Controller
         }
     }
     
+    public function getTripCounts(Request $request)
+    {
+        // Remove spaces from the input to match database format
+        $plateNo = str_replace(' ', '', $request->input('plate_no'));
+    
+        Log::info("Received Plate Number (Formatted): " . $plateNo); // Debugging
+    
+        // Fetch trip data from the database with corrected plate number formatting
+        $trips = Trip::whereRaw("REPLACE(plate_no, ' ', '') = ?", [$plateNo])
+            ->groupBy('trip_type')
+            ->selectRaw('trip_type, SUM(num_trips) as total_trips')
+            ->get();
+    
+        // Initialize counts
+        $counts = [
+            'oneWayTrip' => 0,
+            'roundTrip' => 0,
+            'doorToDoorTrip' => 0
+        ];
+    
+        // Map the results
+        foreach ($trips as $trip) {
+            if ($trip->trip_type === 'One Way Trip') {
+                $counts['oneWayTrip'] = $trip->total_trips;
+            } elseif ($trip->trip_type === 'Round Trip') {
+                $counts['roundTrip'] = $trip->total_trips;
+            } elseif ($trip->trip_type === 'Door-To-Door Trip') {
+                $counts['doorToDoorTrip'] = $trip->total_trips;
+            }
+        }
+    
+        // Debugging output
+        Log::info("Trip Counts: ", [
+            'plateNo' => $plateNo,
+            'oneWayTrip' => $counts['oneWayTrip'],
+            'roundTrip' => $counts['roundTrip'],
+            'doorToDoorTrip' => $counts['doorToDoorTrip']
+        ]);
+    
+        return response()->json($counts);
+    }    
 }

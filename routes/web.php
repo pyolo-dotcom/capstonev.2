@@ -35,7 +35,11 @@ Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
 
 // Admin Routes
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
-Route::get('admin/managetrip', [ManageTripController::class, 'showManageTrip'])->name('admin.managetrip');
+Route::get('admin/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
+Route::put('/trips/update/{id}', [DeliveryRecordsController::class, 'update'])->name('trips.update');
+Route::delete('/trips/reset', [DeliveryRecordsController::class, 'reset'])->name('trips.reset');
+Route::get('admin/managetrip', [ManageTripController::class, 'ShowManageTrip'])->name('admin.managetrip');
+Route::put('/admin/update-trip/{id}', [ManageTripController::class, 'UpdateManageTrip'])->name('admin.updateTrip');
 Route::get('admin/managegps', [ManageGPS::class, 'showManageGPS'])->name('admin.managegps');
 Route::get('admin/fuel', [FuelController::class, 'showFuel'])->name('admin.fuel');
 Route::get('admin/profit', [ProfitController::class, 'showProfit'])->name('admin.profit');
@@ -43,6 +47,15 @@ Route::get('admin/profile', [ProfileController::class, 'showProfile'])->name('ad
 Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name('admin.activeaccount');
 Route::get('admin/archive', [ArchiveController::class, 'showArchive'])->name('admin.archive');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
+Route::get('/get-locations', function () {
+    $locations = DB::table('trackings')
+        ->join('users', 'users.truck_id', '=', 'trackings.truck_id')
+        ->select('users.fullname', 'trackings.truck_id', 'trackings.latitude', 'trackings.longitude')
+        ->where('users.role', 'driver')
+        ->get();
+
+    return response()->json($locations);
+});
 
 // Manager Routes
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');

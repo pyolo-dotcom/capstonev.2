@@ -60,18 +60,26 @@ $(document).ready(function () {
 $(document).ready(function () {
     $("#plateNumberSelect").change(function () {
         var plateNo = $(this).val();
+        console.log("Selected Plate Number: ", plateNo); // Debugging
 
         $.ajax({
             url: "/get-trip-counts",
             type: "GET",
             data: { plate_no: plateNo },
             success: function (response) {
-                $(".trip-summary .trip-card:nth-child(1) p").text(response.oneWayTrip);
-                $(".trip-summary .trip-card:nth-child(2) p").text(response.roundTrip);
-                $(".trip-summary .trip-card:nth-child(3) p").text(response.doorToDoorTrip);
+                console.log("Received Response: ", response); // Debugging
+
+                if (response) {
+                    $(".trip-summary .trip-card:nth-child(1) p").text(response.oneWayTrip || 0);
+                    $(".trip-summary .trip-card:nth-child(2) p").text(response.roundTrip || 0);
+                    $(".trip-summary .trip-card:nth-child(3) p").text(response.doorToDoorTrip || 0);
+                } else {
+                    console.warn("No data received from server.");
+                }
             },
-            error: function () {
-                alert("Error fetching data. Please try again.");
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: ", error);
+                alert("Error fetching data. Please check the console for more details.");
             },
         });
     });
