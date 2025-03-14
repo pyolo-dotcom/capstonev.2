@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Menu</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
             font-family: Arial, sans-serif;
         }
         body {
-            display:q flex;
+            display: flex;
         }
         .sidebar {
             width: 250px;
@@ -51,18 +51,95 @@
             padding: 20px;
             flex-grow: 1;
         }
+        .fuel-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #2f4156;
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .chart-container {
+            width: 90%;
+            height: 70vh;
+            margin: auto;
+            background: transparent; /* Ensure visibility */
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ensure the canvas takes up the full container */
+        .chart-container canvas {
+            width: 100% !important;
+            max-width: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
+        <h2><i>SYA</i>TRUCKING SERVICES</h2>
         <ul>
             <x-drivernavbar/>
         </ul>
     </div>
     <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
+        <div id="fuel-management" class="section">
+            <div class="fuel-stats">
+                <div class="stat">
+                    <h3>Total Kilometers</h3>
+                    <p>379 KL</p>
+                </div>
+                <div class="stat">
+                    <h3>Total Fuel Consumed</h3>
+                    <p>30L</p>
+                </div>
+                <div class="stat">
+                    <h3>Avg Fuel Efficiency</h3>
+                    <p>6.7 km/L</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="fuelChart"></canvas>
+            </div>
+        </div>
     </div>
 </body>
+<script>
+    let fuelChart = null;
+
+    window.onload = function() {
+        if (!fuelChart) {  // Check if the chart is not already created
+            var ctx = document.getElementById('fuelChart').getContext('2d');
+            document.getElementById('fuelChart').height = 400;  // Ensure height is set here
+            fuelChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [0, 50, 100, 150, 200, 250, 300, 340],
+                    datasets: [{
+                        label: 'Fuel Consumption (liters)',
+                        data: [0, 5, 10, 15, 20, 25, 30, 35],
+                        borderColor: 'green',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true, // Ensure it resizes correctly
+                    maintainAspectRatio: false,  // Ensure the canvas resizes to fill the parent container
+                }
+            });
+        }
+    };
+</script>
 </html>

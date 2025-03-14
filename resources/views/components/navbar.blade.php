@@ -135,7 +135,7 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="resize-handle" id="resize-handle"></div>
-    
+
     <!-- Sidebar Header -->
     <div class="sidebar-header">
         <h2><i>SYA</i></h2>
@@ -146,13 +146,13 @@
     <!-- Sidebar Menu -->
     <ul class="menu">
         <li>
-            <a href="{{ route('admin.managetrip') }}" class="menu-item active" id="tripRecordsBtn">
-                <i class="bi bi-truck"></i> Manage Trip Records
+            <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
+                <i class="bi bi-list"></i> Delivery Records
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                <i class="bi bi-list"></i> Delivery Records
+            <a href="{{ route('admin.managetrip') }}" class="menu-item" id="tripRecordsBtn">
+                <i class="bi bi-truck"></i> Manage Trip Records
             </a>
         </li>
         <li>
@@ -171,7 +171,7 @@
             </a>
         </li>
         <li>
-            <a href="#" class="menu-item dropdown-toggle" onclick="toggleDropdown(event)">
+            <a href="#" class="menu-item dropdown-toggle" id="settings-toggle">
                 <i class="bi bi-fuel-pump"></i> Settings
                 <i class="bi bi-chevron-down dropdown-arrow"></i> <!-- Arrow icon -->
             </a>
@@ -206,19 +206,54 @@
     </ul>
 </div>
 
-<!-- Dropdown Toggle Script -->
+<!-- Script para sa Dropdown at Active Class -->
 <script>
-    function toggleDropdown(event) {
-        event.preventDefault(); // Prevent default anchor behavior
-        let submenu = document.getElementById("settings-submenu");
-        submenu.classList.toggle("show"); // Toggle the "show" class
+    // Function para i-toggle ang dropdown
+    document.getElementById('settings-toggle').addEventListener('click', function(event) {
+        event.preventDefault(); // I-prevent ang default behavior ng link
+        const submenu = document.getElementById('settings-submenu');
+        const arrowIcon = this.querySelector('.dropdown-arrow');
 
-        // Toggle the arrow direction
-        let arrowIcon = event.currentTarget.querySelector(".dropdown-arrow");
-        if (submenu.classList.contains("show")) {
-            arrowIcon.classList.replace("bi-chevron-down", "bi-chevron-up");
+        // I-toggle ang visibility ng submenu
+        submenu.classList.toggle('show');
+
+        // I-toggle ang arrow icon
+        if (submenu.classList.contains('show')) {
+            arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
         } else {
-            arrowIcon.classList.replace("bi-chevron-up", "bi-chevron-down");
+            arrowIcon.classList.replace('bi-chevron-up', 'bi-chevron-down');
         }
+    });
+
+    // Function para i-set ang active class sa tamang menu item
+    function setActiveMenuItem() {
+        const currentUrl = window.location.href; // Kunin ang current URL
+        const menuItems = document.querySelectorAll('.menu-item'); // Kunin lahat ng menu items
+        const submenuItems = document.querySelectorAll('.submenu-item'); // Kunin lahat ng submenu items
+
+        // I-check ang main menu items
+        menuItems.forEach(item => {
+            if (item.href === currentUrl) {
+                item.classList.add('active'); // I-apply ang active class
+            } else {
+                item.classList.remove('active'); // I-remove ang active class
+            }
+        });
+
+        // I-check ang submenu items
+        submenuItems.forEach(item => {
+            if (item.href === currentUrl) {
+                item.classList.add('active'); // I-apply ang active class
+                const submenu = document.getElementById('settings-submenu');
+                submenu.classList.add('show'); // Buksan ang submenu kung active ang item
+                const arrowIcon = document.querySelector('#settings-toggle .dropdown-arrow');
+                arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up'); // I-update ang arrow icon
+            } else {
+                item.classList.remove('active'); // I-remove ang active class
+            }
+        });
     }
+
+    // I-call ang function kapag na-load ang page
+    document.addEventListener('DOMContentLoaded', setActiveMenuItem);
 </script>
