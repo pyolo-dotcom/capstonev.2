@@ -8,10 +8,13 @@
             <input type="date" name="date" required>
             
             <label for="plate_number">Plate Number:</label>
-            <select id="plateNumber" name="plate_number">
-                <option value="ABC123">ABC123</option>
-                <option value="XYZ789">XYZ789</option>
-                <option value="MNO456">MNO456</option>
+            <select id="plateNumber" name="plate_number" required>
+                <option disabled selected>-- Plate Number --</option>
+                <option value="UVP353">UVP353</option>
+                <option value="TQE262">TQE262</option>
+                <option value="NBB7212">NBB7212</option>
+                <option value="APA3309">APA3309</option>
+                <option value="WIE914">WIE914</option>
             </select>
 
             <label for="total_income">Total Income:</label>

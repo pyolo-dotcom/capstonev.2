@@ -93,6 +93,36 @@
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        #plateNumberSelect {
+            padding: 5px;
+            font-size: 16px;
+        }
+        .time-filter {
+            display: flex;
+            gap: 10px;
+        }
+        .time-filter-btn {
+            padding: 8px 15px;
+            border: none;
+            background-color: #ECF0F1;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .time-filter-btn:hover {
+            background-color: #BDC3C7;
+        }
+        .time-filter-btn.active {
+            background-color: #3498DB;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -109,20 +139,26 @@
             <button class="tab-button" id="yearlyFilter">YEARLY</button>
         </div>
 
+        <div class="filter-section">
+            <label for="plateNumberSelect">Plate No.:</label>
+            <select id="plateNumberSelect" name="plateNumberSelect" required>
+                <option disabled selected>-- Plate Number --</option>
+                <option value="UVP353">UVP353</option>
+                <option value="TQE262">TQE262</option>
+                <option value="NBB7212">NBB7212</option>
+                <option value="APA3309">APA3309</option>
+                <option value="WIE914">WIE914</option>
+                <option value="all">All Trucks</option>
+            </select>
+        </div>
+
         <div class="table-container">
             @include('Admin.modals.profit_modal')
             @foreach($profits as $profit)
                 @include('Admin.modals.edit_profit_modal', ['profit' => $profit])
             @endforeach
-            <label for="plateNumber">Select Plate Number:</label>
-            <select id="plateNumber">
-                <option value="ALL">All</option>
-                @foreach($plateNumbers as $plateNumber)
-                    <option value="{{ $plateNumber }}">{{ $plateNumber }}</option>
-                @endforeach
-            </select>
 
-            <table>
+            <table id="profitTable">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -197,18 +233,18 @@
             });
         }
 
-        document.getElementById('plateNumber').addEventListener('change', function() {
+        document.getElementById('plateNumberSelect').addEventListener('change', function() {
             const selectedPlateNumber = this.value;
-            const rows = document.querySelectorAll('table tbody tr');
+            const rows = document.querySelectorAll('#profitTable tbody tr');
             const filteredData = [];
 
             rows.forEach(row => {
                 const plateNumberCell = row.querySelector('td:nth-child(2)');
                 if (plateNumberCell) {
                     const plateNumber = plateNumberCell.textContent.trim();
-                    if (selectedPlateNumber === 'ALL' || plateNumber === selectedPlateNumber) {
+                    if (selectedPlateNumber === 'all' || plateNumber === selectedPlateNumber) {
                         row.style.display = '';
-                        if (selectedPlateNumber !== 'ALL') {
+                        if (selectedPlateNumber !== 'all') {
                             const profitId = row.getAttribute('data-id');
                             const profit = profitData.find(p => p.id == profitId);
                             if (profit) {
@@ -221,7 +257,7 @@
                 }
             });
 
-            if (selectedPlateNumber === 'ALL') {
+            if (selectedPlateNumber === 'all') {
                 renderChart(profitData);
             } else {
                 renderChart(filteredData);

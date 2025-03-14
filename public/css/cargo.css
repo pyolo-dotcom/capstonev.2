@@ -1,0 +1,58 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Page Title */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Form Container */
+#cargoForm {
+    max-width: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Form Inputs */
+#cargoForm input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Submit Button */
+#cargoForm button {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+#cargoForm button:hover {
+    background: #34495e;
+}
+
+/* QR Code Container */
+#qrCodeContainer {
+    text-align: center;
+    margin-top: 20px;
+}

@@ -19,6 +19,8 @@ class User extends Authenticatable
         'dob',
         'role',
         'password',
+        'truck_id',
+        'profile_picture',
     ];
 
     protected $dates = ['deleted_at']; // Idagdag ang `deleted_at` sa dates

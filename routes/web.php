@@ -1,14 +1,13 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeliveryRecordsController;
 use App\Http\Controllers\ManageTripController;
 use App\Http\Controllers\ManageGPSController;
 use App\Http\Controllers\FuelController;
 use App\Http\Controllers\ProfitController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ActiveController;
-use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DeliveryManagerController;
@@ -24,6 +23,9 @@ use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
 use App\Http\Controllers\AuthController;
+use App\Models\Tracking;
+use App\Models\User;
+use App\Http\Controllers\DriverTrackingController;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -43,7 +45,7 @@ Route::get('admin/profit', [ProfitController::class, 'showProfit'])->name('admin
 Route::post('admin/profit/store', [ProfitController::class, 'store'])->name('admin.profit.store');
 Route::get('admin/profit/edit/{id}', [ProfitController::class, 'edit'])->name('admin.profit.edit');
 Route::put('admin/profit/update/{id}', [ProfitController::class, 'update'])->name('admin.profit.update');
-Route::delete('admin/profit/archive/{id}', [ProfitController::class, 'archive'])->name('admin.profit.archive'); // Idinagdag
+Route::delete('admin/profit/archive/{id}', [ProfitController::class, 'archive'])->name('admin.profit.archive');
 Route::delete('admin/profit/delete/{id}', [ProfitController::class, 'destroy'])->name('admin.profit.delete');
 
 // Archive Routes
@@ -57,19 +59,55 @@ Route::delete('admin/archive/delete/profit/{id}', [ArchiveController::class, 'de
 
 // Manager Routes
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
-Route::get('manager/managetrip', [ManageTripManagerController::class, 'showManageTripManager'])->name('manager.managetrip');
+Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
+Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
-Route::get('manager/fuel', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
+Route::get('/fuel-manager', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
 Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
-Route::get('manager/archive', [ArchiveManagerController::class, 'showArchiveManager'])->name('manager.archive');
+Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
+Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
+Route::post('/trips/store', [DeliveryManagerController::class, 'store'])->name('trips.store');
+Route::put('/trips/update/{id}', [DeliveryManagerController::class, 'update'])->name('trips.update');
+Route::delete('/trips/reset', [DeliveryManagerController::class, 'reset'])->name('trips.reset');
+Route::post('/manager/archive-trip/{id}', [ManageTripManagerController::class, 'archive'])->name('trip.archive');
+Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('manager.archive');
+Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'])->name('cargo.restore');
+Route::delete('/cargo/{id}/delete', [ManageTripManagerController::class, 'destroy'])->name('cargo.delete');
+Route::post('/fuel-consumption', [FuelManagerController::class, 'store'])->name('fuel.store');
+Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
+Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']);
+Route::get('/get-locations', function () {
+    $locations = DB::table('trackings')
+        ->join('users', 'users.truck_id', '=', 'trackings.truck_id')
+        ->select('users.fullname', 'trackings.truck_id', 'trackings.latitude', 'trackings.longitude')
+        ->where('users.role', 'driver')
+        ->get();
+
+    return response()->json($locations);
+});
 
 // Driver Routes
-Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'showDeliveryDriver'])->name('driver.deliveryrecords');
+Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
 Route::get('driver/shipment', [ShipmentDriverController::class, 'showShipmentDriver'])->name('driver.shipment');
 Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
 Route::get('driver/helpdriver', [HelpDriverController::class, 'showHelpDriver'])->name('driver.helpdriver');
+Route::post('/trips/store', [DeliveryDriverController::class, 'store'])->name('trips.store');
+Route::get('/get-trip-counts', [DeliveryDriverController::class, 'getTripCounts']);
+Route::get('/cargo', [ShipmentDriverController::class, 'index']);
+Route::post('/cargo', [ShipmentDriverController::class, 'store']);
+Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
+Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
+Route::post('/update-location', [DriverTrackingController::class, 'updateLocation']);
+Route::get('/tracking', function () {
+    return view('Driver.tracking');
+});
+
+// Driver Routes
+Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
+Route::post('/driver/fuel-consumption', [FuelDriverController::class, 'store'])->name('driver.fuel.store');
+Route::get('/driver/fuel-analytics', [FuelDriverController::class, 'getFuelAnalytics']);
 
 // Authentication & Dashboard Routes
 Route::middleware(['auth'])->group(function () {
@@ -87,7 +125,7 @@ Route::put('admin/activeaccount/{id}', [ActiveController::class, 'edit'])->name(
 // Archive Account Route
 Route::delete('admin/activeaccount/{id}', [ActiveController::class, 'archive'])->name('archiveaccount');
 
-//GPS
+// GPS Routes
 Route::post('/api/gps-data', [ManageGPSController::class, 'storeGpsData'])->name('gps.store');
 Route::get('/api/gps-data', [ManageGPSController::class, 'fetchGpsData'])->name('gps.fetch');
 
@@ -95,3 +133,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
     Route::put('/admin/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
 });
+
+// New Route for Creating Account with Truck ID
+Route::post('admin/activeaccount/store', [ActiveController::class, 'store'])->name('admin.activeaccount.store');

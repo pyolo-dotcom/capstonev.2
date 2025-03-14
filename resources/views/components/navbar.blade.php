@@ -146,13 +146,13 @@
     <!-- Sidebar Menu -->
     <ul class="menu">
         <li>
-            <a href="{{ route('admin.managetrip') }}" class="menu-item" id="tripRecordsBtn">
-                <i class="bi bi-truck"></i> Manage Trip Records
+            <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
+                <i class="bi bi-list"></i> Delivery Records
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                <i class="bi bi-list"></i> Delivery Records
+            <a href="{{ route('admin.managetrip') }}" class="menu-item" id="tripRecordsBtn">
+                <i class="bi bi-truck"></i> Manage Trip Records
             </a>
         </li>
         <li>

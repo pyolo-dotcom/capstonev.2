@@ -46,6 +46,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'dob' => 'required|date',
             'role' => 'required|string',
+            'truck_id' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -55,6 +56,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'dob' => $request->dob,
             'role' => $request->role,
+            'truck_id' => $request->truck_id,
             'password' => Hash::make($request->password),
         ]);
 

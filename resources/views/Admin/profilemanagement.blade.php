@@ -15,6 +15,7 @@
         }
         body {
             display: flex;
+            background-color: #f8f9fa;
         }
         .sidebar {
             width: 250px;
@@ -55,55 +56,183 @@
         }
         .profile-card {
             background: #fff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        .profile-picture-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .profile-picture-container img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .profile-picture-container .edit-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+        .profile-picture-container:hover .edit-overlay {
+            opacity: 1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
-<body class="bg-light">
+<body>
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
+        <h2>Menu</h2>
         <ul>
             <x-navbar/>
         </ul>
     </div>
+
+    <!-- Main Content -->
     <div class="container mt-5 content">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="profile-card text-center">
-                    <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}" alt="Profile Image" class="rounded-circle" width="100">
+                    <!-- Profile Picture with Edit Overlay -->
+                    <div class="profile-picture-container">
+                        <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}" 
+                            alt="Profile Image" 
+                            id="profileImagePreview">
+                    </div>
+                    
+                    <!-- User Info -->
                     <h4 class="mt-3">{{ $user->fullname }}</h4>
-                    <p>{{ $user->role }}</p>
+                    <p class="text-muted">{{ $user->role }}</p>
                     <hr>
-                    <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+
+                    <!-- Display Profile Information -->
+                    <div class="text-start">
+                        <p><strong>Username:</strong> {{ $user->username }}</p>
+                        <p><strong>Full Name:</strong> {{ $user->fullname }}</p>
+                        <p><strong>Email:</strong> {{ $user->email }}</p>
+                        <p><strong>Date of Birth:</strong> {{ $user->dob }}</p>
+                    </div>
+
+                    <!-- Edit Button to Open Modal -->
+                    <button type="button" class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Profile Update Form -->
+                    <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data" id="profileForm">
                         @csrf
                         @method('PUT')
-                        <div class="form-group">
+
+                        <!-- Username -->
+                        <div class="form-group text-start">
                             <label for="username">Username</label>
                             <input type="text" id="username" name="username" class="form-control" value="{{ $user->username }}" required>
                         </div>
-                        <div class="form-group">
+
+                        <!-- Full Name -->
+                        <div class="form-group text-start">
                             <label for="fullname">Full Name</label>
                             <input type="text" id="fullname" name="fullname" class="form-control" value="{{ $user->fullname }}" required>
                         </div>
-                        <div class="form-group">
+
+                        <!-- Email -->
+                        <div class="form-group text-start">
                             <label for="email">Email</label>
                             <input type="email" id="email" name="email" class="form-control" value="{{ $user->email }}" required>
                         </div>
-                        <div class="form-group">
+
+                        <!-- Date of Birth -->
+                        <div class="form-group text-start">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob" name="dob" class="form-control" value="{{ $user->dob }}">
                         </div>
-                        <div class="form-group">
+
+                        <!-- Profile Picture Upload -->
+                        <div class="form-group text-start">
                             <label for="profile_picture">Profile Picture</label>
-                            <input type="file" id="profile_picture" name="profile_picture" class="form-control">
+                            <input type="file" id="profile_picture" name="profile_picture" class="form-control" onchange="previewImage(event)">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Update Profile</button>
+
+                        <!-- Save Changes Button -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for Image Preview -->
+    <script>
+        // Function to preview uploaded image
+        function previewImage(event) {
+            const reader = new FileReader();
+            const output = document.getElementById('profileImagePreview');
+            reader.onload = function() {
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
