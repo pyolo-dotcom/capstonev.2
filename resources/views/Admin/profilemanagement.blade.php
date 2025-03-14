@@ -159,6 +159,11 @@
                     <button type="button" class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
                     </button>
+
+                    <!-- Change Password Button to Open Modal -->
+                    <button type="button" class="btn btn-warning w-100 mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        Change Password
+                    </button>
                 </div>
             </div>
         </div>
@@ -219,7 +224,53 @@
         </div>
     </div>
 
-    <!-- JavaScript for Image Preview -->
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Change Password Form -->
+                    <form action="{{ route('admin.profile.change-password') }}" method="POST" id="changePasswordForm">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Display Validation Errors -->
+                        <div id="errorContainer" class="alert alert-danger" style="display: none;"></div>
+
+                        <!-- Current Password -->
+                        <div class="form-group text-start">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" class="form-control" required>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="form-group text-start">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="form-control" required>
+                        </div>
+
+                        <!-- Confirm New Password -->
+                        <div class="form-group text-start">
+                            <label for="new_password_confirmation">Confirm New Password</label>
+                            <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="form-control" required>
+                        </div>
+
+                        <!-- Save Changes Button -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Image Preview and Form Handling -->
     <script>
         // Function to preview uploaded image
         function previewImage(event) {
@@ -230,6 +281,50 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        // Function to handle the Change Password form submission
+        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.style.display = 'none'; // Hide error container initially
+
+            // Submit the form via AJAX
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw err;
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // If successful, close the modal and show a success message
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                    modal.hide(); // Close the modal using Bootstrap's JavaScript API
+                    alert(data.message); // Show a success message
+                    window.location.reload(); // Optional: Reload the page to reflect changes
+                } else {
+                    // If there are errors, display them in the modal
+                    errorContainer.innerHTML = data.message || 'An error occurred. Please try again.';
+                    errorContainer.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorContainer.innerHTML = error.message || 'An error occurred. Please try again.';
+                errorContainer.style.display = 'block';
+            });
+        });
     </script>
 
     <!-- Bootstrap JS -->

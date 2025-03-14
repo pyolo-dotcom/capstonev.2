@@ -21,6 +21,9 @@ class User extends Authenticatable
         'password',
         'truck_id',
         'profile_picture',
+        'driver_license_number', // Added driver's license number
+        'license_expiry_date',   // Added license expiry date
+        'license_type',          // Added license type
     ];
 
     protected $dates = ['deleted_at']; // Idagdag ang `deleted_at` sa dates

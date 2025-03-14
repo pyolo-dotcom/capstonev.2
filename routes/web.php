@@ -136,3 +136,17 @@ Route::middleware(['auth'])->group(function () {
 
 // New Route for Creating Account with Truck ID
 Route::post('admin/activeaccount/store', [ActiveController::class, 'store'])->name('admin.activeaccount.store');
+
+//Profile Management
+Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
+
+// Manager Profile Routes
+Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
+Route::put('manager/profile/update', [ProfileManagerController::class, 'updateProfileManager'])->name('manager.profile.update');
+Route::put('manager/profile/change-password', [ProfileManagerController::class, 'changePasswordManager'])->name('manager.profile.change-password');
+
+// Driver Profile Routes
+Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
+Route::put('driver/profile/update', [ProfileDriverController::class, 'updateProfileDriver'])->name('driver.profile.update');
+Route::put('driver/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password');
+Route::put('driver/profile/update-license', [ProfileDriverController::class, 'updateDriverLicense'])->name('driver.profile.update-license');

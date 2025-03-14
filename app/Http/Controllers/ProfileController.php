@@ -6,19 +6,27 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash; // Import the Hash facade
 
 class ProfileController extends Controller
 {
+    /**
+     * Display the user's profile.
+     */
     public function showProfile()
     {
         $user = Auth::user();
         return view('admin.profilemanagement', compact('user'));
     }
 
+    /**
+     * Update the user's profile.
+     */
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
+        // Validate the request
         $request->validate([
             'username' => 'required|string|max:255',
             'fullname' => 'required|string|max:255',
@@ -27,6 +35,7 @@ class ProfileController extends Controller
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // Prepare data for update
         $data = [
             'username' => $request->username,
             'fullname' => $request->fullname,
@@ -34,16 +43,52 @@ class ProfileController extends Controller
             'dob' => $request->dob,
         ];
 
+        // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
+            // Delete the old profile picture if it exists
             if ($user->profile_picture) {
-                Storage::delete($user->profile_picture);
+                Storage::delete('public/' . $user->profile_picture);
             }
+            // Store the new profile picture
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
             $data['profile_picture'] = $path;
         }
 
+        // Update the user's profile
         $user->update($data);
 
         return redirect()->route('admin.profile')->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Handle the change password request.
+     */
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the request
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // Verify the current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The current password is incorrect.',
+            ], 422); // 422 is the HTTP status code for validation errors
+        }
+
+        // Update the password
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed successfully.',
+        ]);
     }
 }
