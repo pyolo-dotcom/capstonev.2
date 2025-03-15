@@ -197,9 +197,6 @@
         <div class="records-Tab">
             <div class="records-buttons">
                 <button class="records-Tab-btn active" data-title="Archived Trips Records">Trip Records</button>
-                <button class="records-Tab-btn" data-title="Archived Fuel Records">Fuel Records</button>
-                <button class="records-Tab-btn" data-title="Archived Profit Reports">Profit Reports</button>
-                <button class="records-Tab-btn" data-title="Archived Accounts">Accounts</button>
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="Search..." id="archiveSearch">
