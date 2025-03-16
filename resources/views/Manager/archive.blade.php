@@ -147,7 +147,11 @@
     }
 
     .archive-table th {
+<<<<<<< HEAD
         background-color: gray;
+=======
+        background-color: #333;
+>>>>>>> origin/piolo
         color: #fff;
         text-transform: uppercase;
     }
@@ -193,10 +197,20 @@
         </ul>
     </div>
     <div class="content">
+<<<<<<< HEAD
         <h3>Archived Page</h3>
         <div class="records-Tab">
             <div class="records-buttons">
                 <button class="records-Tab-btn active" data-title="Archived Trips Records">Trip Records</button>
+=======
+        <h3>Archive Trips</h3>
+        <div class="records-Tab">
+            <div class="records-buttons">
+                <button class="records-Tab-btn active" data-title="Archived Trips Records">Trip Records</button>
+                <button class="records-Tab-btn" data-title="Archived Fuel Records">Fuel Records</button>
+                <button class="records-Tab-btn" data-title="Archived Profit Reports">Profit Reports</button>
+                <button class="records-Tab-btn" data-title="Archived Accounts">Accounts</button>
+>>>>>>> origin/piolo
             </div>
             <div class="search-bar">
                 <input type="text" placeholder="Search..." id="archiveSearch">
@@ -270,7 +284,14 @@
             row.style.display = match ? '' : 'none';
         });
     });
+<<<<<<< HEAD
 
 </script>
 
 </html>
+=======
+    
+</script>
+
+</html>
+>>>>>>> origin/piolo

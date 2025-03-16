@@ -135,6 +135,7 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="resize-handle" id="resize-handle"></div>
+<<<<<<< HEAD
 
     <!-- Sidebar Header -->
     <div class="sidebar-header">
@@ -196,6 +197,69 @@
     </ul>
 </div>
 
+=======
+    
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <h2><i>SYA</i></h2>
+        <h2>Trucking Services</h2>
+        <p><i>Since 2020</i></p>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <ul class="menu">
+        <li>
+            <a href="{{ route('manager.deliveryrecords') }}" class="menu-item" id="deliverybtn">
+                <i class="bi bi-list"></i> Delivery Records
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('manager.managetrip') }}" class="menu-item" id="tripRecordsBtn">
+                <i class="bi bi-truck"></i> Manage Trip Records
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('manager.gpscontrol') }}" class="menu-item" id="gpscontrolbtn">
+                <i class="bi bi-map"></i> GPS Control
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('manager.fuel') }}" class="menu-item" id="fuelManagementBtn">
+                <i class="bi bi-geo-alt"></i> Fuel Management
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-item dropdown-toggle" id="settings-toggle">
+                <i class="bi bi-fuel-pump"></i> Settings
+                <i class="bi bi-chevron-down dropdown-arrow"></i> <!-- Arrow icon -->
+            </a>
+            <ul class="submenu" id="settings-submenu">
+                <li>
+                    <a href="{{ route('manager.profile') }}" class="submenu-item" id="profile-management-btn">
+                        <i class="bi bi-book"></i> Profile Management
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('manager.archive') }}" class="submenu-item" id="archivebtn">
+                        <i class="bi bi-archive"></i> Archive
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('manager.helpmanager') }}" class="submenu-item" id="helpSupportBtn">
+                        <i class="bi bi-question-circle"></i> Help & Support
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="{{ route('login') }}" class="menu-item logout">
+                <i class="bi bi-box-arrow-left"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
+>>>>>>> origin/piolo
 <!-- Script para sa Dropdown at Active Class -->
 <script>
     // Function para i-toggle ang dropdown
@@ -246,4 +310,8 @@
 
     // I-call ang function kapag na-load ang page
     document.addEventListener('DOMContentLoaded', setActiveMenuItem);
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> origin/piolo

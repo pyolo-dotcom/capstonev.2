@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('profits', function (Blueprint $table) {
             $table->id();
             $table->date('date');
+            $table->string('plate_number');
             $table->decimal('total_income', 10, 2);
             $table->decimal('total_expenses', 10, 2);
             $table->decimal('total_profit', 10, 2);
             $table->timestamps();
-        });
+        });        
     }
+
 
     /**
      * Reverse the migrations.

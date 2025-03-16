@@ -60,13 +60,17 @@ $(document).ready(function () {
 $(document).ready(function () {
     $("#plateNumberSelect").change(function () {
         var plateNo = $(this).val();
+<<<<<<< HEAD
         console.log("Selected Plate Number: ", plateNo); // Debugging
+=======
+>>>>>>> origin/piolo
 
         $.ajax({
             url: "/get-trip-counts",
             type: "GET",
             data: { plate_no: plateNo },
             success: function (response) {
+<<<<<<< HEAD
                 console.log("Received Response: ", response); // Debugging
 
                 if (response) {
@@ -84,3 +88,15 @@ $(document).ready(function () {
         });
     });
 });
+=======
+                $(".trip-summary .trip-card:nth-child(1) p").text(response.oneWayTrip);
+                $(".trip-summary .trip-card:nth-child(2) p").text(response.roundTrip);
+                $(".trip-summary .trip-card:nth-child(3) p").text(response.doorToDoorTrip);
+            },
+            error: function () {
+                alert("Error fetching data. Please try again.");
+            },
+        });
+    });
+});
+>>>>>>> origin/piolo

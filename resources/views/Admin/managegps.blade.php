@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+=======
+    <title>Manage GPS</title>
+>>>>>>> origin/piolo
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <title>Truck Tracking</title>
     <style>
@@ -52,6 +56,7 @@
             padding: 20px;
             flex-grow: 1;
         }
+<<<<<<< HEAD
         .map-container {
             height: 400px;
             width: 90%;
@@ -71,6 +76,12 @@
             border-radius: 5px;
             flex: 1;
             min-width: 200px;
+=======
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 20px;
+>>>>>>> origin/piolo
         }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap" async defer></script>
@@ -85,6 +96,7 @@
     </div>
 
     <div class="content">
+<<<<<<< HEAD
         <div id="gps-control">
             <h3>GPS Control</h3>
             <div id="live-trucks">
@@ -158,5 +170,46 @@ function updateLocation() {
         .catch(error => console.error("❌ Error fetching truck locations:", error));
 }
 </script>
+=======
+        <h1>Manage GPS Tracker</h1>
+        <div id="map"></div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbsQ9Ffb7Sv5jsXDQeQTXQeDTSv6QyOF4"></script>
+    <script>
+        let map;
+        let marker;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 14.5995, lng: 120.9842 }, // Default location (Manila)
+                zoom: 12
+            });
+
+            fetchGpsData();
+            setInterval(fetchGpsData, 5000); // Auto-refresh every 5 seconds
+        }
+
+        function fetchGpsData() {
+            fetch('/api/gps-data')
+                .then(response => response.json())
+                .then(data => {
+                    const position = { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) };
+                    if (marker) {
+                        marker.setPosition(position); // Update marker position
+                    } else {
+                        marker = new google.maps.Marker({
+                            position: position,
+                            map: map
+                        });
+                    }
+                    map.setCenter(position); // Center map to the new position
+                });
+        }
+
+        window.onload = initMap;
+    </script>
+>>>>>>> origin/piolo
 </body>
 </html>
