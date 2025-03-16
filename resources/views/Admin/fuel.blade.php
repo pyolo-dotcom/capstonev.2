@@ -147,6 +147,24 @@
         th {
             background-color: #f2f2f2;
         }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .actions button.edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .actions button.archive {
+            background-color: #f44336;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +210,7 @@
                     <th>Total KM</th>
                     <th>Avg KM/L</th>
                     <th>Total Liters</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -203,6 +222,14 @@
                     <td>{{ $data->total_km }}</td>
                     <td>{{ $data->avg_km_l }}</td>
                     <td>{{ $data->total_liters }}</td>
+                    <td class="actions">
+                        <button class="edit" onclick="editFuel({{ $data->id }})">Edit</button>
+                        <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="archive" onclick="confirmArchive({{ $data->id }})">Archive</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -213,20 +240,14 @@
         </div>
     </div>
 
-    <!-- Include the modal -->
+    <!-- Include the modals -->
     @include('Admin.modals.fuelmodal')
-</body>
+    @include('Admin.modals.edit_fuel')
 
-<script>
-    let fuelChart = null;
-    document.addEventListener('DOMContentLoaded', function () {
-        let ctx = document.getElementById('fuelChart').getContext('2d');
-        document.getElementById('fuelChart').height = 400;
+    <script>
+        let fuelChart = null;
 
-        // Default filter
-        let selectedTimeFilter = 'weekly';
-        let selectedPlateNumber = 'all';
-
+        // Function to fetch fuel data and update the chart
         function fetchFuelData(plateNumber, timeFilter) {
             fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
                 .then(response => response.json())
@@ -245,7 +266,10 @@
                 .catch(error => console.error('Error fetching fuel data:', error));
         }
 
+        // Function to update the chart
         function updateFuelChart(labels, fuelUsed) {
+            let ctx = document.getElementById('fuelChart').getContext('2d');
+
             if (fuelChart) {
                 fuelChart.destroy();
             }
@@ -274,43 +298,53 @@
             });
         }
 
-        // Fetch initial data
-        fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-
-        // Handle plate number selection
-        document.getElementById('plateNumberSelect').addEventListener('change', function () {
-            selectedPlateNumber = this.value.trim();
-            filterTableByPlateNumber(selectedPlateNumber);
-            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-        });
-
-        // Handle time filter selection
-        document.querySelectorAll('.time-filter-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                selectedTimeFilter = this.getAttribute('data-filter');
-                document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-            });
-        });
-
-        // Function to filter table by plate number
-        function filterTableByPlateNumber(plateNumber) {
-            let table = document.getElementById('fuelTable');
-            let rows = table.getElementsByTagName('tr');
-
-            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-                let row = rows[i];
-                let cell = row.getElementsByTagName('td')[2]; // Plate No. is the 3rd column (index 2)
-                if (cell) {
-                    if (plateNumber === 'all' || cell.textContent === plateNumber) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
+        // Function to confirm archive action
+        function confirmArchive(id) {
+            if (confirm("Are you sure you want to archive this record?")) {
+                // Submit the form if user confirms
+                document.getElementById('archiveForm' + id).submit();
             }
         }
-    });
-</script>
+
+        // Initial fetch for chart data
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchFuelData('all', 'weekly');
+        });
+
+        // Function to open the edit fuel modal
+        function editFuel(id) {
+            fetch(`/admin/fuel/edit/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate the modal with data
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editDate').value = data.date;
+                    document.getElementById('editPlateNo').value = data.plate_no;
+                    document.getElementById('editTotalKm').value = data.total_km;
+                    document.getElementById('editAvgKmL').value = data.avg_km_l;
+
+                    // Show the modal
+                    document.getElementById('editFuelModal').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching fuel data:', error));
+        }
+
+        // Function to close the edit fuel modal
+        function closeEditFuelModal() {
+            document.getElementById('editFuelModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target == document.getElementById('editFuelModal')) {
+                closeEditFuelModal();
+            }
+        });
+
+        // Close modal when clicking the close button
+        document.querySelector('#editFuelModal .close').addEventListener('click', function() {
+            closeEditFuelModal();
+        });
+    </script>
+</body>
 </html>

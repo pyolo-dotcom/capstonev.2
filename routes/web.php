@@ -146,3 +146,16 @@ Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver
 Route::put('driver/profile/update', [ProfileDriverController::class, 'updateProfileDriver'])->name('driver.profile.update');
 Route::put('driver/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password');
 Route::put('driver/profile/update-license', [ProfileDriverController::class, 'updateDriverLicense'])->name('driver.profile.update-license');
+
+//Fuel Route
+Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
+Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');
+Route::delete('admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
+
+//Fuel Route
+Route::put('admin/archive/restore/fuel/{id}', [ArchiveController::class, 'restoreFuel'])->name('admin.archive.restore.fuel');
+Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'destroyFuel'])->name('admin.archive.delete.fuel');
+
+//Fuel Route
+Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
+Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');

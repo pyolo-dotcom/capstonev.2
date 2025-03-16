@@ -34,6 +34,42 @@ class FuelController extends Controller
         return response()->json(['success' => true, 'message' => 'Fuel consumption added successfully!'], 200);
     }
 
+    public function edit($id)
+    {
+        $fuel = FuelConsumption::findOrFail($id);
+        return response()->json($fuel);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'plateNo' => 'required|string',
+            'totalKm' => 'required|integer',
+            'avgKmL' => 'required|numeric',
+        ]);
+
+        $totalLiters = $request->totalKm / $request->avgKmL;
+
+        $fuel = FuelConsumption::findOrFail($id);
+        $fuel->update([
+            'date' => $request->date,
+            'plate_no' => $request->plateNo,
+            'total_km' => $request->totalKm,
+            'avg_km_l' => $request->avgKmL,
+            'total_liters' => $totalLiters,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Fuel consumption updated successfully!'], 200);
+    }
+
+    public function archive($id)
+    {
+        $fuel = FuelConsumption::findOrFail($id);
+        $fuel->delete();
+        return redirect()->route('admin.fuel')->with('success', 'Fuel consumption archived successfully.');
+    }
+
     public function getFuelAnalytics(Request $request)
     {
         $plateNumber = $request->input('plate_number');

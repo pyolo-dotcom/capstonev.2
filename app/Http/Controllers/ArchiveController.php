@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User; // Gamitin ang User model para sa mga account
 use App\Models\Profit; // Gamitin ang Profit model para sa mga profit records
+use App\Models\FuelConsumption;
 
 class ArchiveController extends Controller
 {
@@ -13,7 +14,9 @@ class ArchiveController extends Controller
     {
         $archivedUsers = User::onlyTrashed()->get(); // Kunin ang mga archived accounts
         $archivedProfits = Profit::onlyTrashed()->get(); // Kunin ang mga archived profit records
-        return view('admin.archive', compact('archivedUsers', 'archivedProfits'));
+        $archivedFuel = FuelConsumption::onlyTrashed()->get(); // Kunin ang mga archived fuel consumption records
+
+        return view('admin.archive', compact('archivedUsers', 'archivedProfits', 'archivedFuel'));
     }
 
     // I-archive ang account
@@ -62,5 +65,19 @@ class ArchiveController extends Controller
         $profit = Profit::onlyTrashed()->findOrFail($id);
         $profit->forceDelete(); // Permanenteng tanggalin ang profit record
         return redirect()->route('admin.archive')->with('success', 'Profit record permanently deleted.');
+    }
+
+    public function restoreFuel($id)
+    {
+        $fuel = FuelConsumption::onlyTrashed()->findOrFail($id);
+        $fuel->restore();
+        return redirect()->route('admin.archive')->with('success', 'Fuel consumption restored successfully.');
+    }
+
+    public function destroyFuel($id)
+    {
+        $fuel = FuelConsumption::onlyTrashed()->findOrFail($id);
+        $fuel->forceDelete();
+        return redirect()->route('admin.archive')->with('success', 'Fuel consumption permanently deleted.');
     }
 }
