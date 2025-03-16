@@ -17,10 +17,7 @@
 
         body {
             display: flex;
-<<<<<<< HEAD
-=======
             background-color: #f8f9fa;
->>>>>>> origin/piolo
         }
 
         .sidebar {
@@ -66,127 +63,6 @@
             padding: 20px;
             flex-grow: 1;
         }
-<<<<<<< HEAD
-
-        .profile-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            padding: 25px;
-        }
-
-        /* Left Section */
-        .profile-left {
-            width: 250px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Profile Picture Holder as a Button */
-        .profile-button {
-            width: 160px;
-            height: 160px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: transparent;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            padding: 5px;
-            cursor: pointer;
-            transition: 0.3s ease-in-out;
-        }
-
-        /* Hover Effect */
-        .profile-button:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Click Effect */
-        .profile-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Profile Picture */
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 10px;
-            /* Box style */
-            border: 3px solid transparent;
-            object-fit: cover;
-        }
-
-        .profile-picture-holder {
-            width: 160px;
-            height: 160px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: transparent;
-            /* Light background for contrast */
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 5px;
-        }
-
-        /* Driver Name */
-        .driver-name h2 {
-            margin: 0;
-            font-size: 1.4em;
-            color: #2c3e50;
-        }
-
-        .driver-name p {
-            color: #6c757d;
-            margin: 5px 0;
-        }
-
-        /* Personal Information */
-        .personal-info {
-            text-align: left;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        /* Right Section: License Information */
-        .info-right {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        /* License Information */
-        .license-info {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        /* Logout Button */
-        .logout {
-            margin-top: 20px;
-            width: 90%;
-        }
-
-        .logout-btn {
-            background: transparent;
-            color: red;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 5%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-=======
         .profile-card {
             background: #fff;
             padding: 30px;
@@ -251,7 +127,6 @@
                 margin-left: 0;
                 padding: 15px;
             }
->>>>>>> origin/piolo
         }
     </style>
 </head>
@@ -264,39 +139,6 @@
             <x-drivernavbar />
         </ul>
     </div>
-<<<<<<< HEAD
-    <div class="content">
-        <div class="profile-container">
-            <!-- Left Side: Profile Picture & Personal Information -->
-            <div class="profile-left">
-                <div class="profile-picture-holder">
-                    <button class="profile-button">
-                        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
-                    </button>
-                </div>
-                <div class="driver-name">
-                    <h2>Reginald Apellado</h2>
-                    <p>Driver's name</p>
-                </div>
-                <div class="personal-info">
-                    <h2>Personal Information</h2>
-                    <p><strong>Birthdate:</strong> March 19, 1995</p>
-                    <p><strong>Gender:</strong> Male</p>
-                    <p><strong>Contact Number:</strong> 09123456789</p>
-                    <p><strong>Email:</strong> apellado@gmail.com</p>
-                    <p><strong>Address:</strong> Cabanatuan, Nueva Ecija</p>
-                </div>
-            </div>
-
-            <!-- Right Side: License Information -->
-            <div class="info-right">
-                <div class="license-info">
-                    <h2>License Information</h2>
-                    <p><strong>Driver's License Number:</strong> D123456789</p>
-                    <p><strong>License Expiry Date:</strong> April 10, 2026</p>
-                    <p><strong>License Type:</strong> Professional</p>
-                    <p><strong>Issued By:</strong> Land Transportation Office</p>
-=======
 
     <!-- Main Content -->
     <div class="container mt-5 content">
@@ -340,7 +182,6 @@
                     <button type="button" class="btn btn-warning w-100 mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                         Change Password
                     </button>
->>>>>>> origin/piolo
                 </div>
             </div>
         </div>
@@ -550,9 +391,4 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<<<<<<< HEAD
-
 </html>
-=======
-</html>
->>>>>>> origin/piolo

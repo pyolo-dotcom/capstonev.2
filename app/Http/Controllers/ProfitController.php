@@ -49,26 +49,32 @@ class ProfitController extends Controller
 
     // I-update ang profit record
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'date' => 'required|date',
-            'plate_number' => 'required|string',
-            'total_income' => 'required|numeric',
-            'total_expenses' => 'required|numeric',
-            'total_profit' => 'required|numeric',
-        ]);
+{
+    // Debugging: Dump all request data
+    // dd($request->all());
 
-        $profit = Profit::findOrFail($id);
-        $profit->update([
-            'date' => $request->date,
-            'plate_number' => $request->plate_number,
-            'total_income' => $request->total_income,
-            'total_expenses' => $request->total_expenses,
-            'total_profit' => $request->total_profit,
-        ]);
+    $request->validate([
+        'date' => 'required|date',
+        'plate_number' => 'required|string',
+        'total_income' => 'required|numeric',
+        'total_expenses' => 'required|numeric',
+        'total_profit' => 'required|numeric',
+    ]);
 
-        return redirect()->route('admin.profit')->with('success', 'Profit record updated successfully.');
-    }
+    $profit = Profit::findOrFail($id);
+
+    // Update fields manually to ensure the update works
+    $profit->date = $request->date;
+    $profit->plate_number = $request->plate_number;
+    $profit->total_income = $request->total_income;
+    $profit->total_expenses = $request->total_expenses;
+    $profit->total_profit = $request->total_income - $request->total_expenses; // Ensure calculation here
+
+    // Save the changes
+    $profit->save();
+
+    return redirect()->route('admin.profit')->with('success', 'Profit record updated successfully.');
+}
 
     // I-delete ang profit record
     public function destroy($id)

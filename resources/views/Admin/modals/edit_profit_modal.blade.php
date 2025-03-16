@@ -2,32 +2,36 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Edit Profit</h2>
-        <form action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <input type="hidden" name="id" id="edit_id" value="{{ $profit->id }}">
-            
-            <label for="edit_date">Date:</label>
-            <input type="date" name="date" id="edit_date" value="{{ $profit->date }}" required>
-            
-            <label for="edit_plate_number">Plate Number:</label>
-            <select id="edit_plate_number" name="plate_number">
-                <option value="ABC123" {{ $profit->plate_number == 'ABC123' ? 'selected' : '' }}>ABC123</option>
-                <option value="XYZ789" {{ $profit->plate_number == 'XYZ789' ? 'selected' : '' }}>XYZ789</option>
-                <option value="MNO456" {{ $profit->plate_number == 'MNO456' ? 'selected' : '' }}>MNO456</option>
-            </select>
+        <form id="editProfitForm" action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
+    @csrf
+    @method('PUT')
 
-            <label for="edit_total_income">Total Income:</label>
-            <input type="number" id="edit_total_income" name="total_income" step="0.01" value="{{ $profit->total_income }}" required oninput="calculateEditProfit()">
-            
-            <label for="edit_total_expenses">Total Expenses:</label>
-            <input type="number" id="edit_total_expenses" name="total_expenses" step="0.01" value="{{ $profit->total_expenses }}" required oninput="calculateEditProfit()">
-            
-            <label for="edit_total_profit">Total Profit:</label>
-            <input type="text" id="edit_total_profit" name="total_profit" value="{{ $profit->total_profit }}" readonly>
+    <input type="hidden" name="id" id="edit_id" value="{{ $profit->id }}">
 
-            <button type="submit">Update Profit</button>
-        </form>
+    <label for="edit_date">Date:</label>
+    <input type="date" name="date" id="edit_date" required>
+
+    <label for="edit_plate_number">Plate Number:</label>
+    <select id="edit_plate_number" name="plate_number" required>
+        <option value="UVP353">UVP353</option>
+        <option value="TQE262">TQE262</option>
+        <option value="NBB7212">NBB7212</option>
+        <option value="APA3309">APA3309</option>
+        <option value="WIE914">WIE914</option>
+    </select>
+
+    <label for="edit_total_income">Total Income:</label>
+    <input type="number" id="edit_total_income" name="total_income" step="0.01" required oninput="calculateEditProfit()">
+
+    <label for="edit_total_expenses">Total Expenses:</label>
+    <input type="number" id="edit_total_expenses" name="total_expenses" step="0.01" required oninput="calculateEditProfit()">
+
+    <label for="edit_total_profit">Total Profit:</label>
+    <input type="text" id="edit_total_profit" name="total_profit" readonly>
+
+    <button type="submit">Update Profit</button>
+</form>
+
     </div>
 </div>
 
@@ -73,11 +77,12 @@
 <script>
     // Function to calculate profit for edit modal
     function calculateEditProfit() {
-        let income = parseFloat(document.getElementById('edit_total_income').value) || 0;
-        let expenses = parseFloat(document.getElementById('edit_total_expenses').value) || 0;
-        let profit = income - expenses;
-        document.getElementById('edit_total_profit').value = profit.toFixed(2);
+    let income = parseFloat(document.getElementById('edit_total_income').value) || 0;
+    let expenses = parseFloat(document.getElementById('edit_total_expenses').value) || 0;
+    let profit = income - expenses;
+    document.getElementById('edit_total_profit').value = profit.toFixed(2);
     }
+
 
     // Function to open edit modal and populate data
     function openEditModal(id, date, plateNumber, totalIncome, totalExpenses, totalProfit) {

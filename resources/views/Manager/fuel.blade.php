@@ -91,11 +91,7 @@ body {
     border: none;
     background-color: #ECF0F1;
     cursor: pointer;
-<<<<<<< HEAD
     font-size: 15px;
-=======
-    font-size: 14px;
->>>>>>> origin/piolo
     border-radius: 5px;
     transition: 0.3s;
 }
@@ -105,11 +101,7 @@ body {
 }
 
 .time-filter-btn.active {
-<<<<<<< HEAD
     background-color: #1d2d3d;
-=======
-    background-color: #3498DB;
->>>>>>> origin/piolo
     color: white;
 }
 
@@ -137,27 +129,19 @@ body {
     width: 24px;
     height: 24px;
     margin-right: 8px;
-<<<<<<< HEAD
     background-color: transparent;
     color: black;
-=======
-    background-color: white;
-    color: #2f385f;
->>>>>>> origin/piolo
     border-radius: 50%;
     font-size: 16px;
     font-weight: bold;
     border: 1px solid black;
 }
-<<<<<<< HEAD
 
 .add-consumption-btn:hover .plus-circle {
     background-color: transparent;
     color: white;
     border: none;
 }
-=======
->>>>>>> origin/piolo
 #fuelChart {
     width: 100%;
     max-height: 1000vh;
@@ -205,7 +189,6 @@ body {
     </div>
 
     @include('Manager.modals.fuelmodal')
-<<<<<<< HEAD
 </body>
 
     <script>
@@ -329,8 +312,6 @@ function addFuelConsumption() {
     .catch(error => console.error('Error:', error));
 }
 </script>
-=======
->>>>>>> origin/piolo
 </body>
 
 <script>

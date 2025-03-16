@@ -119,16 +119,11 @@ Route::get('/tracking', function () {
 
 
 Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');
-
 // Edit Account Route
 Route::put('admin/activeaccount/{id}', [ActiveController::class, 'edit'])->name('editaccount');
 
 // Archive Account Route
 Route::delete('admin/activeaccount/{id}', [ActiveController::class, 'archive'])->name('archiveaccount');
-
-// GPS Routes
-Route::post('/api/gps-data', [ManageGPSController::class, 'storeGpsData'])->name('gps.store');
-Route::get('/api/gps-data', [ManageGPSController::class, 'fetchGpsData'])->name('gps.fetch');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');

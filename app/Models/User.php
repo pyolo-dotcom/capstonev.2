@@ -26,7 +26,7 @@ class User extends Authenticatable
         'license_type',          // Added license type
     ];
 
-    protected $dates = ['deleted_at']; // Idagdag ang `deleted_at` sa dates
+    protected $dates = ['deleted_at']; // Idagdag ang deleted_at sa dates
 
     protected $hidden = [
         'password',

@@ -135,7 +135,6 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="resize-handle" id="resize-handle"></div>
-<<<<<<< HEAD
 
     <!-- Sidebar Header -->
     <div class="sidebar-header">
@@ -187,59 +186,6 @@
     </ul>
 </div>
 
-=======
-    
-    <!-- Sidebar Header -->
-    <div class="sidebar-header">
-        <h2><i>SYA</i></h2>
-        <h2>Trucking Services</h2>
-        <p><i>Since 2020</i></p>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <ul class="menu">
-        <li>
-            <a href="{{ route('driver.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                <i class="bi bi-list"></i> Delivery Records
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('driver.fuel') }}" class="menu-item" id="fuelManagementBtn">
-                <i class="bi bi-geo-alt"></i> Fuel Management
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('driver.shipment') }}" class="menu-item" id="shipmentProgressBtn">
-                <i class="bi bi-truck"></i> Shipment Progress
-            </a>
-        </li>
-        <li>
-            <a href="#" class="menu-item dropdown-toggle" id="settings-toggle">
-                <i class="bi bi-fuel-pump"></i> Settings
-                <i class="bi bi-chevron-down dropdown-arrow"></i> <!-- Arrow icon -->
-            </a>
-            <ul class="submenu" id="settings-submenu">
-                <li>
-                    <a href="{{ route('driver.profile') }}" class="submenu-item" id="profile-management-btn">
-                        <i class="bi bi-book"></i> Profile Management
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('driver.helpdriver') }}" class="submenu-item" id="helpSupportBtn">
-                        <i class="bi bi-question-circle"></i> Help & Support
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a href="{{ route('login') }}" class="menu-item logout">
-                <i class="bi bi-box-arrow-left"></i> Logout
-            </a>
-        </li>
-    </ul>
-</div>
-
->>>>>>> origin/piolo
 <!-- Script para sa Dropdown at Active Class -->
 <script>
     // Function para i-toggle ang dropdown
@@ -290,8 +236,4 @@
 
     // I-call ang function kapag na-load ang page
     document.addEventListener('DOMContentLoaded', setActiveMenuItem);
-<<<<<<< HEAD
 </script>
-=======
-</script>
->>>>>>> origin/piolo

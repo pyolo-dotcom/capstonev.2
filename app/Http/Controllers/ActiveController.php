@@ -61,29 +61,20 @@ class ActiveController extends Controller
     // I-create ang bagong user account
     public function store(Request $request)
     {
-        // I-validate ang input
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'fullname' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'dob' => 'nullable|date',
-            'role' => 'required|in:driver,manager,admin',
-            'password' => 'required|string|min:8|confirmed',
-            'truck_id' => 'nullable|string|max:255', // Gawing optional ang truck_id
-        ]);
-
-        // Gumawa ng bagong user
-        $user = User::create([
-            'username' => $request->username,
-            'fullname' => $request->fullname,
-            'email' => $request->email,
-            'dob' => $request->dob,
-            'role' => $request->role,
-            'password' => bcrypt($request->password),
-            'truck_id' => $request->role === 'driver' ? $request->truck_id : null, // I-set ang truck_id kung driver lang
-        ]);
-
-        // I-redirect pabalik sa active accounts page na may success message
-        return redirect()->route('admin.activeaccount')->with('success', 'Account created successfully.');
+        $user = new User();
+        $user->username = $request->username;
+        $user->fullname = $request->fullname;
+        $user->email = $request->email;
+        $user->dob = $request->dob;
+        $user->role = $request->role;
+        $user->password = bcrypt($request->password);
+        $user->truck_id = $request->role === 'driver' ? $request->truck_id : null;
+        
+        if ($user->save()) {
+            return redirect()->route('admin.activeaccount')->with('success', 'Account created successfully.');
+        } else {
+            return back()->with('error', 'Failed to create account.');
+        }
     }
+    
 }
