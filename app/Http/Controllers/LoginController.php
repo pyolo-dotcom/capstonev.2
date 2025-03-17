@@ -25,7 +25,7 @@ class LoginController extends Controller
             // Redirect users based on their roles
             switch ($user->role) {
                 case 'admin':
-                    return redirect()->route('admin.managetrip');
+                    return redirect()->route('admin.deliveryrecords');
                 case 'manager':
                     return redirect()->route('manager.deliveryrecords');
                 case 'driver':

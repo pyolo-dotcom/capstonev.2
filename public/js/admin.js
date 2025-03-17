@@ -303,7 +303,7 @@ function archiveTrip(tripId) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: `/manager/archive-trip/${tripId}`,
+                url: `/admin/archive-trip/${tripId}`,
                 type: "POST",
                 data: {
                     _token: document.querySelector('meta[name="csrf-token"]').content
@@ -319,5 +319,4 @@ function archiveTrip(tripId) {
             });
         }
     });
-    
 }

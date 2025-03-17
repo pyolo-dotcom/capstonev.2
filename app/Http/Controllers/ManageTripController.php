@@ -69,4 +69,15 @@ class ManageTripController extends Controller
 
         return redirect()->route('admin.managetrip')->with('success', 'Trip updated successfully.');
     }
+
+    /**
+     * Archive a cargo trip record.
+     */
+    public function archiveTrip($id)
+    {
+        $cargo = Cargo::findOrFail($id);
+        $cargo->update(['is_archived' => 1]);
+
+        return response()->json(['success' => 'Trip archived successfully.']);
+    }
 }

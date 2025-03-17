@@ -121,7 +121,7 @@
         .date-btn.active {
         background-color: #004aad;
         color: #f0f0f0;
-    }
+        }
 
         .actions .edit-btn {
             color: black;

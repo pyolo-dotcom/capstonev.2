@@ -7,28 +7,34 @@
                 <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="create-account-form" method="POST" action="{{route ('addaccount')}}">
+                <!-- Form for creating a new account -->
+                <form id="create-account-form" method="POST" action="{{ route('admin.activeaccount.store') }}">
                     @csrf
                     @method('POST')
 
+                    <!-- Username Field -->
                     <div class="form-group">
                         <input type="text" id="username" name="username" class="form-control input-box" placeholder="Username" required>
                     </div>
 
+                    <!-- Full Name Field -->
                     <div class="form-group">
-                        <input type="text" id="fullname" name="fullname" class="form-control input-box" placeholder="Fullname" required>
+                        <input type="text" id="fullname" name="fullname" class="form-control input-box" placeholder="Full Name" required>
                     </div>
 
+                    <!-- Email Field -->
                     <div class="form-group">
                         <input type="email" id="email" name="email" class="form-control input-box" placeholder="Enter Email" required>
                     </div>
 
+                    <!-- Date of Birth Field -->
                     <div class="form-group">
                         <input type="date" id="dob" name="dob" class="form-control input-box input-size" required>
                     </div>
 
+                    <!-- Role Selection Field -->
                     <div class="form-group">
-                        <select id="role" name="role" class="form-control input-box input-size" required>
+                        <select id="role" name="role" class="form-control input-box input-size" required onchange="toggleTruckIdField()">
                             <option value="">Select Position</option>
                             <option value="driver">Driver</option>
                             <option value="manager">Manager</option>
@@ -36,14 +42,25 @@
                         </select>
                     </div>
 
+                    <!-- Truck ID Field (Conditional) -->
+                    <div class="form-group" id="truckIdField" style="display: none;">
+                        <input type="text" id="truck_id" name="truck_id" class="form-control input-box" placeholder="Truck ID">
+                    </div>
+
+                    <!-- Password Field -->
                     <div class="form-group">
                         <input type="password" id="password" name="password" class="form-control input-box" placeholder="Enter Password" required>
                     </div>
 
+                    <!-- Confirm Password Field -->
                     <div class="form-group">
                         <input type="password" id="password_confirmation" name="password_confirmation" class="form-control input-box" placeholder="Confirm Password" required>
                     </div>
 
+                    <!-- Error message for password mismatch -->
+                    <div id="password-error" class="text-danger" style="display: none;">Passwords do not match.</div>
+
+                    <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary w-100 submit-button">Create Account</button>
                 </form>
             </div>
@@ -51,6 +68,7 @@
     </div>
 </div>
 
+<!-- Styles for the modal -->
 <style>
     .modal-content {
         border-radius: 10px;
@@ -72,12 +90,11 @@
         font-size: 20px;
         cursor: pointer;
         color: #000;
-}
+    }
 
     .close-button:hover {
         color: #ff0000;
-}
-
+    }
 
     .input-box {
         border-radius: 20px;
@@ -103,3 +120,34 @@
         background-color: #00308f;
     }
 </style>
+
+<!-- JavaScript for form validation and dynamic fields -->
+<script>
+    // Function to validate password match
+    document.getElementById('create-account-form').addEventListener('submit', function(event) {
+        var password = document.getElementById('password').value;
+        var passwordConfirmation = document.getElementById('password_confirmation').value;
+        var errorDiv = document.getElementById('password-error');
+
+        if (password !== passwordConfirmation) {
+            errorDiv.style.display = 'block';
+            event.preventDefault(); // Prevent form submission
+        } else {
+            errorDiv.style.display = 'none';
+        }
+    });
+
+    // Function to toggle Truck ID field based on role selection
+    function toggleTruckIdField() {
+    var role = document.getElementById('role').value;
+    var truckIdField = document.getElementById('truckIdField');
+
+    if (role === 'driver') {
+        truckIdField.style.display = 'block';
+        document.getElementById('truck_id').setAttribute('required', true); // Gawing required kapag driver
+    } else {
+        truckIdField.style.display = 'none';
+        document.getElementById('truck_id').removeAttribute('required'); // Alisin ang required attribute kapag hindi driver
+    }
+}
+</script>

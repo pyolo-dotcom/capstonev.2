@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive</title>
+    <title>Archived Accounts, Profits, and Fuel Consumption</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
@@ -13,7 +15,7 @@
             font-family: Arial, sans-serif;
         }
         body {
-            display:q flex;
+            display: flex;
         }
         .sidebar {
             width: 250px;
@@ -52,6 +54,27 @@
             padding: 20px;
             flex-grow: 1;
         }
+        .table-container {
+            margin-bottom: 40px;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .actions button.restore {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .actions button.delete {
+            background-color: #f44336;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -60,9 +83,246 @@
             <x-navbar/>
         </ul>
     </div>
+
     <div class="content">
-        <h1>Welcome</h1>
-        <p>This is a simple sidebar layout with a fixed sidebar.</p>
+        <h2>Archived Accounts</h2>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($archivedUsers as $user)
+                    <tr>
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->username }}</td>
+                        <td>{{ $user->fullname }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->role }}</td>
+                        <td class="actions">
+                            <!-- Restore Button -->
+                            <form id="restoreAccountForm{{ $user->id }}" action="{{ route('admin.archive.restore.account', $user->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="button" class="restore" onclick="confirmRestoreAccount({{ $user->id }})">Restore</button>
+                            </form>
+
+                            <!-- Permanent Delete Button -->
+                            <form id="deleteAccountForm{{ $user->id }}" action="{{ route('admin.archive.delete.account', $user->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete" onclick="confirmDeleteAccount({{ $user->id }})">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Archived Profits</h2>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Plate Number</th>
+                        <th>Total Income</th>
+                        <th>Total Expenses</th>
+                        <th>Total Profit</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($archivedProfits as $profit)
+                    <tr>
+                        <td>{{ $profit->date }}</td>
+                        <td>{{ $profit->plate_number }}</td>
+                        <td>P {{ number_format($profit->total_income, 2) }}</td>
+                        <td>P {{ number_format($profit->total_expenses, 2) }}</td>
+                        <td>P {{ number_format($profit->total_profit, 2) }}</td>
+                        <td class="actions">
+                            <!-- Restore Button -->
+                            <form id="restoreProfitForm{{ $profit->id }}" action="{{ route('admin.archive.restore.profit', $profit->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="button" class="restore" onclick="confirmRestoreProfit({{ $profit->id }})">Restore</button>
+                            </form>
+
+                            <!-- Permanent Delete Button -->
+                            <form id="deleteProfitForm{{ $profit->id }}" action="{{ route('admin.archive.delete.profit', $profit->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete" onclick="confirmDeleteProfit({{ $profit->id }})">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Archived Fuel Consumption</h2>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Plate No.</th>
+                        <th>Total KM</th>
+                        <th>Avg KM/L</th>
+                        <th>Total Liters</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($archivedFuel as $fuel)
+                    <tr>
+                        <td>{{ $fuel->id }}</td>
+                        <td>{{ $fuel->date }}</td>
+                        <td>{{ $fuel->plate_no }}</td>
+                        <td>{{ $fuel->total_km }}</td>
+                        <td>{{ $fuel->avg_km_l }}</td>
+                        <td>{{ $fuel->total_liters }}</td>
+                        <td class="actions">
+                            <!-- Restore Button -->
+                            <form id="restoreFuelForm{{ $fuel->id }}" action="{{ route('admin.archive.restore.fuel', $fuel->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="button" class="restore" onclick="confirmRestoreFuel({{ $fuel->id }})">Restore</button>
+                            </form>
+
+                            <!-- Permanent Delete Button -->
+                            <form id="deleteFuelForm{{ $fuel->id }}" action="{{ route('admin.archive.delete.fuel', $fuel->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete" onclick="confirmDeleteFuel({{ $fuel->id }})">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add this section to your archive.blade.php file -->
+        <h2>Archived Trips</h2>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Plate No.</th>
+                        <th>Date</th>
+                        <th>EIR No.</th>
+                        <th>Container Van No.</th>
+                        <th>Size</th>
+                        <th>Shipper/Consignee</th>
+                        <th>Voyage Vessel</th>
+                        <th>No.</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($archivedTrips as $trip)
+                    <tr>
+                        <td>{{ $trip->plate_no }}</td>
+                        <td>{{ $trip->created_at->format('Y-m-d') }}</td>
+                        <td>{{ $trip->eir_no }}</td>
+                        <td>{{ $trip->container_van_no }}</td>
+                        <td>{{ $trip->size }}</td>
+                        <td>{{ $trip->shipper_consignee }}</td>
+                        <td>{{ $trip->voyage_vessel }}</td>
+                        <td>{{ $trip->voyage_no }}</td>
+                        <td>{{ $trip->pickup_location }}</td>
+                        <td>{{ $trip->delivery_location }}</td>
+                        <td class="actions">
+                            <!-- Restore Button -->
+                            <form id="restoreTripForm{{ $trip->id }}" action="{{ route('admin.archive.restore.trip', $trip->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="button" class="restore" onclick="confirmRestoreTrip({{ $trip->id }})">Restore</button>
+                            </form>
+
+                            <!-- Permanent Delete Button -->
+                            <form id="deleteTripForm{{ $trip->id }}" action="{{ route('admin.archive.delete.trip', $trip->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete" onclick="confirmDeleteTrip({{ $trip->id }})">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script>
+        // Function to confirm restore action for accounts
+        function confirmRestoreAccount(id) {
+            if (confirm("Are you sure you want to restore this account?")) {
+                document.getElementById('restoreAccountForm' + id).submit();
+            }
+        }
+
+        // Function to confirm delete action for accounts
+        function confirmDeleteAccount(id) {
+            if (confirm("Are you sure you want to permanently delete this account?")) {
+                document.getElementById('deleteAccountForm' + id).submit();
+            }
+        }
+
+        // Function to confirm restore action for profits
+        function confirmRestoreProfit(id) {
+            if (confirm("Are you sure you want to restore this profit record?")) {
+                document.getElementById('restoreProfitForm' + id).submit();
+            }
+        }
+
+        // Function to confirm delete action for profits
+        function confirmDeleteProfit(id) {
+            if (confirm("Are you sure you want to permanently delete this profit record?")) {
+                document.getElementById('deleteProfitForm' + id).submit();
+            }
+        }
+
+        // Function to confirm restore action for fuel consumption
+        function confirmRestoreFuel(id) {
+            if (confirm("Are you sure you want to restore this fuel consumption record?")) {
+                document.getElementById('restoreFuelForm' + id).submit();
+            }
+        }
+
+        // Function to confirm delete action for fuel consumption
+        function confirmDeleteFuel(id) {
+            if (confirm("Are you sure you want to permanently delete this fuel consumption record?")) {
+                document.getElementById('deleteFuelForm' + id).submit();
+            }
+        }
+
+        // Function to confirm restore action for trips
+        function confirmRestoreTrip(id) {
+            if (confirm("Are you sure you want to restore this trip?")) {
+                document.getElementById('restoreTripForm' + id).submit();
+            }
+        }
+
+        // Function to confirm delete action for trips
+        function confirmDeleteTrip(id) {
+            if (confirm("Are you sure you want to permanently delete this trip?")) {
+                document.getElementById('deleteTripForm' + id).submit();
+            }
+        }
+    </script>
 </body>
 </html>

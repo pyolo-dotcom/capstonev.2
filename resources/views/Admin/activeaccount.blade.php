@@ -75,7 +75,6 @@
                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">Create New Account</button>
             </div>
             
-
             <div class="card p-4 shadow relative">
                 <div class="table-container">
                     <table class="table text-center">
@@ -92,14 +91,31 @@
                         <tbody id="active-accounts-body">
                             @foreach($users as $user)
                             <tr>
-                                <td>{{$user -> id}}</td>
-                                <td>{{$user -> username}}</td>
-                                <td>{{$user -> fullname}}</td>
-                                <td>{{$user -> email}}</td>
-                                <td>{{$user -> role}}</td>
+                                <td>{{$user->id}}</td>
+                                <td>{{$user->username}}</td>
+                                <td>{{$user->fullname}}</td>
+                                <td>{{$user->email}}</td>
+                                <td>{{$user->role}}</td>
                                 <td>
-                                    <button>Edit</button>
-                                    <button>Delete</button>
+                                    <!-- Edit Button -->
+                                    <button class="btn btn-primary edit-btn" 
+                                            data-id="{{$user->id}}" 
+                                            data-username="{{$user->username}}" 
+                                            data-fullname="{{$user->fullname}}" 
+                                            data-email="{{$user->email}}" 
+                                            data-role="{{$user->role}}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editArchiveModal">
+                                        Edit
+                                    </button>
+
+                                    <!-- Archive Button -->
+                                    <button class="btn btn-danger archive-btn" 
+                                            data-id="{{$user->id}}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editArchiveModal">
+                                        Archive
+                                    </button>
                                 </td>
                             </tr>
                             @endforeach
@@ -109,6 +125,97 @@
             </div>
         </div>
     </div>
+
+    <!-- Generic Modal for Edit and Archive -->
+    <div class="modal fade" id="editArchiveModal" tabindex="-1" aria-labelledby="editArchiveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 10px; padding: 40px;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title" id="editArchiveModalLabel">Modal Title</h5>
+                    <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editArchiveForm" method="POST">
+                        @csrf
+                        @method('PUT') <!-- Default method, will be overridden by JavaScript -->
+                        <div id="modalContent">
+                            <!-- Content will be dynamically populated here -->
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 submit-button">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Create Account Modal -->
     @include('Admin.modals.create_account_modal')
+
+    <script>
+        // JavaScript to handle modal population and form submission
+        document.addEventListener('DOMContentLoaded', function () {
+            const editArchiveModal = document.getElementById('editArchiveModal');
+            const editArchiveForm = document.getElementById('editArchiveForm');
+            const modalTitle = document.getElementById('editArchiveModalLabel');
+            const modalContent = document.getElementById('modalContent');
+
+            // Event listener for Edit buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+                    const username = button.getAttribute('data-username');
+                    const fullname = button.getAttribute('data-fullname');
+                    const email = button.getAttribute('data-email');
+                    const role = button.getAttribute('data-role');
+
+                    // Set modal title and content
+                    modalTitle.textContent = 'Edit Account';
+                    modalContent.innerHTML = `
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" class="form-control" value="${username}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" id="fullname" name="fullname" class="form-control" value="${fullname}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" value="${email}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select id="role" name="role" class="form-control" required>
+                                <option value="driver" ${role === 'driver' ? 'selected' : ''}>Driver</option>
+                                <option value="manager" ${role === 'manager' ? 'selected' : ''}>Manager</option>
+                                <option value="admin" ${role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </div>
+                    `;
+
+                    // Set form action and method
+                    editArchiveForm.action = `/admin/activeaccount/${id}`;
+                    editArchiveForm.querySelector('input[name="_method"]').value = 'PUT';
+                });
+            });
+
+            // Event listener for Archive buttons
+            document.querySelectorAll('.archive-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.getAttribute('data-id');
+
+                    // Set modal title and content
+                    modalTitle.textContent = 'Archive Account';
+                    modalContent.innerHTML = `
+                        <p>Are you sure you want to archive this account?</p>
+                    `;
+
+                    // Set form action and method
+                    editArchiveForm.action = `/admin/activeaccount/${id}`;
+                    editArchiveForm.querySelector('input[name="_method"]').value = 'DELETE';
+                });
+            });
+        });
+    </script>
 </body>
 </html>
