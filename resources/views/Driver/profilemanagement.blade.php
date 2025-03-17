@@ -184,12 +184,9 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>Sidebar Menu</h2>
-        <ul>
+
             <x-drivernavbar />
-        </ul>
-    </div>
+
     <div class="content">
         <div class="profile-container">
             <!-- Left Side: Profile Picture & Personal Information -->

@@ -108,15 +108,9 @@
 </head>
 
 <body>
-    <aside class="sidebar">
-        <h2>SYA TRUCKING SERVICES</h2>
-        <p>Since 2020</p>
-        <nav>
-            <ul>
+
                 <x-drivernavbar />
-            </ul>
-        </nav>
-    </aside>
+
 
     <div class="content">
         <form id="cargoForm">

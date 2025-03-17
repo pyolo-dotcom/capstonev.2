@@ -87,12 +87,7 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2><i>SYA</i>TRUCKING SERVICES</h2>
-        <ul>
             <x-drivernavbar/>
-        </ul>
-    </div>
     <div class="content">
         <div id="fuel-management" class="section">
             <div class="fuel-stats">

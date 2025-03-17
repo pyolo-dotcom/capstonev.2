@@ -10,7 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * {
+                * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -21,48 +21,15 @@
             display: flex;
         }
 
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: #333;
-            padding: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
-
-        .sidebar h2 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
-        }
-
         .content {
             margin-left: 270px;
             padding: 20px;
             flex-grow: 1;
+            transition: margin-left 0.2s ease;
+        }
+
+        .content.collapsed {
+            margin-left: 80px;
         }
 
         .main-content {
@@ -141,7 +108,40 @@
             flex-wrap: wrap;
         }
 
+        /* Responsive Sidebar */
         @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .sidebar.collapsed {
+                width: 60px;
+            }
+
+            .sidebar ul li {
+                padding: 10px;
+            }
+
+            .sidebar ul li a {
+                font-size: 14px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+            }
+
+            .sidebar-header p {
+                font-size: 10px;
+            }
+
+            .content {
+                margin-left: 200px;
+            }
+
+            .content.collapsed {
+                margin-left: 60px;
+            }
+
             .trip-card {
                 flex: 1 1 calc(50% - 30px);
                 margin-left: 10px;
@@ -150,6 +150,38 @@
         }
 
         @media (max-width: 480px) {
+            .sidebar {
+                width: 150px;
+            }
+
+            .sidebar.collapsed {
+                width: 60px;
+            }
+
+            .sidebar ul li {
+                padding: 8px;
+            }
+
+            .sidebar ul li a {
+                font-size: 12px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 14px;
+            }
+
+            .sidebar-header p {
+                font-size: 8px;
+            }
+
+            .content {
+                margin-left: 150px;
+            }
+
+            .content.collapsed {
+                margin-left: 60px;
+            }
+
             .trip-card {
                 flex: 1 1 100%;
                 margin-left: 0;
@@ -161,17 +193,10 @@
 
 <div class="container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-        <h2><i>SYA</i>TRUCKING SERVICES</h2>
-        <nav>
-            <ul>
-                <x-drivernavbar />
-            </ul>
-        </nav>
-    </aside>
+    <x-drivernavbar />
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="content">
         <div class="plate-number-section">
             <select id="plateNumberSelect" style="font-size: 17px; border-radius: 8px; margin-left: 10px;">
                 <option disabled selected>-- Plate Number --</option>

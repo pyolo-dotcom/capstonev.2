@@ -54,12 +54,9 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Sidebar Menu</h2>
-        <ul>
+
             <x-drivernavbar/>
-        </ul>
-    </div>
+
     <div class="content">
         <h1>Welcome</h1>
         <p>This is a simple sidebar layout with a fixed sidebar.</p>
