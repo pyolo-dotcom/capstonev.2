@@ -10,129 +10,164 @@
   <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
 </head>
 <style>
+  body {
+    margin: 0;
+    font-family: 'Playfair Display', sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .left-section {
+    width: 50%;
+    background-color: #2f4156;
+    color: white;
+    position: relative;
+  }
+
+  .truck-image {
+    width: 100%;
+    height: 80%;
+    object-fit: fill;
+    margin-top: 40px;
+    border-top-right-radius: 20%;
+    border-bottom-right-radius: 20%;
+  }
+
+  .right-section {
+    width: 50%;
+    background-color: #2f4156;
+    color: white;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centers vertically */
+    align-items: center;     /* centers horizontally */
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 35px;
+    line-height: 1.2;
+  }
+
+  .header span {
+    font-weight: bold;
+  }
+
+  .header p {
+    margin: 5px 0 20px;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .input-field {
+    width: 80%;
+    padding: 10px;
+    padding-left: 15px;
+    font-size: 25px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 25px;
+  }
+
+  .login-button {
+    padding: 20px;
+    margin-top: 5px;
+    border: none;
+    background-color: #004aad;
+    color: white;
+    font-size: 18px;
+    border-radius: 35px;
+    cursor: pointer;
+    margin-right: 54%;
+  }
+
+  .login-button:hover {
+    background-color: #365a8c;
+  }
+
+  /* Media Query for Mobile Devices */
+  @media (max-width: 768px) {
     body {
-  margin: 0;
-  font-family: 'Playfair Display', sans-serif;
-  background-color: #f4f4f4;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  overflow: hidden;
-}
+      flex-direction: column; /* Stack sections vertically */
+      height: auto; /* Adjust height for mobile */
+    }
 
-.left-section {
-  width: 50%;
-  background-color: #2f4156;
-  color: white;
-  position: relative;
-}
+    .left-section,
+    .right-section {
+      width: 100%; /* Full width for mobile */
+      padding: 10px; /* Reduce padding for mobile */
+    }
 
-.truck-image {
-  width: 100%;
-  height: 80%;
-  object-fit: fill;
-  margin-top: 40px;
-  border-top-right-radius: 20%;
-  border-bottom-right-radius: 20%;
-}
+    .truck-image {
+      height: auto; /* Adjust image height for mobile */
+      margin-top: 20px; /* Reduce margin for mobile */
+      border-radius: 10px; /* Adjust border radius for mobile */
+    }
 
-.right-section {
-  width: 50%;
-  background-color: #2f4156;
-  color: white;
-  padding: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* centers vertically */
-  align-items: center;     /* centers horizontally */
-}
+    .header h1 {
+      font-size: 28px; /* Smaller font for mobile */
+    }
 
-.header {
-  text-align: center;
-  margin-bottom: 30px;
-}
+    .header p {
+      font-size: 12px; /* Smaller font for mobile */
+    }
 
-.header h1 {
-  margin: 0;
-  font-size: 35px;
-  line-height: 1.2;
-}
+    .input-field {
+      font-size: 16px; /* Smaller font for mobile */
+      width: 90%; /* Adjust width for mobile */
+    }
 
-.header span {
-  font-weight: bold;
-}
-
-.header p {
-  margin: 5px 0 20px;
-  font-size: 14px;
-  font-style: italic;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.input-field {
-  width: 80%;
-  padding: 10px;
-  padding-left: 15px;
-  font-size: 25px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 25px;
-}
-
-.login-button {
-  padding: 20px;
-  margin-top: 5px;
-  border: none;
-  background-color: #004aad;
-  color: white;
-  font-size: 18px;
-  border-radius: 35px;
-  cursor: pointer;
-  margin-right: 54%;
-}
-
-.login-button:hover {
-  background-color: #365a8c;
-}
-
-
+    .login-button {
+      font-size: 16px; /* Smaller font for mobile */
+      width: 90%; /* Adjust width for mobile */
+      margin-right: 0; /* Remove margin for mobile */
+      padding: 15px; /* Adjust padding for mobile */
+    }
+  }
 </style>
 <body>
-    <!-- Left Section with Image -->
-    <div class="left-section">
-        <img src="{{ asset('images/truck.jpg') }}" alt="Truck Image" class="truck-image">
+  <!-- Left Section with Image -->
+  <div class="left-section">
+    <img src="{{ asset('images/truck.jpg') }}" alt="Truck Image" class="truck-image">
+  </div>
+
+  <!-- Right Section with Login Form -->
+  <div class="right-section">
+    <div class="header">
+      <h1>The<br><span><i>SYA</i> Trucking Services</span></h1>
+      <p>Since 2020</p>
     </div>
 
-    <!-- Right Section with Login Form -->
-    <div class="right-section">
-      <div class="header">
-        <h1>The<br><span><i>SYA</i> Trucking Services</span></h1>
-        <p>Since 2020</p>
-      </div>
+    <!-- Login Form -->
+    <form method="POST" action="{{ route('login') }}" class="login-form">
+      @csrf
+      <input type="text" name="username" placeholder="username" class="input-field" required>
+      <input type="password" name="password" placeholder="password" class="input-field" required>
+      <button type="submit" class="login-button">LOGIN</button>
+    </form>
 
-      <!-- Login Form -->
-      <form method="POST" action="{{ route('login') }}" class="login-form">
-        @csrf
-        <input type="text" name="username" placeholder="username" class="input-field" required>
-        <input type="password" name="password" placeholder="password" class="input-field" required>
-        <button type="submit" class="login-button">LOGIN</button>
-      </form>
-
-      <!-- Error Display -->
-      @if($errors->has('login_error'))
-        <p style="color: red; text-align: center;">{{ $errors->first('login_error') }}</p>
-      @endif
-
-      <!-- User Icon -->
-      
-    </div>
+    <!-- Error Display -->
+    @if($errors->has('login_error'))
+      <p style="color: red; text-align: center;">{{ $errors->first('login_error') }}</p>
+    @endif
+  </div>
 </body>
 </html>

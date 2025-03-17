@@ -159,3 +159,10 @@ Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'dest
 //Fuel Route
 Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
 Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');
+
+//Admin Trip Records Archive
+Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTrip'])->name('admin.archive.trip');
+
+//Archive Trip Records Restore & Delete
+Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
+Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');

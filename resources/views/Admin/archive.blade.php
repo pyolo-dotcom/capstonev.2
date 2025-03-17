@@ -212,6 +212,59 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Add this section to your archive.blade.php file -->
+        <h2>Archived Trips</h2>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Plate No.</th>
+                        <th>Date</th>
+                        <th>EIR No.</th>
+                        <th>Container Van No.</th>
+                        <th>Size</th>
+                        <th>Shipper/Consignee</th>
+                        <th>Voyage Vessel</th>
+                        <th>No.</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($archivedTrips as $trip)
+                    <tr>
+                        <td>{{ $trip->plate_no }}</td>
+                        <td>{{ $trip->created_at->format('Y-m-d') }}</td>
+                        <td>{{ $trip->eir_no }}</td>
+                        <td>{{ $trip->container_van_no }}</td>
+                        <td>{{ $trip->size }}</td>
+                        <td>{{ $trip->shipper_consignee }}</td>
+                        <td>{{ $trip->voyage_vessel }}</td>
+                        <td>{{ $trip->voyage_no }}</td>
+                        <td>{{ $trip->pickup_location }}</td>
+                        <td>{{ $trip->delivery_location }}</td>
+                        <td class="actions">
+                            <!-- Restore Button -->
+                            <form id="restoreTripForm{{ $trip->id }}" action="{{ route('admin.archive.restore.trip', $trip->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button type="button" class="restore" onclick="confirmRestoreTrip({{ $trip->id }})">Restore</button>
+                            </form>
+
+                            <!-- Permanent Delete Button -->
+                            <form id="deleteTripForm{{ $trip->id }}" action="{{ route('admin.archive.delete.trip', $trip->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="delete" onclick="confirmDeleteTrip({{ $trip->id }})">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -254,6 +307,20 @@
         function confirmDeleteFuel(id) {
             if (confirm("Are you sure you want to permanently delete this fuel consumption record?")) {
                 document.getElementById('deleteFuelForm' + id).submit();
+            }
+        }
+
+        // Function to confirm restore action for trips
+        function confirmRestoreTrip(id) {
+            if (confirm("Are you sure you want to restore this trip?")) {
+                document.getElementById('restoreTripForm' + id).submit();
+            }
+        }
+
+        // Function to confirm delete action for trips
+        function confirmDeleteTrip(id) {
+            if (confirm("Are you sure you want to permanently delete this trip?")) {
+                document.getElementById('deleteTripForm' + id).submit();
             }
         }
     </script>

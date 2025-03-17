@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User; // Gamitin ang User model para sa mga account
 use App\Models\Profit; // Gamitin ang Profit model para sa mga profit records
 use App\Models\FuelConsumption;
+use App\Models\Cargo;
 
 class ArchiveController extends Controller
 {
@@ -15,8 +16,9 @@ class ArchiveController extends Controller
         $archivedUsers = User::onlyTrashed()->get(); // Kunin ang mga archived accounts
         $archivedProfits = Profit::onlyTrashed()->get(); // Kunin ang mga archived profit records
         $archivedFuel = FuelConsumption::onlyTrashed()->get(); // Kunin ang mga archived fuel consumption records
+        $archivedTrips = Cargo::where('is_archived', 1)->get(); // Kunin ang mga archived trips
 
-        return view('admin.archive', compact('archivedUsers', 'archivedProfits', 'archivedFuel'));
+        return view('admin.archive', compact('archivedUsers', 'archivedProfits', 'archivedFuel', 'archivedTrips'));
     }
 
     // I-archive ang account
@@ -79,5 +81,21 @@ class ArchiveController extends Controller
         $fuel = FuelConsumption::onlyTrashed()->findOrFail($id);
         $fuel->forceDelete();
         return redirect()->route('admin.archive')->with('success', 'Fuel consumption permanently deleted.');
+    }
+
+    // I-restore ang archived trip
+    public function restoreTrip($id)
+    {
+        $trip = Cargo::findOrFail($id);
+        $trip->update(['is_archived' => 0]); // I-restore ang trip
+        return redirect()->route('admin.archive')->with('success', 'Trip restored successfully.');
+    }
+
+    // Permanenteng tanggalin ang archived trip
+    public function destroyTrip($id)
+    {
+        $trip = Cargo::findOrFail($id);
+        $trip->delete(); // Permanenteng tanggalin ang trip
+        return redirect()->route('admin.archive')->with('success', 'Trip permanently deleted.');
     }
 }
