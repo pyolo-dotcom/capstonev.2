@@ -245,106 +245,248 @@
     @include('Admin.modals.edit_fuel')
 
     <script>
-        let fuelChart = null;
+let fuelChart = null;
+document.addEventListener('DOMContentLoaded', function () {
+    let ctx = document.getElementById('fuelChart').getContext('2d');
+    document.getElementById('fuelChart').height = 400;
 
-        // Function to fetch fuel data and update the chart
-        function fetchFuelData(plateNumber, timeFilter) {
-            fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!Array.isArray(data) || data.length === 0) {
-                        console.warn("No data returned for plate number:", plateNumber);
-                        updateFuelChart([], []);
-                        return;
-                    }
+    // Default filter
+    let selectedTimeFilter = 'weekly';
+    let selectedPlateNumber = 'all';
 
-                    let labels = data.map(item => item.total_km);
-                    let fuelUsed = data.map(item => item.total_liters);
+    function fetchFuelData(plateNumber, timeFilter) {
+        fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    console.warn("No data returned for plate number:", plateNumber);
+                    updateFuelChart([], []);
+                    return;
+                }
 
-                    updateFuelChart(labels, fuelUsed);
-                })
-                .catch(error => console.error('Error fetching fuel data:', error));
+                let labels = data.map(item => item.total_km);
+                let fuelUsed = data.map(item => item.total_liters);
+
+                updateFuelChart(labels, fuelUsed);
+            })
+            .catch(error => console.error('Error fetching fuel data:', error));
+    }
+
+    function updateFuelChart(labels, fuelUsed) {
+        if (fuelChart) {
+            fuelChart.destroy();
         }
 
-        // Function to update the chart
-        function updateFuelChart(labels, fuelUsed) {
-            let ctx = document.getElementById('fuelChart').getContext('2d');
-
-            if (fuelChart) {
-                fuelChart.destroy();
-            }
-
-            fuelChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Fuel Consumption (liters)',
-                        data: fuelUsed,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+        fuelChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Fuel Consumption (liters)',
+                    data: fuelUsed,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
-        }
-
-        // Function to confirm archive action
-        function confirmArchive(id) {
-            if (confirm("Are you sure you want to archive this record?")) {
-                // Submit the form if user confirms
-                document.getElementById('archiveForm' + id).submit();
-            }
-        }
-
-        // Initial fetch for chart data
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchFuelData('all', 'weekly');
-        });
-
-        // Function to open the edit fuel modal
-        function editFuel(id) {
-            fetch(`/admin/fuel/edit/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Populate the modal with data
-                    document.getElementById('editId').value = data.id;
-                    document.getElementById('editDate').value = data.date;
-                    document.getElementById('editPlateNo').value = data.plate_no;
-                    document.getElementById('editTotalKm').value = data.total_km;
-                    document.getElementById('editAvgKmL').value = data.avg_km_l;
-
-                    // Show the modal
-                    document.getElementById('editFuelModal').style.display = 'block';
-                })
-                .catch(error => console.error('Error fetching fuel data:', error));
-        }
-
-        // Function to close the edit fuel modal
-        function closeEditFuelModal() {
-            document.getElementById('editFuelModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target == document.getElementById('editFuelModal')) {
-                closeEditFuelModal();
             }
         });
+    }
 
-        // Close modal when clicking the close button
-        document.querySelector('#editFuelModal .close').addEventListener('click', function() {
-            closeEditFuelModal();
+    // Fetch initial data
+    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+
+    // Handle plate number selection
+    document.getElementById('plateNumberSelect').addEventListener('change', function () {
+        selectedPlateNumber = this.value.trim();
+        fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+    });
+
+    // Handle time filter selection
+    document.querySelectorAll('.time-filter-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            selectedTimeFilter = this.getAttribute('data-filter');
+            document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
         });
+    });
+});
+    // Add event listeners for real-time calculation
+    document.getElementById('totalKm').addEventListener('input', calculateLiters);
+    document.getElementById('avgKmL').addEventListener('input', calculateLiters);
+function calculateLiters() {
+    let totalKm = document.getElementById('totalKm').value;
+    let avgKmL = document.getElementById('avgKmL').value;
+    if (totalKm && avgKmL) {
+        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
+    } else {
+        document.getElementById('totalLiters').value = '';
+    }
+}
+
+function openFuelModal() {
+    document.getElementById('fuelModal').style.display = 'block';
+}
+
+function closeFuelModal() {
+    document.getElementById('fuelModal').style.display = 'none';
+}
+
+function addFuelConsumption() {
+    let formData = new FormData(document.getElementById('fuelForm'));
+
+    fetch('/fuel-consumption', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            closeFuelModal();
+            document.getElementById('fuelForm').reset();
+        } else {
+            alert('Error adding fuel consumption.');
+            console.log(data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+</body>
+
+<script>
+let fuelChart = null;
+document.addEventListener('DOMContentLoaded', function () {
+    let ctx = document.getElementById('fuelChart').getContext('2d');
+    document.getElementById('fuelChart').height = 400;
+
+    // Default filter
+    let selectedTimeFilter = 'weekly';
+    let selectedPlateNumber = 'all';
+
+    function fetchFuelData(plateNumber, timeFilter) {
+        fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    console.warn("No data returned for plate number:", plateNumber);
+                    updateFuelChart([], []);
+                    return;
+                }
+
+                let labels = data.map(item => item.total_km);
+                let fuelUsed = data.map(item => item.total_liters);
+
+                updateFuelChart(labels, fuelUsed);
+            })
+            .catch(error => console.error('Error fetching fuel data:', error));
+    }
+
+    function updateFuelChart(labels, fuelUsed) {
+        if (fuelChart) {
+            fuelChart.destroy();
+        }
+
+        fuelChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Fuel Consumption (liters)',
+                    data: fuelUsed,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Fetch initial data
+    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+
+    // Handle plate number selection
+    document.getElementById('plateNumberSelect').addEventListener('change', function () {
+        selectedPlateNumber = this.value.trim();
+        fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+    });
+
+    // Handle time filter selection
+    document.querySelectorAll('.time-filter-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            selectedTimeFilter = this.getAttribute('data-filter');
+            document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+        });
+    });
+});
+    // Add event listeners for real-time calculation
+    document.getElementById('totalKm').addEventListener('input', calculateLiters);
+    document.getElementById('avgKmL').addEventListener('input', calculateLiters);
+function calculateLiters() {
+    let totalKm = document.getElementById('totalKm').value;
+    let avgKmL = document.getElementById('avgKmL').value;
+    if (totalKm && avgKmL) {
+        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
+    } else {
+        document.getElementById('totalLiters').value = '';
+    }
+}
+
+function openFuelModal() {
+    document.getElementById('fuelModal').style.display = 'block';
+}
+
+function closeFuelModal() {
+    document.getElementById('fuelModal').style.display = 'none';
+}
+
+function addFuelConsumption() {
+    let formData = new FormData(document.getElementById('fuelForm'));
+
+    fetch('/fuel-consumption', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            closeFuelModal();
+            document.getElementById('fuelForm').reset();
+        } else {
+            alert('Error adding fuel consumption.');
+            console.log(data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
     </script>
 </body>
 </html>
