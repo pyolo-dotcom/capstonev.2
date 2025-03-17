@@ -18,16 +18,19 @@
         body {
             display: flex;
             background-color: #f8f9fa;
+            height: 100vh; /* Ensure the body takes the full viewport height */
+            overflow: hidden; /* Prevent body from scrolling */
         }
 
         .sidebar {
             width: 250px;
-            height: 100vh;
+            height: 100vh; /* Full height of the viewport */
             background: #333;
             padding: 20px;
             position: fixed;
             left: 0;
             top: 0;
+            overflow-y: auto; /* Enable scrolling for the sidebar */
         }
 
         .sidebar h2 {
@@ -59,21 +62,26 @@
         }
 
         .content {
-            margin-left: 270px;
+            margin-left: 250px; /* Adjusted to match the sidebar width */
             padding: 20px;
             flex-grow: 1;
+            overflow-y: auto; /* Enable scrolling for the content area */
+            height: 100vh; /* Full height of the viewport */
         }
+
         .profile-card {
             background: #fff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .profile-picture-container {
             position: relative;
             display: inline-block;
             margin-bottom: 20px;
         }
+
         .profile-picture-container img {
             width: 120px;
             height: 120px;
@@ -82,6 +90,7 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
         .profile-picture-container .edit-overlay {
             position: absolute;
             top: 0;
@@ -99,30 +108,37 @@
             transition: opacity 0.3s;
             cursor: pointer;
         }
+
         .profile-picture-container:hover .edit-overlay {
             opacity: 1;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             font-weight: bold;
         }
+
         .btn-primary {
             background-color: #007bff;
             border: none;
             padding: 10px;
             font-size: 16px;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
         }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
             }
+
             .content {
                 margin-left: 0;
                 padding: 15px;
@@ -132,20 +148,57 @@
 </head>
 
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-drivernavbar />
         </ul>
     </div>
+
+    <!-- Main Content -->
     <div class="content">
-        <div class="profile-container">
-            <!-- Left Side: Profile Picture & Personal Information -->
-            <div class="profile-left">
-                <div class="profile-picture-holder">
-                    <button class="profile-button">
-                        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-picture">
-                    </button>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="profile-card text-center">
+                        <!-- Profile Picture with Edit Overlay -->
+                        <div class="profile-picture-container">
+                            <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}" 
+                                alt="Profile Image" 
+                                id="profileImagePreview">
+                        </div>
+                        
+                        <!-- User Info -->
+                        <h4 class="mt-3">{{ $user->fullname }}</h4>
+                        <p class="text-muted">{{ $user->role }}</p>
+                        <hr>
+
+                        <!-- Display Profile Information -->
+                        <div class="text-start">
+                            <p><strong>Username:</strong> {{ $user->username }}</p>
+                            <p><strong>Full Name:</strong> {{ $user->fullname }}</p>
+                            <p><strong>Email:</strong> {{ $user->email }}</p>
+                            <p><strong>Date of Birth:</strong> {{ $user->dob }}</p>
+                            <p><strong>Driver's License Number:</strong> {{ $user->driver_license_number }}</p>
+                            <p><strong>License Expiry Date:</strong> {{ $user->license_expiry_date }}</p>
+                            <p><strong>License Type:</strong> {{ $user->license_type }}</p>
+                        </div>
+
+                        <!-- Edit Profile Button -->
+                        <button type="button" class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            Edit Profile
+                        </button>
+
+                        <!-- Edit Driver's License Button -->
+                        <button type="button" class="btn btn-info w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editDriverLicenseModal">
+                            Edit Driver's License
+                        </button>
+
+                        <!-- Change Password Button -->
+                        <button type="button" class="btn btn-warning w-100 mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            Change Password
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

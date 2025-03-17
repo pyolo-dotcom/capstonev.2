@@ -27,11 +27,9 @@ use App\Models\Tracking;
 use App\Models\User;
 use App\Http\Controllers\DriverTrackingController;
 
-Route::get('/', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
-
 // Login Routes
-Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
-Route::post('/login', [LoginController::class, 'processLogin'])->name('login.post');
+Route::get('/', [LoginController::class, 'showLogin'])->name('login');
+Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
 
 // Admin Routes
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
