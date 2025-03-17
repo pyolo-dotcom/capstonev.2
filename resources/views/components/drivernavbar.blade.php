@@ -274,12 +274,11 @@
     }
 
     .hamburger {
-        display: block;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
+        margin-bottom: 20px;
     }
 
     .hamburger div {
@@ -308,11 +307,11 @@
     <div class="resize-handle" id="resize-handle"></div>
 
     <!-- Hamburger Menu -->
-<div class="hamburger" id="hamburger">
-    <div></div>
-    <div></div>
-    <div></div>
-</div>
+    <div class="hamburger" id="hamburger">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 
     <!-- Sidebar Header -->
     <div class="sidebar-header">
