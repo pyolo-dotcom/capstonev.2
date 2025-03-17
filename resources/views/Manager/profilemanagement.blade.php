@@ -147,11 +147,11 @@
                 <div class="profile-card text-center">
                     <!-- Profile Picture with Edit Overlay -->
                     <div class="profile-picture-container">
-                        <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}" 
-                            alt="Profile Image" 
+                        <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}"
+                            alt="Profile Image"
                             id="profileImagePreview">
                     </div>
-                    
+
                     <!-- User Info -->
                     <h4 class="mt-3">{{ $user->fullname }}</h4>
                     <p class="text-muted">{{ $user->role }}</p>

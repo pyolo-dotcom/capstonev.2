@@ -104,13 +104,24 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-                <x-drivernavbar />
-
+    <x-drivernavbar />
 
     <div class="content">
         <form id="cargoForm">

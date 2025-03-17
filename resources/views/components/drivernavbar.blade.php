@@ -2,16 +2,17 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <!-- Update the CSS -->
 <style>
-        * {
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -20,6 +21,7 @@
 
     body {
         display: flex;
+        overflow: hidden;
     }
 
     .sidebar {
@@ -38,20 +40,11 @@
     }
 
     .sidebar.collapsed {
-        width: 150px;
+        width: 90px; /* Adjust for smaller screens */
     }
 
-    .sidebar.collapsed .menu a span {
-        display: none;
-    }
-
-    .sidebar.collapsed .sidebar-header h2,
-    .sidebar.collapsed .sidebar-header p {
-        display: block;
-    }
-
-    .sidebar.collapsed .menu a {
-        justify-content: center;
+    .sidebar h2, .sidebar-header p {
+        display: block; /* Always show texts */
     }
 
     .sidebar h2 {
@@ -66,7 +59,8 @@
     }
 
     .sidebar ul li {
-        padding: 15px;
+        padding: 10px;
+        margin-left: -20px;
         border-bottom: 1px solid #444;
     }
 
@@ -192,14 +186,42 @@
         background-color: #5a697d;
     }
 
+    /* Content Styles */
+    .content {
+        margin-left: 250px; /* Space for the sidebar */
+        padding: 20px;
+        flex-grow: 1;
+        transition: margin-left 0.2s ease;
+    }
+
+    .content.collapsed {
+        margin-left: 60px; /* Space for the collapsed sidebar */
+    }
+
+    .hamburger {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .hamburger div {
+        width: 30px;
+        height: 3px;
+        background-color: white;
+        margin: 5px 0;
+        transition: 0.4s;
+    }
+
     /* Responsive Sidebar */
     @media (max-width: 768px) {
         .sidebar {
-            width: 200px;
+            width: 200px; /* Adjust sidebar width */
         }
 
         .sidebar.collapsed {
-            width: 60px;
+            width: 80px;
         }
 
         .sidebar ul li {
@@ -219,23 +241,17 @@
         }
 
         .content {
-            margin-left: 200px;
+            margin-left: 200px; /* Adjust content margin */
         }
 
         .content.collapsed {
-            margin-left: 60px;
-        }
-
-        .trip-card {
-            flex: 1 1 calc(50% - 30px);
-            margin-left: 10px;
-            margin-right: 10px;
+            margin-left: 60px; /* Margin for collapsed state */
         }
     }
 
     @media (max-width: 480px) {
         .sidebar {
-            width: 150px;
+            width: 210px; /* Further reduce width for mobile */
         }
 
         .sidebar.collapsed {
@@ -259,46 +275,12 @@
         }
 
         .content {
-            margin-left: 150px;
+            margin-left: 150px; /* Adjust content margin */
         }
 
         .content.collapsed {
-            margin-left: 60px;
+            margin-left: 60px; /* Margin for collapsed state */
         }
-
-        .trip-card {
-            flex: 1 1 100%;
-            margin-left: 0;
-            margin-right: 0;
-        }
-    }
-
-    .hamburger {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        margin-bottom: 20px;
-    }
-
-    .hamburger div {
-        width: 30px;
-        height: 3px;
-        background-color: white;
-        margin: 5px 0;
-        transition: 0.4s;
-    }
-
-    /* Content Styles */
-    .content {
-        margin-left: 270px;
-        padding: 20px;
-        flex-grow: 1;
-        transition: margin-left 0.2s ease;
-    }
-
-    .content.collapsed {
-        margin-left: 130px;
     }
 </style>
 
@@ -340,7 +322,6 @@
         <li>
             <a href="#" class="menu-item dropdown-toggle" id="settings-toggle">
                 <i class="bi bi-fuel-pump"></i> <span>Settings</span>
-                <i class="bi bi-chevron-down dropdown-arrow"></i> <!-- Arrow icon -->
             </a>
             <ul class="submenu" id="settings-submenu">
                 <li>
@@ -363,62 +344,62 @@
     </ul>
 </div>
 
-<!-- Script para sa Dropdown at Active Class -->
+<!-- Script for Dropdown and Active Classes -->
 <script>
-                   // Function para i-toggle ang dropdown
-        document.getElementById('settings-toggle').addEventListener('click', function(event) {
-            event.preventDefault(); // I-prevent ang default behavior ng link
-            const submenu = document.getElementById('settings-submenu');
-            const arrowIcon = this.querySelector('.dropdown-arrow');
+    // Function to toggle the dropdown
+    document.getElementById('settings-toggle').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default link behavior
+        const submenu = document.getElementById('settings-submenu');
+        const arrowIcon = this.querySelector('.dropdown-arrow');
 
-            // I-toggle ang visibility ng submenu
-            submenu.classList.toggle('show');
+        // Toggle the visibility of the submenu
+        submenu.classList.toggle('show');
 
-            // I-toggle ang arrow icon
-            if (submenu.classList.contains('show')) {
-                arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+        // Toggle arrow icon
+        if (submenu.classList.contains('show')) {
+            arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+        } else {
+            arrowIcon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+        }
+    });
+
+    // Function to set the active class on the correct menu item
+    function setActiveMenuItem() {
+        const currentUrl = window.location.href; // Get the current URL
+        const menuItems = document.querySelectorAll('.menu-item'); // Get all menu items
+        const submenuItems = document.querySelectorAll('.submenu-item'); // Get all submenu items
+
+        // Check main menu items
+        menuItems.forEach(item => {
+            if (item.href === currentUrl) {
+                item.classList.add('active'); // Apply active class
             } else {
-                arrowIcon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+                item.classList.remove('active'); // Remove active class
             }
         });
 
-        // Function para i-set ang active class sa tamang menu item
-        function setActiveMenuItem() {
-            const currentUrl = window.location.href; // Kunin ang current URL
-            const menuItems = document.querySelectorAll('.menu-item'); // Kunin lahat ng menu items
-            const submenuItems = document.querySelectorAll('.submenu-item'); // Kunin lahat ng submenu items
-
-            // I-check ang main menu items
-            menuItems.forEach(item => {
-                if (item.href === currentUrl) {
-                    item.classList.add('active'); // I-apply ang active class
-                } else {
-                    item.classList.remove('active'); // I-remove ang active class
-                }
-            });
-
-            // I-check ang submenu items
-            submenuItems.forEach(item => {
-                if (item.href === currentUrl) {
-                    item.classList.add('active'); // I-apply ang active class
-                    const submenu = document.getElementById('settings-submenu');
-                    submenu.classList.add('show'); // Buksan ang submenu kung active ang item
-                    const arrowIcon = document.querySelector('#settings-toggle .dropdown-arrow');
-                    arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up'); // I-update ang arrow icon
-                } else {
-                    item.classList.remove('active'); // I-remove ang active class
-                }
-            });
-        }
-
-        // I-call ang function kapag na-load ang page
-        document.addEventListener('DOMContentLoaded', setActiveMenuItem);
-
-        // Function para i-toggle ang sidebar
-        document.getElementById('hamburger').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.querySelector('.content');
-            sidebar.classList.toggle('collapsed');
-            content.classList.toggle('collapsed');
+        // Check submenu items
+        submenuItems.forEach(item => {
+            if (item.href === currentUrl) {
+                item.classList.add('active'); // Apply active class
+                const submenu = document.getElementById('settings-submenu');
+                submenu.classList.add('show'); // Open submenu if item is active
+                const arrowIcon = document.querySelector('#settings-toggle .dropdown-arrow');
+                arrowIcon.classList.replace('bi-chevron-down', 'bi-chevron-up'); // Update arrow icon
+            } else {
+                item.classList.remove('active'); // Remove active class
+            }
         });
+    }
+
+    // Call the function when the page loads
+    document.addEventListener('DOMContentLoaded', setActiveMenuItem);
+
+    // Function to toggle the sidebar
+    document.getElementById('hamburger').addEventListener('click', function () {
+        const sidebar = document.getElementById('sidebar');
+        const content = document.querySelector('.content');
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('collapsed');
+    });
 </script>
