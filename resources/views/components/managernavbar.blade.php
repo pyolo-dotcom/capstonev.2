@@ -147,7 +147,7 @@
     <ul class="menu">
         <li>
             <a href="{{ route('manager.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                <i class="bi bi-list"></i> Delivery Records
+                <i class="bi bi-list"></i> Trip Countings Records
             </a>
         </li>
         <li>

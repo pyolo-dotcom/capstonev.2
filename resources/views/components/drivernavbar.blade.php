@@ -306,7 +306,7 @@
     <ul class="menu">
         <li>
             <a href="{{ route('driver.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                <i class="bi bi-list"></i> <span>Delivery Records</span>
+                <i class="bi bi-list"></i> <span>Trip Countings Records</span>
             </a>
         </li>
         <li>

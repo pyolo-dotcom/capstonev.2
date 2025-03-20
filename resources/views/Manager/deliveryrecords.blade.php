@@ -65,23 +65,28 @@
                     <th>Plate Number</th>
                     <th>Trip Type</th>
                     <th>Number of Trips</th>
-                    <th>Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tripTableBody">
-                @foreach($trips as $trip)
-                <tr data-id="{{ $trip->id }}" data-plate="{{ $trip->plate_no }}" data-trip="{{ $trip->trip_type }}" data-num="{{ $trip->num_trips }}">
-                    <td>{{ $trip->plate_no }}</td>
-                    <td>{{ $trip->trip_type }}</td>
-                    <td>{{ $trip->num_trips }}</td>
-                    <td>{{ $trip->created_at }}</td>
-                    <td>
-                        <button class="update-btn" data-id="{{ $trip->id }}">Update</button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+    @if(count($trips) == 0)
+        <tr>
+            <td colspan="4" style="text-align: center;">No data available</td>
+        </tr>
+    @else
+        @foreach($trips as $trip)
+        <tr data-id="{{ $trip->id }}" data-plate="{{ $trip->plate_no }}" data-trip="{{ $trip->trip_type }}" data-num="{{ $trip->num_trips }}">
+            <td>{{ $trip->plate_no }}</td>
+            <td>{{ $trip->trip_type }}</td>
+            <td>{{ $trip->num_trips }}</td>
+            <td>
+                <button class="update-btn" data-id="{{ $trip->id }}">Update</button>
+            </td>
+        </tr>
+        @endforeach
+    @endif
+</tbody>
+
         </table>
 
     </main>

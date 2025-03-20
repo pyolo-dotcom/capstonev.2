@@ -11,15 +11,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
 </head>
 
 <body>
 
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
+        <h2><i>SYA</i></h2>
         <ul>
-            <x-navbar/>
+            <x-managernavbar />
         </ul>
     </div>
 
@@ -33,6 +32,10 @@
                 <option value="APA 3309">APA3309</option>
                 <option value="WIE 914">WIE914</option>
             </select>
+        </div>
+
+        <div class="top-bar">
+            <button class="add-trip-btn" id="openModal">Add Trip</button>
         </div>
 
         <section class="trips-overview">
@@ -62,23 +65,28 @@
                     <th>Plate Number</th>
                     <th>Trip Type</th>
                     <th>Number of Trips</th>
-                    <th>Date</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tripTableBody">
-                @foreach($trips as $trip)
-                <tr data-id="{{ $trip->id }}" data-plate="{{ $trip->plate_no }}" data-trip="{{ $trip->trip_type }}" data-num="{{ $trip->num_trips }}">
-                    <td>{{ $trip->plate_no }}</td>
-                    <td>{{ $trip->trip_type }}</td>
-                    <td>{{ $trip->num_trips }}</td>
-                    <td>{{ $trip->created_at }}</td>
-                    <td>
-                        <button class="update-btn" data-id="{{ $trip->id }}">Update</button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+    @if(count($trips) == 0)
+        <tr>
+            <td colspan="4" style="text-align: center;">No data available</td>
+        </tr>
+    @else
+        @foreach($trips as $trip)
+        <tr data-id="{{ $trip->id }}" data-plate="{{ $trip->plate_no }}" data-trip="{{ $trip->trip_type }}" data-num="{{ $trip->num_trips }}">
+            <td>{{ $trip->plate_no }}</td>
+            <td>{{ $trip->trip_type }}</td>
+            <td>{{ $trip->num_trips }}</td>
+            <td>
+                <button class="update-btn" data-id="{{ $trip->id }}">Update</button>
+            </td>
+        </tr>
+        @endforeach
+    @endif
+</tbody>
+
         </table>
 
     </main>
@@ -117,7 +125,44 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/admin.js') }}"></script>
+    <!-- Add Trip Modal -->
+    <div id="tripModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Trip</h2>
+            <form id="tripForm">
+                @csrf
+                <label for="plate_no">Plate No.:</label>
+                <select id="plate_no" name="plate_no" required>
+                    <option disabled selected>-- Plate Number --</option>
+                    <option value="UVP353">UVP353</option>
+                    <option value="TQE262">TQE262</option>
+                    <option value="NBB7212">NBB7212</option>
+                    <option value="APA3309">APA3309</option>
+                    <option value="WIE914">WIE914</option>
+                </select>
+
+                <label for="trip_type">Trip Type:</label>
+                <select id="trip_type" name="trip_type" required>
+                    <option disabled selected>-- Select Trip --</option>
+                    <option value="One Way Trip">One Way Trip</option>
+                    <option value="Round Trip">Round Trip</option>
+                    <option value="Door-To-Door Trip">Door-To-Door Trip</option>
+                </select>
+
+                <label for="num_trips">Number of Trips:</label>
+                <input type="number" id="num_trips" name="num_trips" min="1" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var tripStoreUrl = @json(route('trips.store'));
+    </script>
+
+    <script src="{{ asset('js/manager.js') }}"></script>
 </body>
 
 </html>

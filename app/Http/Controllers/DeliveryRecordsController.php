@@ -12,7 +12,7 @@ class DeliveryRecordsController extends Controller
     public function showDeliveryRecords()
     {
         // Fetch all trip records
-        $trips = Trip::all();
+        $trips = Trip::select('plate_no', 'trip_type', 'num_trips')->get();
 
         // Default counts set to zero (so no trips appear initially)
         $oneWayTrip = 0;
