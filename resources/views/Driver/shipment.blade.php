@@ -16,16 +16,19 @@
 
         body {
             display: flex;
+            height: 100vh; /* Ensure the body takes the full viewport height */
+            overflow: hidden; /* Prevent body from scrolling */
         }
 
         .sidebar {
             width: 250px;
-            height: 100vh;
+            height: 100vh; /* Full height of the viewport */
             background: #333;
             padding: 20px;
             position: fixed;
             left: 0;
             top: 0;
+            overflow-y: auto; /* Enable scrolling for the sidebar */
         }
 
         .sidebar h2 {
@@ -57,9 +60,11 @@
         }
 
         .content {
-            margin-left: 270px;
+            margin-left: 250px; /* Adjusted to match the sidebar width */
             padding: 20px;
             flex-grow: 1;
+            overflow-y: auto; /* Enable scrolling for the content area */
+            height: 100vh; /* Full height of the viewport */
         }
 
         #cargoForm {
@@ -103,6 +108,7 @@
         #qrCodeContainer {
             text-align: center;
             margin-top: 20px;
+            padding: 20px;
         }
 
         @media (max-width: 768px) {
@@ -120,12 +126,15 @@
 </head>
 
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <x-drivernavbar />
+    </div>
 
-    <x-drivernavbar />
-
+    <!-- Main Content -->
     <div class="content">
         <form id="cargoForm">
-            <h2 style="margin-left: 10rem;">Generate QR Code:</h2>
+            <h2 style="text-align: center;">Generate QR Code:</h2>
             <input type="text" name="plate_no" placeholder="Plate No" required>
             <input type="text" name="eir_no" placeholder="EIR No" required>
             <input type="text" name="container_van_no" placeholder="Container Van No" required>
@@ -138,6 +147,7 @@
             <button type="submit">Generate QR Code</button>
         </form>
 
+        <!-- QR Code Container -->
         <div id="qrCodeContainer"></div>
     </div>
 
