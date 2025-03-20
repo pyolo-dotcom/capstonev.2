@@ -75,7 +75,7 @@ Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDe
 Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
 Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
-Route::get('/fuel-manager', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
+Route::get('manager/fuel-manager', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
 Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');

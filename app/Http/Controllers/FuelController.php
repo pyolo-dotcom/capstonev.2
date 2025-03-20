@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\FuelConsumption;
+use Illuminate\Support\Facades\Log;
 
 class FuelController extends Controller
 {
@@ -74,13 +75,13 @@ class FuelController extends Controller
     {
         $plateNumber = $request->input('plate_number');
         $timeFilter = $request->input('time_filter');
-
+    
         $query = FuelConsumption::query();
-
+    
         if ($plateNumber !== 'all') {
             $query->where('plate_no', $plateNumber);
         }
-
+    
         if ($timeFilter === 'weekly') {
             $query->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()]);
         } elseif ($timeFilter === 'monthly') {
@@ -88,9 +89,18 @@ class FuelController extends Controller
         } elseif ($timeFilter === 'yearly') {
             $query->whereYear('date', now()->year);
         }
-
-        $fuelData = $query->select('total_km', 'total_liters')->get();
-
-        return response()->json($fuelData);
-    }
+    
+        try {
+            $fuelData = $query->select('date', 'total_km', 'total_liters')->get(); // Include 'date' field
+    
+            if ($fuelData->isEmpty()) {
+                return response()->json(["message" => "No data found"], 404);
+            }
+    
+            return response()->json($fuelData);
+        } catch (\Exception $e) {
+            Log::error("Fuel Analytics Error: " . $e->getMessage());
+            return response()->json(["error" => "Internal Server Error"], 500);
+        }
+    }    
 }

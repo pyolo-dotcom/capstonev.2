@@ -5,173 +5,155 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Fuel Management</title>
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <title>Fuel Manager</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            display: flex;
-        }
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: #333;
-            padding: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
-        .sidebar h2 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-        }
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
-        }
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            flex-grow: 1;
-        }
-        .chart-container {
-            width: 90%;
-            margin-left: 53px;
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        .filter-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        #plateNumberSelect {
-            padding: 5px;
-            font-size: 16px;
-        }
-        .time-filter {
-            display: flex;
-            gap: 10px;
-        }
-        .time-filter-btn {
-            padding: 8px 15px;
-            border: none;
-            background-color: #ECF0F1;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        .time-filter-btn:hover {
-            background-color: #BDC3C7;
-        }
-        .time-filter-btn.active {
-            background-color: #3498DB;
-            color: white;
-        }
-        .add-consumption-btn {
-            display: flex;
-            align-items: center;
-            margin: 7px -7px;
-            padding: 8px 10px;
-            background-color: transparent;
-            color: black;
-            border: none;
-            border-radius: 14px;
-            font-size: 17px;
-            cursor: pointer;
-        }
-        .add-consumption-btn:hover {
-            background-color: #485379;
-            color: white;
-        }
-        .add-consumption-btn .plus-circle {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
-            background-color: white;
-            color: #2f385f;
-            border-radius: 50%;
-            font-size: 16px;
-            font-weight: bold;
-            border: 1px solid black;
-        }
-        #fuelChart {
-            width: 100%;
-            max-height: 1000vh;
-            height: 68vh;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-        .actions button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .actions button.edit {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .actions button.archive {
-            background-color: #f44336;
-            color: white;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    display: flex;
+}
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #333;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+.sidebar h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li {
+    padding: 15px;
+    border-bottom: 1px solid #444;
+}
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+}
+.sidebar ul li a:hover {
+    background: #555;
+    padding-left: 10px;
+}
+.content {
+    margin-left: 270px;
+    padding: 20px;
+    flex-grow: 1;
+}
+.chart-container {
+    width: 90%;
+    margin-left: 53px;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Plate Number Dropdown & Filter Section */
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+#plateNumberSelect {
+    padding: 5px;
+    font-size: 16px;
+}
+
+/* Time Filter Buttons */
+.time-filter {
+    display: flex;
+    gap: 10px;
+}
+
+.time-filter-btn {
+    padding: 8px 15px;
+    border: none;
+    background-color: #ECF0F1;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.time-filter-btn:hover {
+    background-color: #BDC3C7;
+}
+
+.time-filter-btn.active {
+    background-color: #1d2d3d;
+    color: white;
+}
+
+/* Add Consumption Button */
+.add-consumption-btn {
+    display: flex;
+    align-items: center;
+    margin: 7px -7px;
+    padding: 8px 10px;
+    background-color: transparent;
+    color: black;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    cursor: pointer;
+}
+.add-consumption-btn:hover {
+    background-color: #485379;
+    color: white;
+}
+.add-consumption-btn .plus-circle {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    background-color: transparent;
+    color: black;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid black;
+}
+
+.add-consumption-btn:hover .plus-circle {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+#fuelChart {
+    width: 100%;
+    max-height: 1000vh;
+    height: 68vh;
+}
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>Sidebar Menu</h2>
         <ul>
-            <x-navbar/>
+            <x-managernavbar/>
         </ul>
     </div>
 
@@ -201,219 +183,182 @@
             <span class="plus-circle">+</span> Add Consumption
         </button>
 
-        <table id="fuelTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Plate No.</th>
-                    <th>Total KM</th>
-                    <th>Avg KM/L</th>
-                    <th>Total Liters</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($fuelData as $data)
-                <tr>
-                    <td>{{ $data->id }}</td>
-                    <td>{{ $data->date }}</td>
-                    <td>{{ $data->plate_no }}</td>
-                    <td>{{ $data->total_km }}</td>
-                    <td>{{ $data->avg_km_l }}</td>
-                    <td>{{ $data->total_liters }}</td>
-                    <td class="actions">
-                        <button class="edit" onclick="editFuel({{ $data->id }})">Edit</button>
-                        <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="archive" onclick="confirmArchive({{ $data->id }})">Archive</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
         <div class="chart-container">
             <canvas id="fuelChart"></canvas>
         </div>
     </div>
 
-    <!-- Include the modals -->
-    @include('Admin.modals.fuelmodal')
-    @include('Admin.modals.edit_fuel')
+    @include('Manager.modals.fuelmodal')
+</body>
+<script>
+let fuelChart = null;
+document.addEventListener('DOMContentLoaded', function () {
+    let ctx = document.getElementById('fuelChart').getContext('2d');
+    let fuelChartCanvas = document.getElementById('fuelChart'); 
+    let selectedTimeFilter = 'weekly';
+    let selectedPlateNumber = null;
 
-    <script>
-        let fuelChart = null;
+    // Hide the graph (canvas) initially
+    fuelChartCanvas.style.display = 'none';
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Chart initialization
-            let ctx = document.getElementById('fuelChart').getContext('2d');
-            document.getElementById('fuelChart').height = 400;
-
-            // Default filter values
-            let selectedTimeFilter = 'weekly';
-            let selectedPlateNumber = 'all';
-
-            // Chart data fetching and setup
-            function fetchFuelData(plateNumber, timeFilter) {
-                fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!Array.isArray(data) || data.length === 0) {
-                            console.warn("No data returned for plate number:", plateNumber);
-                            updateFuelChart([], []);
-                            return;
-                        }
-
-                        const labels = data.map(item => item.total_km);
-                        const fuelUsed = data.map(item => item.total_liters);
-                        updateFuelChart(labels, fuelUsed);
-                    })
-                    .catch(error => console.error('Error fetching fuel data:', error));
-            }
-
-            function updateFuelChart(labels, fuelUsed) {
-                if (fuelChart) {
-                    fuelChart.destroy();
-                }
-
-                fuelChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Fuel Consumption (liters)',
-                            data: fuelUsed,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
-            }
-
-            // Event listeners for filters
-            document.getElementById('plateNumberSelect').addEventListener('change', function () {
-                selectedPlateNumber = this.value.trim();
-                filterTableByPlateNumber(selectedPlateNumber);
-                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-            });
-
-            document.querySelectorAll('.time-filter-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    selectedTimeFilter = this.getAttribute('data-filter');
-                    document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-                });
-            });
-
-            // Function to filter table by plate number
-            function filterTableByPlateNumber(plateNumber) {
-                let table = document.getElementById('fuelTable');
-                let rows = table.getElementsByTagName('tr');
-
-                for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-                    let row = rows[i];
-                    let cell = row.getElementsByTagName('td')[2]; // Plate No. is the 3rd column (index 2)
-                    if (cell) {
-                        if (plateNumber === 'all' || cell.textContent === plateNumber) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                }
-            }
-
-            // Initial data fetch
-            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-        });
-
-        // Fuel calculation functions
-        function calculateLiters() {
-            const totalKm = document.getElementById('totalKm').value;
-            const avgKmL = document.getElementById('avgKmL').value;
-            document.getElementById('totalLiters').value = totalKm && avgKmL 
-                ? (totalKm / avgKmL).toFixed(2)
-                : '';
+    function fetchFuelData(plateNumber, timeFilter) {
+        if (!plateNumber || plateNumber === "-- Plate Number --") {
+            fuelChartCanvas.style.display = 'none'; // Hide only the graph
+            return;
         }
 
-        // Modal control functions
-        function openFuelModal() {
-            document.getElementById('fuelModal').style.display = 'block';
-        }
-
-        function closeFuelModal() {
-            document.getElementById('fuelModal').style.display = 'none';
-        }
-
-        function closeEditFuelModal() {
-            document.getElementById('editFuelModal').style.display = 'none';
-        }
-
-        // CRUD operations
-        function editFuel(id) {
-            fetch(`/admin/fuel/edit/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        document.getElementById('editId').value = data.id;
-                        document.getElementById('editDate').value = data.date;
-                        document.getElementById('editPlateNo').value = data.plate_no;
-                        document.getElementById('editTotalKm').value = data.total_km;
-                        document.getElementById('editAvgKmL').value = data.avg_km_l;
-                        document.getElementById('editFuelModal').style.display = 'block';
-                    }
-                })
-                .catch(error => console.error('Error fetching fuel data:', error));
-        }
-
-        function confirmArchive(id) {
-            if (confirm('Are you sure you want to archive this record?')) {
-                document.getElementById(`archiveForm${id}`).submit();
-            }
-        }
-
-        function addFuelConsumption() {
-            const formData = new FormData(document.getElementById('fuelForm'));
-
-            fetch('/fuel-consumption', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
+        fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    closeFuelModal();
-                    document.getElementById('fuelForm').reset();
-                    location.reload();
-                } else {
-                    alert('Error adding fuel consumption.');
-                    console.log(data);
+                if (!Array.isArray(data) || data.length === 0) {
+                    console.warn("No data returned for plate number:", plateNumber);
+                    updateFuelChart([], [], []);
+                    fuelChartCanvas.style.display = 'none'; // Hide if no data
+                    return;
                 }
+
+                let labels = data.map(item => item.date);
+                let kilometers = data.map(item => item.total_km);
+                let fuelUsed = data.map(item => item.total_liters);
+
+                updateFuelChart(labels, kilometers, fuelUsed);
+                fuelChartCanvas.style.display = 'block'; // Show graph when data is available
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error fetching fuel data:', error));
+    }
+
+    function updateFuelChart(labels, kilometers, fuelUsed) {
+        if (fuelChart) {
+            fuelChart.destroy();
         }
 
-        // Event listeners for real-time calculation
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('totalKm')?.addEventListener('input', calculateLiters);
-            document.getElementById('avgKmL')?.addEventListener('input', calculateLiters);
+        fuelChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Kilometers (KM)',
+                        data: kilometers,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Fuel Consumption (L)',
+                        data: fuelUsed,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y2'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Kilometers (KM)'
+                        }
+                    },
+                    y2: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Liters (L)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
         });
-    </script>
+    }
+
+    // Handle plate number selection
+    document.getElementById('plateNumberSelect').addEventListener('change', function () {
+        selectedPlateNumber = this.value.trim();
+        
+        if (selectedPlateNumber === "-- Plate Number --") {
+            fuelChartCanvas.style.display = 'none'; // Hide only the graph
+        } else {
+            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+        }
+    });
+
+    // Handle time filter selection
+    document.querySelectorAll('.time-filter-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            if (!selectedPlateNumber || selectedPlateNumber === "-- Plate Number --") {
+                return; // Prevent fetching if no plate is selected
+            }
+
+            selectedTimeFilter = this.getAttribute('data-filter');
+            document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+        });
+    });
+});
+
+    // Add event listeners for real-time calculation
+    document.getElementById('totalKm').addEventListener('input', calculateLiters);
+    document.getElementById('avgKmL').addEventListener('input', calculateLiters);
+function calculateLiters() {
+    let totalKm = document.getElementById('totalKm').value;
+    let avgKmL = document.getElementById('avgKmL').value;
+    if (totalKm && avgKmL) {
+        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
+    } else {
+        document.getElementById('totalLiters').value = '';
+    }
+}
+
+function openFuelModal() {
+    document.getElementById('fuelModal').style.display = 'block';
+}
+
+function closeFuelModal() {
+    document.getElementById('fuelModal').style.display = 'none';
+}
+
+function addFuelConsumption() {
+    let formData = new FormData(document.getElementById('fuelForm'));
+
+    fetch('/fuel-consumption', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            closeFuelModal();
+            document.getElementById('fuelForm').reset();
+        } else {
+            alert('Error adding fuel consumption.');
+            console.log(data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
 </body>
 </html>
