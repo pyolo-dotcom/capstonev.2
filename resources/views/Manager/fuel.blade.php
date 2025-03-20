@@ -315,19 +315,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-    // Add event listeners for real-time calculation
-    document.getElementById('totalKm').addEventListener('input', calculateLiters);
-    document.getElementById('avgKmL').addEventListener('input', calculateLiters);
-function calculateLiters() {
-    let totalKm = document.getElementById('totalKm').value;
-    let avgKmL = document.getElementById('avgKmL').value;
-    if (totalKm && avgKmL) {
-        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
-    } else {
-        document.getElementById('totalLiters').value = '';
-    }
-}
-
 function openFuelModal() {
     document.getElementById('fuelModal').style.display = 'block';
 }

@@ -5,155 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Fuel Manager</title>
+    <title>Fuel Management</title>
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-body {
-    display: flex;
-}
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    background: #333;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-.sidebar h2 {
-    color: #fff;
-    text-align: center;
-    margin-bottom: 20px;
-}
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-.sidebar ul li {
-    padding: 15px;
-    border-bottom: 1px solid #444;
-}
-.sidebar ul li a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    transition: 0.3s;
-}
-.sidebar ul li a:hover {
-    background: #555;
-    padding-left: 10px;
-}
-.content {
-    margin-left: 270px;
-    padding: 20px;
-    flex-grow: 1;
-}
-.chart-container {
-    width: 90%;
-    margin-left: 53px;
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-}
-
-/* Plate Number Dropdown & Filter Section */
-.filter-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-#plateNumberSelect {
-    padding: 5px;
-    font-size: 16px;
-}
-
-/* Time Filter Buttons */
-.time-filter {
-    display: flex;
-    gap: 10px;
-}
-
-.time-filter-btn {
-    padding: 8px 15px;
-    border: none;
-    background-color: #ECF0F1;
-    cursor: pointer;
-    font-size: 15px;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-.time-filter-btn:hover {
-    background-color: #BDC3C7;
-}
-
-.time-filter-btn.active {
-    background-color: #1d2d3d;
-    color: white;
-}
-
-/* Add Consumption Button */
-.add-consumption-btn {
-    display: flex;
-    align-items: center;
-    margin: 7px -7px;
-    padding: 8px 10px;
-    background-color: transparent;
-    color: black;
-    border: none;
-    border-radius: 14px;
-    font-size: 17px;
-    cursor: pointer;
-}
-.add-consumption-btn:hover {
-    background-color: #485379;
-    color: white;
-}
-.add-consumption-btn .plus-circle {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    margin-right: 8px;
-    background-color: transparent;
-    color: black;
-    border-radius: 50%;
-    font-size: 16px;
-    font-weight: bold;
-    border: 1px solid black;
-}
-
-.add-consumption-btn:hover .plus-circle {
-    background-color: transparent;
-    color: white;
-    border: none;
-}
-#fuelChart {
-    width: 100%;
-    max-height: 1000vh;
-    height: 68vh;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #333;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 15px;
+            border-bottom: 1px solid #444;
+        }
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar ul li a:hover {
+            background: #555;
+            padding-left: 10px;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .chart-container {
+            width: 90%;
+            margin-left: 53px;
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        #plateNumberSelect {
+            padding: 5px;
+            font-size: 16px;
+        }
+        .time-filter {
+            display: flex;
+            gap: 10px;
+        }
+        .time-filter-btn {
+            padding: 8px 15px;
+            border: none;
+            background-color: #ECF0F1;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .time-filter-btn:hover {
+            background-color: #BDC3C7;
+        }
+        .time-filter-btn.active {
+            background-color: #3498DB;
+            color: white;
+        }
+        .add-consumption-btn {
+            display: flex;
+            align-items: center;
+            margin: 7px -7px;
+            padding: 8px 10px;
+            background-color: transparent;
+            color: black;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+        .add-consumption-btn:hover {
+            background-color: #485379;
+            color: white;
+        }
+        .add-consumption-btn .plus-circle {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background-color: white;
+            color: #2f385f;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid black;
+        }
+        #fuelChart {
+            width: 100%;
+            max-height: 1000vh;
+            height: 68vh;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .actions button.edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .actions button.archive {
+            background-color: #f44336;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>Sidebar Menu</h2>
         <ul>
-            <x-managernavbar/>
+            <x-navbar/>
         </ul>
     </div>
 
@@ -183,14 +201,50 @@ body {
             <span class="plus-circle">+</span> Add Consumption
         </button>
 
+        <table id="fuelTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Plate No.</th>
+                    <th>Total KM</th>
+                    <th>Avg KM/L</th>
+                    <th>Total Liters</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($fuelData as $data)
+                <tr>
+                    <td>{{ $data->id }}</td>
+                    <td>{{ $data->date }}</td>
+                    <td>{{ $data->plate_no }}</td>
+                    <td>{{ $data->total_km }}</td>
+                    <td>{{ $data->avg_km_l }}</td>
+                    <td>{{ $data->total_liters }}</td>
+                    <td class="actions">
+                        <button class="edit" onclick="editFuel({{ $data->id }})">Edit</button>
+                        <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="archive" onclick="confirmArchive({{ $data->id }})">Archive</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
         <div class="chart-container">
             <canvas id="fuelChart"></canvas>
         </div>
     </div>
 
-    @include('Manager.modals.fuelmodal')
-</body>
-<script>
+    <!-- Include the modals -->
+    @include('Admin.modals.fuelmodal')
+    @include('Admin.modals.edit_fuel')
+
+    <script>
 let fuelChart = null;
 document.addEventListener('DOMContentLoaded', function () {
     let ctx = document.getElementById('fuelChart').getContext('2d');
@@ -315,18 +369,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-    // Add event listeners for real-time calculation
-    document.getElementById('totalKm').addEventListener('input', calculateLiters);
-    document.getElementById('avgKmL').addEventListener('input', calculateLiters);
-function calculateLiters() {
-    let totalKm = document.getElementById('totalKm').value;
-    let avgKmL = document.getElementById('avgKmL').value;
-    if (totalKm && avgKmL) {
-        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
-    } else {
-        document.getElementById('totalLiters').value = '';
+document.addEventListener("DOMContentLoaded", function () {
+    let plateNumberSelect = document.getElementById("plateNumberSelect");
+    let tableBody = document.querySelector("#fuelTable tbody");
+
+    // Hide all table rows on initial page load
+    function hideAllRows() {
+        let tableRows = tableBody.querySelectorAll("tr");
+        tableRows.forEach(row => row.style.display = "none");
     }
-}
+
+    hideAllRows(); // Run function on page load
+
+    plateNumberSelect.addEventListener("change", function () {
+        let selectedPlate = this.value.trim();
+        let tableRows = tableBody.querySelectorAll("tr");
+
+        if (selectedPlate === "-- Plate Number --") {
+            hideAllRows(); // If no valid selection, keep the table empty
+            return;
+        }
+
+        tableRows.forEach(row => {
+            let plateCell = row.cells[2]?.textContent.trim(); // Plate number column (index 2)
+
+            if (selectedPlate === "all" || plateCell === selectedPlate) {
+                row.style.display = ""; // Show matching rows
+            } else {
+                row.style.display = "none"; // Hide non-matching rows
+            }
+        });
+    });
+});
+
 
 function openFuelModal() {
     document.getElementById('fuelModal').style.display = 'block';
@@ -359,6 +434,41 @@ function addFuelConsumption() {
     })
     .catch(error => console.error('Error:', error));
 }
-</script>
+function editFuel(id) {
+    fetch(`/admin/fuel/edit/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                document.getElementById('editFuelId').value = data.id;
+                document.getElementById('editDate').value = data.date;
+                document.getElementById('editPlateNo').value = data.plate_no;
+                document.getElementById('editTotalKm').value = data.total_km;
+                document.getElementById('editAvgKmL').value = data.avg_km_l;
+
+                let modal = document.getElementById('editFuelModal');
+                modal.style.display = "block";
+            } else {
+                console.error("No data found for ID:", id);
+            }
+        })
+        .catch(error => console.error('Error fetching fuel data:', error));
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    let modal = document.getElementById('editFuelModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+
+
+function confirmArchive(id) {
+    let confirmAction = confirm("Are you sure you want to archive this record?");
+    if (confirmAction) {
+        document.getElementById('archiveForm' + id).submit();
+    }
+}
+    </script>
 </body>
 </html>

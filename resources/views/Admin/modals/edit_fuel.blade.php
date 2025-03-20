@@ -2,35 +2,40 @@
 
 <div id="editFuelModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeEditFuelModal()">&times;</span>
+        <span class="close" onclick="document.getElementById('editFuelModal').style.display='none'">&times;</span>
         <h2>Edit Fuel Consumption</h2>
-        <form id="editFuelForm">
+        <form id="editFuelForm" method="POST">
             @csrf
-            <input type="hidden" id="editId" name="id">
+            @method('PUT')
+            <input type="hidden" id="editFuelId" name="id">
+
             <div class="form-group">
-                <label for="editDate">Date</label>
-                <input type="date" class="form-control" id="editDate" name="date" required>
+                <label for="editDate">Date:</label>
+                <input type="date" id="editDate" name="date" class="form-control" required>
             </div>
+
             <div class="form-group">
-                <label for="editPlateNo">Plate No.</label>
-                <input type="text" class="form-control" id="editPlateNo" name="plateNo" required>
+                <label for="editPlateNo">Plate No:</label>
+                <input type="text" id="editPlateNo" name="plateNo" class="form-control" required>
             </div>
+
             <div class="form-group">
-                <label for="editTotalKm">Total KM</label>
-                <input type="number" class="form-control" id="editTotalKm" name="totalKm" required>
+                <label for="editTotalKm">Total KM:</label>
+                <input type="number" id="editTotalKm" name="totalKm" class="form-control" required>
             </div>
+
             <div class="form-group">
-                <label for="editAvgKmL">Avg KM/L</label>
-                <input type="number" step="0.01" class="form-control" id="editAvgKmL" name="avgKmL" required>
+                <label for="editAvgKmL">Avg KM/L:</label>
+                <input type="number" step="0.1" id="editAvgKmL" name="avgKmL" class="form-control" required>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEditFuelModal()">Close</button>
-                <button type="button" class="btn btn-primary" onclick="updateFuel()">Save changes</button>
+
+            <div class="form-group">
+                <button type="submit" class="btn-primary">Update</button>
+                <button type="button" class="btn-secondary" onclick="document.getElementById('editFuelModal').style.display='none'">Cancel</button>
             </div>
         </form>
     </div>
 </div>
-
 <style>
     /* Specific styles for the edit_fuel modal */
     .modal {

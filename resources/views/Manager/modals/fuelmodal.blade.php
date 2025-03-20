@@ -134,4 +134,76 @@
         alert('Fuel consumption added successfully!');
         closeFuelModal();
     }
+// Fixed Average KM/L values for each truck
+const avgKmLValues = {
+    "APA3309": 6,
+    "UVP353": 5,
+    "TQE262": 5.5,
+    "WIE914": 5.5,
+    "NBB7212": 8
+};
+
+// Add event listeners
+document.getElementById('totalKm').addEventListener('input', calculateLiters);
+document.getElementById('plateNo').addEventListener('change', updateAvgKmL);
+
+function updateAvgKmL() {
+    let selectedPlate = document.getElementById('plateNo').value.trim();
+    
+    if (selectedPlate in avgKmLValues) {
+        document.getElementById('avgKmL').value = avgKmLValues[selectedPlate]; // Set fixed Average KM/L
+    } else {
+        document.getElementById('avgKmL').value = ''; // Clear if no plate is selected
+    }
+    
+    calculateLiters(); // Recalculate after updating
+}
+
+function calculateLiters() {
+    let totalKm = parseFloat(document.getElementById('totalKm').value);
+    let avgKmLField = document.getElementById('avgKmL');
+    let selectedPlate = document.getElementById('plateNo').value.trim();
+
+    // Ensure avgKmL remains fixed from predefined values
+    let avgKmL = avgKmLValues[selectedPlate] || 0;
+    avgKmLField.value = avgKmL; // Force reassign the fixed value
+
+    if (totalKm && avgKmL) {
+        document.getElementById('totalLiters').value = (totalKm / avgKmL).toFixed(2);
+    } else {
+        document.getElementById('totalLiters').value = '';
+    }
+}
+
+function openFuelModal() {
+    document.getElementById('fuelModal').style.display = 'block';
+}
+
+function closeFuelModal() {
+    document.getElementById('fuelModal').style.display = 'none';
+}
+
+function addFuelConsumption() {
+    let formData = new FormData(document.getElementById('fuelForm'));
+
+    fetch('/fuel-consumption', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            closeFuelModal();
+            document.getElementById('fuelForm').reset();
+        } else {
+            alert('Error adding fuel consumption.');
+            console.log(data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
 </script>
