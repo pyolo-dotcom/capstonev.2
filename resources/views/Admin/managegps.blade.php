@@ -97,38 +97,31 @@
     <script>
 var map;
 var markers = {}; // Store markers by truck_id
+var distances = {}; // Store total distances
 
-// Initialize Google Maps
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10,
-        center: { lat: 15.48, lng: 120.94 } // Default location in Nueva Ecija
+        center: { lat: 15.48, lng: 120.94 } // Default location
     });
 
-    // Start fetching truck locations every 5 seconds
     updateLocation();
+    updateDistances();
     setInterval(updateLocation, 5000);
+    setInterval(updateDistances, 60000); // Update every 1 minute
 }
 
-// Fetch and update truck locations
 function updateLocation() {
     fetch('/get-locations')
         .then(response => response.json())
         .then(data => {
             console.log("🔄 Updated truck locations:", data);
 
-            // Remove markers that are no longer active
-            for (let truckId in markers) {
-                if (!data.some(truck => truck.truck_id === truckId)) {
-                    markers[truckId].setMap(null);
-                    delete markers[truckId];
-                }
-            }
-
             data.forEach(truck => {
                 let position = { lat: parseFloat(truck.latitude), lng: parseFloat(truck.longitude) };
 
                 if (!markers[truck.truck_id]) {
+                    // Create a new marker if it doesn't exist
                     markers[truck.truck_id] = new google.maps.Marker({
                         position: position,
                         map: map,
@@ -139,23 +132,43 @@ function updateLocation() {
                         }
                     });
 
+                    // Create an InfoWindow
                     let infoWindow = new google.maps.InfoWindow();
+
+                    // Add click event listener
                     markers[truck.truck_id].addListener('click', () => {
+                        let distance = parseFloat(truck.total_distance) || 0; // Ensure it's a number
                         infoWindow.setContent(`
-                            <b>Driver:</b> ${truck.fullname}<br>
-                            <b>Truck ID:</b> ${truck.truck_id}<br>
-                            <b>Latitude:</b> ${truck.latitude}<br>
-                            <b>Longitude:</b> ${truck.longitude}
+                            Driver: ${truck.fullname} <br>
+                            Plate Number: ${truck.truck_id} <br>
+                            Latitude: ${truck.latitude} <br>
+                            Longitude: ${truck.longitude} <br>
+                            Total Distance: ${distance.toFixed(2)} km
                         `);
                         infoWindow.open(map, markers[truck.truck_id]);
                     });
 
                 } else {
+                    // Update existing marker position
                     markers[truck.truck_id].setPosition(position);
                 }
             });
         })
         .catch(error => console.error("❌ Error fetching truck locations:", error));
+}
+
+// Fetch and update truck distances
+function updateDistances() {
+    fetch('/get-truck-distance')
+        .then(response => response.json())
+        .then(data => {
+            console.log("📏 Updated truck distances:", data);
+
+            data.forEach(truck => {
+                distances[truck.truck_id] = parseFloat(truck.total_distance) || 0;
+            });
+        })
+        .catch(error => console.error("❌ Error fetching truck distances:", error));
 }
 </script>
 </body>

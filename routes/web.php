@@ -45,8 +45,14 @@ Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
 Route::get('/get-locations', function () {
     $locations = DB::table('trackings')
-        ->join('users', 'users.truck_id', '=', 'trackings.truck_id')
-        ->select('users.fullname', 'trackings.truck_id', 'trackings.latitude', 'trackings.longitude')
+        ->join('users', 'trackings.truck_id', '=', 'users.truck_id') // ✅ Join driver info
+        ->select(
+            'trackings.truck_id',
+            'trackings.latitude',
+            'trackings.longitude',
+            'trackings.total_distance',
+            'users.fullname'
+        )
         ->where('users.role', 'driver')
         ->get();
 
@@ -91,15 +97,23 @@ Route::post('/fuel-consumption', [FuelManagerController::class, 'store'])->name(
 Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
 Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
 Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']); // ✅ New route for multiple trucks
+Route::get('/get-truck-distance', [GPSControlController::class, 'getTruckDistances']);
 Route::get('/get-locations', function () {
     $locations = DB::table('trackings')
-        ->join('users', 'users.truck_id', '=', 'trackings.truck_id')
-        ->select('users.fullname', 'trackings.truck_id', 'trackings.latitude', 'trackings.longitude')
+        ->join('users', 'trackings.truck_id', '=', 'users.truck_id') // ✅ Join driver info
+        ->select(
+            'trackings.truck_id',
+            'trackings.latitude',
+            'trackings.longitude',
+            'trackings.total_distance',
+            'users.fullname'
+        )
         ->where('users.role', 'driver')
         ->get();
 
     return response()->json($locations);
 });
+
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
