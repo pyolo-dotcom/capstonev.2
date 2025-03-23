@@ -76,51 +76,59 @@
             </div>
             
             <div class="card p-4 shadow relative">
-                <div class="table-container">
-                    <table class="table text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Username</th>
-                                <th>Full Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="active-accounts-body">
-                            @foreach($users as $user)
-                            <tr>
-                                <td>{{$user->id}}</td>
-                                <td>{{$user->username}}</td>
-                                <td>{{$user->fullname}}</td>
-                                <td>{{$user->email}}</td>
-                                <td>{{$user->role}}</td>
-                                <td>
-                                    <!-- Edit Button -->
-                                    <button class="btn btn-primary edit-btn" 
-                                            data-id="{{$user->id}}" 
-                                            data-username="{{$user->username}}" 
-                                            data-fullname="{{$user->fullname}}" 
-                                            data-email="{{$user->email}}" 
-                                            data-role="{{$user->role}}" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editArchiveModal">
-                                        Edit
-                                    </button>
-
-                                    <!-- Archive Button -->
-                                    <button class="btn btn-danger archive-btn" 
-                                            data-id="{{$user->id}}" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#editArchiveModal">
-                                        Archive
-                                    </button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+            <table class="table text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Employee ID</th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>License Number</th>
+            <th>License Type</th>
+            <th>Expiry Date</th>
+            <th>Plate Number</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="active-accounts-body">
+        @foreach($users as $user)
+        <tr>
+            <td>{{$user->id}}</td>
+            <td>{{$user->username}}</td>
+            <td>{{$user->fullname}}</td>
+            <td>{{$user->email}}</td>
+            <td>{{$user->role}}</td>
+            <td>{{$user->driver_license_number}}</td>
+            <td>{{$user->license_type}}</td>
+            <td>{{$user->license_expiry_date}}</td>
+            <td>{{$user->truck_id}}</td>
+            <td>
+                <button class="btn btn-primary edit-btn" 
+                        data-id="{{$user->id}}" 
+                        data-username="{{$user->username}}" 
+                        data-fullname="{{$user->fullname}}" 
+                        data-email="{{$user->email}}" 
+                        data-role="{{$user->role}}" 
+                        data-license-number="{{$user->driver_license_number}}"
+                        data-license-type="{{$user->license_type}}"
+                        data-license-expiry="{{$user->license_expiry_date}}"
+                        data-truck-id="{{$user->truck_id}}"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editArchiveModal">
+                    Edit
+                </button>
+                <button class="btn btn-danger archive-btn" 
+                        data-id="{{$user->id}}" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editArchiveModal">
+                    Archive
+                </button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
                 </div>
             </div>
         </div>
@@ -152,70 +160,89 @@
     @include('Admin.modals.create_account_modal')
 
     <script>
-        // JavaScript to handle modal population and form submission
-        document.addEventListener('DOMContentLoaded', function () {
-            const editArchiveModal = document.getElementById('editArchiveModal');
-            const editArchiveForm = document.getElementById('editArchiveForm');
-            const modalTitle = document.getElementById('editArchiveModalLabel');
-            const modalContent = document.getElementById('modalContent');
+document.addEventListener('DOMContentLoaded', function () {
+    const editArchiveModal = document.getElementById('editArchiveModal');
+    const editArchiveForm = document.getElementById('editArchiveForm');
+    const modalTitle = document.getElementById('editArchiveModalLabel');
+    const modalContent = document.getElementById('modalContent');
 
-            // Event listener for Edit buttons
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = button.getAttribute('data-id');
-                    const username = button.getAttribute('data-username');
-                    const fullname = button.getAttribute('data-fullname');
-                    const email = button.getAttribute('data-email');
-                    const role = button.getAttribute('data-role');
+    // Event listener for Edit buttons
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            const username = button.getAttribute('data-username');
+            const fullname = button.getAttribute('data-fullname');
+            const email = button.getAttribute('data-email');
+            const role = button.getAttribute('data-role');
+            const licenseNumber = button.getAttribute('data-license-number');
+            const licenseType = button.getAttribute('data-license-type');
+            const licenseExpiry = button.getAttribute('data-license-expiry');
+            const truckId = button.getAttribute('data-truck-id');
 
-                    // Set modal title and content
-                    modalTitle.textContent = 'Edit Account';
-                    modalContent.innerHTML = `
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" class="form-control" value="${username}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fullname">Full Name</label>
-                            <input type="text" id="fullname" name="fullname" class="form-control" value="${fullname}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" value="${email}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <select id="role" name="role" class="form-control" required>
-                                <option value="driver" ${role === 'driver' ? 'selected' : ''}>Driver</option>
-                                <option value="manager" ${role === 'manager' ? 'selected' : ''}>Manager</option>
-                                <option value="admin" ${role === 'admin' ? 'selected' : ''}>Admin</option>
-                            </select>
-                        </div>
-                    `;
+            // Set modal title and content
+            modalTitle.textContent = 'Edit Account';
+            modalContent.innerHTML = `
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" value="${username}" required>
+                </div>
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" class="form-control" value="${fullname}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="${email}" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" class="form-control" required>
+                        <option value="driver" ${role === 'driver' ? 'selected' : ''}>Driver</option>
+                        <option value="manager" ${role === 'manager' ? 'selected' : ''}>Manager</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="driver_license_number">Driver License Number</label>
+                    <input type="text" id="driver_license_number" name="driver_license_number" class="form-control" value="${licenseNumber}" required>
+                </div>
+                <div class="form-group">
+                    <label for="license_type">License Type</label>
+                    <select id="license_type" name="license_type" class="form-control" required>
+                        <option value="Professional" ${licenseType === 'Professional' ? 'selected' : ''}>Professional</option>
+                        <option value="Non-Professional" ${licenseType === 'Non-Professional' ? 'selected' : ''}>Non-Professional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="license_expiry_date">License Expiry Date</label>
+                    <input type="date" id="license_expiry_date" name="license_expiry_date" class="form-control" value="${licenseExpiry}" required>
+                </div>
+                <div class="form-group">
+                    <label for="truck_id">Plate Number</label>
+                    <input type="text" id="truck_id" name="truck_id" class="form-control" value="${truckId}" required>
+                </div>
+            `;
 
-                    // Set form action and method
-                    editArchiveForm.action = `/admin/activeaccount/${id}`;
-                    editArchiveForm.querySelector('input[name="_method"]').value = 'PUT';
-                });
-            });
-
-            // Event listener for Archive buttons
-            document.querySelectorAll('.archive-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = button.getAttribute('data-id');
-
-                    // Set modal title and content
-                    modalTitle.textContent = 'Archive Account';
-                    modalContent.innerHTML = `
-                        <p>Are you sure you want to archive this account?</p>
-                    `;
-
-                    // Set form action and method
-                    editArchiveForm.action = `/admin/activeaccount/${id}`;
-                    editArchiveForm.querySelector('input[name="_method"]').value = 'DELETE';
-                });
-            });
+            // Set form action and method
+            editArchiveForm.action = `/admin/activeaccount/${id}`;
+            editArchiveForm.querySelector('input[name="_method"]').value = 'PUT';
         });
+    });
+
+    // Event listener for Archive buttons
+    document.querySelectorAll('.archive-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+
+            // Set modal title and content
+            modalTitle.textContent = 'Archive Account';
+            modalContent.innerHTML = `<p>Are you sure you want to archive this account?</p>`;
+
+            // Set form action and method
+            editArchiveForm.action = `/admin/activeaccount/${id}`;
+            editArchiveForm.querySelector('input[name="_method"]').value = 'DELETE';
+        });
+    });
+});
     </script>
 </body>
 </html>

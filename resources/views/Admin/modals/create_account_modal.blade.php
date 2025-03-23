@@ -7,7 +7,6 @@
                 <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- Form for creating a new account -->
                 <form id="create-account-form" method="POST" action="{{ route('admin.activeaccount.store') }}">
                     @csrf
                     @method('POST')
@@ -34,17 +33,38 @@
 
                     <!-- Role Selection Field -->
                     <div class="form-group">
-                        <select id="role" name="role" class="form-control input-box input-size" required onchange="toggleTruckIdField()">
+                        <select id="role" name="role" class="form-control input-box input-size" required onchange="toggleDriverFields()">
                             <option value="">Select Position</option>
                             <option value="driver">Driver</option>
                             <option value="manager">Manager</option>
-                            <option value="admin">Admin</option>
                         </select>
                     </div>
 
-                    <!-- Truck ID Field (Conditional) -->
-                    <div class="form-group" id="truckIdField" style="display: none;">
-                        <input type="text" id="truck_id" name="truck_id" class="form-control input-box" placeholder="Truck ID">
+                    <!-- Driver License Fields (Hidden by Default) -->
+                    <div id="driverFields" style="display: none;">
+                        <!-- License Number -->
+                        <div class="form-group">
+                            <input type="text" id="driver_license_number" name="driver_license_number" class="form-control input-box" placeholder="Driver License Number">
+                        </div>
+
+                        <!-- License Type -->
+                        <div class="form-group">
+                            <select id="license_type" name="license_type" class="form-control input-box">
+                                <option value="">Select License Type</option>
+                                <option value="Professional">Professional</option>
+                                <option value="Non-Pro">Non-Pro</option>
+                            </select>
+                        </div>
+
+                        <!-- License Expiry Date -->
+                        <div class="form-group">
+                            <input type="date" id="license_expiry_date" name="license_expiry_date" class="form-control input-box">
+                        </div>
+
+                        <!-- Truck ID -->
+                        <div class="form-group">
+                            <input type="text" id="truck_id" name="truck_id" class="form-control input-box" placeholder="Plate Number">
+                        </div>
                     </div>
 
                     <!-- Password Field -->
@@ -68,62 +88,28 @@
     </div>
 </div>
 
-<!-- Styles for the modal -->
-<style>
-    .modal-content {
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .modal-header {
-        position: relative;
-        text-align: center;
-        width: 100%;
-    }
-
-    .close-button {
-        position: absolute;
-        top: -50px; /* Move higher */
-        right: -15px;
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-        color: #000;
-    }
-
-    .close-button:hover {
-        color: #ff0000;
-    }
-
-    .input-box {
-        border-radius: 20px;
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-    }
-
-    .input-size {
-        height: 45px; /* Ensuring same height as the other input fields */
-    }
-
-    .submit-button {
-        border-radius: 20px;
-        background-color: #004aad;
-        border: none;
-        color: white;
-        padding: 10px;
-        margin-top: 10px;
-    }
-
-    .submit-button:hover {
-        background-color: #00308f;
-    }
-</style>
-
-<!-- JavaScript for form validation and dynamic fields -->
+<!-- JavaScript for Dynamic Role Selection -->
 <script>
-    // Function to validate password match
+    function toggleDriverFields() {
+        var role = document.getElementById('role').value;
+        var driverFields = document.getElementById('driverFields');
+
+        if (role === 'driver') {
+            driverFields.style.display = 'block';
+            document.getElementById('license_number').setAttribute('required', true);
+            document.getElementById('license_type').setAttribute('required', true);
+            document.getElementById('license_expiry_date').setAttribute('required', true);
+            document.getElementById('truck_id').setAttribute('required', true);
+        } else {
+            driverFields.style.display = 'none';
+            document.getElementById('license_number').removeAttribute('required');
+            document.getElementById('license_type').removeAttribute('required');
+            document.getElementById('license_expiry_date').removeAttribute('required');
+            document.getElementById('truck_id').removeAttribute('required');
+        }
+    }
+
+    // Password validation
     document.getElementById('create-account-form').addEventListener('submit', function(event) {
         var password = document.getElementById('password').value;
         var passwordConfirmation = document.getElementById('password_confirmation').value;
@@ -136,18 +122,4 @@
             errorDiv.style.display = 'none';
         }
     });
-
-    // Function to toggle Truck ID field based on role selection
-    function toggleTruckIdField() {
-    var role = document.getElementById('role').value;
-    var truckIdField = document.getElementById('truckIdField');
-
-    if (role === 'driver') {
-        truckIdField.style.display = 'block';
-        document.getElementById('truck_id').setAttribute('required', true); // Gawing required kapag driver
-    } else {
-        truckIdField.style.display = 'none';
-        document.getElementById('truck_id').removeAttribute('required'); // Alisin ang required attribute kapag hindi driver
-    }
-}
 </script>
