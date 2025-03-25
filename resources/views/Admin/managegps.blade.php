@@ -117,11 +117,26 @@ function updateLocation() {
         .then(data => {
             console.log("🔄 Updated truck locations:", data);
 
+            if (!Array.isArray(data) || data.length === 0) {
+                console.warn("⚠️ No truck data received.");
+                return;
+            }
+
             data.forEach(truck => {
-                let position = { lat: parseFloat(truck.latitude), lng: parseFloat(truck.longitude) };
+                if (!truck.latitude || !truck.longitude) {
+                    console.warn(`⚠️ Missing location data for Truck ${truck.truck_id}`, truck);
+                    return;
+                }
+
+                let position = {
+                    lat: parseFloat(truck.latitude),
+                    lng: parseFloat(truck.longitude)
+                };
 
                 if (!markers[truck.truck_id]) {
-                    // Create a new marker if it doesn't exist
+                    console.log(`🆕 Adding marker for Truck ${truck.truck_id}`);
+
+                    // Create new marker
                     markers[truck.truck_id] = new google.maps.Marker({
                         position: position,
                         map: map,
@@ -132,12 +147,9 @@ function updateLocation() {
                         }
                     });
 
-                    // Create an InfoWindow
                     let infoWindow = new google.maps.InfoWindow();
-
-                    // Add click event listener
                     markers[truck.truck_id].addListener('click', () => {
-                        let distance = parseFloat(truck.total_distance) || 0; // Ensure it's a number
+                        let distance = parseFloat(truck.total_distance) || 0;
                         infoWindow.setContent(`
                             Driver: ${truck.fullname} <br>
                             Plate Number: ${truck.truck_id} <br>
@@ -149,8 +161,9 @@ function updateLocation() {
                     });
 
                 } else {
-                    // Update existing marker position
+                    // Update existing marker
                     markers[truck.truck_id].setPosition(position);
+                    console.log(`🔄 Updated marker for Truck ${truck.truck_id}`);
                 }
             });
         })
