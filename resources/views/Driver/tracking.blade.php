@@ -11,7 +11,7 @@
     <p id="status">Fetching location...</p>
 
     <script>
- // Open IndexedDB
+// Open IndexedDB
 function openDB() {
     return new Promise((resolve, reject) => {
         let request = indexedDB.open("TrackingDB", 1);
@@ -57,7 +57,7 @@ function haversine(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-function sendLocation(truckId, latitude, longitude) {
+function sendLocation(truckId, latitude, longitude, totalDistance) {
     let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     fetch('/update-location', {
@@ -66,7 +66,12 @@ function sendLocation(truckId, latitude, longitude) {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken
         },
-        body: JSON.stringify({ truck_id: truckId, latitude, longitude })
+        body: JSON.stringify({ 
+            truck_id: truckId, 
+            latitude, 
+            longitude,
+            total_distance: totalDistance // Send total distance to backend
+        })
     })
     .then(response => response.json())
     .then(data => console.log(`📡 Truck ${truckId} updated successfully:`, data))
@@ -81,23 +86,23 @@ async function updateDriverLocation() {
             let lastLocation = await getFromDB("latestLocation");
             let totalDistance = await getFromDB("totalDistance") || 0;
 
-            // **🔄 Reset distance if it's a new day**
+            // 🔄 **Reset total distance if a new day starts**
             let lastReset = await getFromDB("lastResetDate");
             let today = new Date().toISOString().split("T")[0]; // Get YYYY-MM-DD format
 
             if (lastReset !== today) {
-                totalDistance = 0; // Reset distance
+                totalDistance = 0; // Reset total distance
                 await saveToDB("lastResetDate", today);
                 console.log("✅ Total distance reset for new day:", today);
             }
 
-            // **Calculate distance only if there is a last location**
+            // ✅ **Calculate distance only if last location exists**
             if (lastLocation) {
                 let distance = haversine(lastLocation.latitude, lastLocation.longitude, latitude, longitude);
                 totalDistance += distance;
             }
 
-            // **Save new location and total distance**
+            // **Save new location and updated total distance**
             await saveToDB("latestLocation", { latitude, longitude });
             await saveToDB("totalDistance", totalDistance);
 
@@ -105,7 +110,7 @@ async function updateDriverLocation() {
             console.log(`🚛 Total Distance Today: ${totalDistance.toFixed(2)} km`);
 
             let truckId = "{{ Auth::user()->truck_id ?? '' }}".trim(); // Ensure truckId is defined
-            sendLocation(truckId, latitude, longitude);
+            sendLocation(truckId, latitude, longitude, totalDistance);
         }, error => console.error("❌ Geolocation error:", error));
     } else {
         console.error("❌ Geolocation is not supported by this browser.");
@@ -114,6 +119,6 @@ async function updateDriverLocation() {
 
 // **Run tracking every 5 seconds**
 setInterval(updateDriverLocation, 5000);
-</script>
+    </script>
 </body>
 </html>
