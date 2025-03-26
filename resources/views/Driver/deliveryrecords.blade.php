@@ -24,9 +24,16 @@
         }
 
         .content {
-            padding: 20px;
+        padding: 20px;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        transition: margin-left 0.2s ease;
+        max-width: 100%; /* Ensure content doesn't exceed the viewport width */
+    }
+
+        .item {
             flex-grow: 1;
-            transition: margin-left 0.2s ease;
+            flex-basis: 200;
         }
 
         /* Top Bar */
@@ -57,16 +64,16 @@
         }
 
         .trip-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            min-width: 200px; /* Set minimum width */
-            height: 180px;
-            margin: 7px; /* Uniform margin */
-            flex: 1 1 calc(33.333% - 20px); /* Standard for three in a row */
-        }
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        min-width: 200px; /* Set minimum width */
+        height: 180px;
+        margin: 7px; /* Uniform margin */
+        flex: 1 1 calc(33.333% - 20px); /* Standard for three in a row */
+    }
 
         .trip-card h3 {
             font-size: 14px;
@@ -99,28 +106,79 @@
 
         /* Responsive Adjustments */
         @media (max-width: 768px) {
-            .add-trip-btn {
-                font-size: 14px;
-                padding: 8px 10px;
-            }
-
-            .trip-card {
-                flex: 1 1 calc(50% - 20px); /* Two in a row on medium screens */
-            }
+        .add-trip-btn {
+            font-size: 14px;
+            padding: 8px 10px;
         }
 
-        @media (max-width: 576px) {
-            .trip-card {
-                flex: 1 1 100%; /* Stacks vertically on small screens */
-                margin-bottom: 15px; /* Extra spacing between cards */
-            }
-
-            .top-bar {
-                flex-direction: column;
-                align-items: flex-start;
-                margin-top: 10px; /* Adjust margin */
-            }
+        .trip-card {
+            flex: 1 1 calc(50% - 20px); /* Two in a row on medium screens */
         }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 10px; /* Adjust margin */
+        }
+    }
+    @media (max-width: 576px) {
+        .trip-card {
+            flex: 1 1 100%; /* Stacks vertically on small screens */
+            margin-bottom: 15px; /* Extra spacing between cards */
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 10px; /* Adjust margin */
+        }
+
+        .add-trip-btn {
+            font-size: 12px; /* Further reduce button font size */
+            padding: 6px 8px; /* Adjust button padding */
+        }
+
+        .plate-number-section select {
+            width: 100%; /* Full width for dropdown */
+            font-size: 14px; /* Adjust font size */
+        }
+    }
+    .plate-number-section {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Add spacing between dropdown and button */
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+
+    .add-trip-btn {
+        margin: 0; /* Remove unnecessary margins */
+        padding: 8px 12px; /* Adjust padding for better fit */
+        font-size: 14px; /* Adjust font size */
+    }
+
+    @media (max-width: 768px) {
+        .plate-number-section {
+            flex-direction: row; /* Ensure dropdown and button are side by side */
+            justify-content: space-between; /* Add spacing between elements */
+        }
+
+        .add-trip-btn {
+            font-size: 12px; /* Reduce button font size for smaller screens */
+            padding: 6px 8px; /* Adjust button padding */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .plate-number-section {
+            flex-direction: column; /* Stack dropdown and button vertically on very small screens */
+            align-items: flex-start; /* Align items to the start */
+        }
+
+        .add-trip-btn {
+            width: 30%; /* Full width for the button */
+            text-align: center; /* Center the button text */
+        }
+    }
     </style>
 </head>
 

@@ -52,7 +52,12 @@ body {
     margin-left: 270px;
     padding: 20px;
     flex-grow: 1;
+    flex-wrap: wrap;
 }
+.item {
+            flex-grow: 1;
+            flex-basis: 200;
+        }
 .chart-container {
     width: 90%;
     margin-left: 53px;
@@ -147,13 +152,72 @@ body {
     max-height: 1000vh;
     height: 68vh;
 }
+@media (max-width: 768px) {
+        body {
+            flex-direction: column; /* Stack sidebar and content vertically */
+        }
+
+        .sidebar {
+            width: 100%; /* Full width for the sidebar */
+            height: auto; /* Adjust height */
+            position: relative; /* Remove fixed positioning */
+        }
+
+        .content {
+            margin-left: 0; /* Remove left margin */
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        .filter-section {
+            flex-direction: column; /* Stack filter elements vertically */
+            align-items: flex-start; /* Align items to the start */
+            gap: 10px; /* Reduce gap between elements */
+        }
+
+        #plateNumberSelect {
+            width: 100%; /* Full width for dropdown */
+        }
+
+        .time-filter {
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            gap: 5px; /* Reduce gap between buttons */
+        }
+
+        .chart-container {
+            width: 100%; /* Full width for the chart */
+            margin-left: 0; /* Remove left margin */
+            margin-top: 10px; /* Adjust top margin */
+        }
+
+        #fuelChart {
+            height: 50vh; /* Adjust chart height for smaller screens */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .time-filter-btn {
+            font-size: 12px; /* Reduce button font size */
+            padding: 5px 10px; /* Adjust button padding */
+        }
+
+        .add-consumption-btn {
+            font-size: 14px; /* Reduce button font size */
+            padding: 5px 8px; /* Adjust button padding */
+        }
+
+        .add-consumption-btn .plus-circle {
+            width: 20px; /* Adjust circle size */
+            height: 20px;
+            font-size: 12px; /* Adjust font size */
+        }
+    }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <h2>Sidebar Menu</h2>
         <ul>
-            <x-managernavbar/>
+            <x-drivernavbar/>
         </ul>
     </div>
 
@@ -189,7 +253,7 @@ body {
 let fuelChart = null;
 document.addEventListener('DOMContentLoaded', function () {
     let ctx = document.getElementById('fuelChart').getContext('2d');
-    let fuelChartCanvas = document.getElementById('fuelChart'); 
+    let fuelChartCanvas = document.getElementById('fuelChart');
     let selectedTimeFilter = 'weekly';
     let selectedPlateNumber = null;
 
@@ -287,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle plate number selection
     document.getElementById('plateNumberSelect').addEventListener('change', function () {
         selectedPlateNumber = this.value.trim();
-        
+
         if (selectedPlateNumber === "-- Plate Number --") {
             fuelChartCanvas.style.display = 'none'; // Hide only the graph
         } else {

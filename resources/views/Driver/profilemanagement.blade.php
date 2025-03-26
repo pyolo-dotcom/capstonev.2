@@ -144,6 +144,67 @@
                 padding: 15px;
             }
         }
+        @media (max-width: 768px) {
+        body {
+            flex-direction: column; /* Stack sidebar and content vertically */
+        }
+
+        .sidebar {
+            width: 100%; /* Full width for the sidebar */
+            height: auto; /* Adjust height */
+            position: relative; /* Remove fixed positioning */
+        }
+
+        .content {
+            margin-left: 0; /* Remove left margin */
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        .profile-card {
+            padding: 15px; /* Adjust padding for smaller screens */
+            box-shadow: none; /* Remove shadow for a cleaner look */
+        }
+
+        .profile-picture-container img {
+            width: 100px; /* Reduce profile picture size */
+            height: 100px;
+        }
+
+        .btn {
+            font-size: 14px; /* Adjust button font size */
+            padding: 8px; /* Adjust button padding */
+        }
+
+        .form-group label {
+            font-size: 14px; /* Adjust label font size */
+        }
+
+        .form-group input {
+            font-size: 14px; /* Adjust input font size */
+            padding: 8px; /* Adjust input padding */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-picture-container img {
+            width: 80px; /* Further reduce profile picture size */
+            height: 80px;
+        }
+
+        .btn {
+            font-size: 12px; /* Further reduce button font size */
+            padding: 6px; /* Adjust button padding */
+        }
+
+        .form-group label {
+            font-size: 12px; /* Further reduce label font size */
+        }
+
+        .form-group input {
+            font-size: 12px; /* Further reduce input font size */
+            padding: 6px; /* Adjust input padding */
+        }
+    }
     </style>
 </head>
 
@@ -163,11 +224,11 @@
                     <div class="profile-card text-center">
                         <!-- Profile Picture with Edit Overlay -->
                         <div class="profile-picture-container">
-                            <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}" 
-                                alt="Profile Image" 
+                            <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}"
+                                alt="Profile Image"
                                 id="profileImagePreview">
                         </div>
-                        
+
                         <!-- User Info -->
                         <h4 class="mt-3">{{ $user->fullname }}</h4>
                         <p class="text-muted">{{ $user->role }}</p>

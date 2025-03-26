@@ -116,6 +116,59 @@
                 padding: 15px;
             }
         }
+        @media (max-width: 768px) {
+        body {
+            flex-direction: column; /* Stack sidebar and content vertically */
+        }
+
+        .sidebar {
+            width: 100%; /* Full width for the sidebar */
+            height: auto; /* Adjust height */
+            position: relative; /* Remove fixed positioning */
+        }
+
+        .content {
+            margin-left: 0; /* Remove left margin */
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        #cargoForm {
+            width: 100%; /* Full width for the form */
+            margin: 0; /* Remove auto centering */
+            padding: 10px; /* Add padding for better spacing */
+        }
+
+        #cargoForm h2 {
+            margin-left: 0; /* Align heading properly */
+            text-align: center; /* Center the heading */
+        }
+
+        #cargoForm input {
+            font-size: 14px; /* Adjust font size for smaller screens */
+            padding: 8px; /* Adjust padding for inputs */
+        }
+
+        #cargoForm button {
+            font-size: 14px; /* Adjust button font size */
+            padding: 8px; /* Adjust button padding */
+        }
+
+        #qrCodeContainer {
+            margin-top: 15px; /* Adjust spacing for QR code container */
+        }
+    }
+
+    @media (max-width: 480px) {
+        #cargoForm input {
+            font-size: 12px; /* Further reduce font size for very small screens */
+            padding: 6px; /* Adjust padding for inputs */
+        }
+
+        #cargoForm button {
+            font-size: 12px; /* Further reduce button font size */
+            padding: 6px; /* Adjust button padding */
+        }
+    }
     </style>
 </head>
 
@@ -125,7 +178,7 @@
 
     <div class="content">
         <form id="cargoForm">
-            <h2 style="margin-left: 10rem;">Generate QR Code:</h2>
+            <h2>Generate QR Code:</h2>
             <input type="text" name="plate_no" placeholder="Plate No" required>
             <input type="text" name="eir_no" placeholder="EIR No" required>
             <input type="text" name="container_van_no" placeholder="Container Van No" required>

@@ -130,6 +130,50 @@
 .submenu .submenu-item.active {
     background-color: #5a697d;
 }
+@media (max-width: 768px) {
+        .sidebar.collapsed .menu a span {
+            display: none; /* Hide text */
+        }
+
+        .sidebar.collapsed .menu a i {
+            margin-right: 0; /* Adjust icon spacing */
+        }
+
+        .sidebar.collapsed .sidebar-header h2,
+        .sidebar.collapsed .sidebar-header p {
+            display: none; /* Hide header text */
+        }
+
+        .sidebar.collapsed {
+            width: 60px; /* Adjust sidebar width for mobile */
+        }
+
+        .content.collapsed {
+            margin-left: 60px; /* Adjust content margin */
+        }
+    }
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 60px; /* Collapsed width */
+        }
+
+        .sidebar .menu a span {
+            display: none; /* Hide text */
+        }
+
+        .sidebar .menu a i {
+            margin-right: 0; /* Adjust icon spacing */
+        }
+
+        .sidebar .sidebar-header h2,
+        .sidebar .sidebar-header p {
+            display: none; /* Hide header text */
+        }
+
+        .content {
+            margin-left: 60px; /* Adjust content margin */
+        }
+    }
 </style>
 
 <!-- Sidebar -->
@@ -246,4 +290,27 @@
 
     // I-call ang function kapag na-load ang page
     document.addEventListener('DOMContentLoaded', setActiveMenuItem);
+
+    // Function to toggle the sidebar
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebar');
+        const content = document.querySelector('.content');
+
+        // Automatically collapse the sidebar on smaller screens
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('collapsed');
+            content.classList.add('collapsed');
+        }
+
+        // Add a resize event listener to handle screen resizing
+        window.addEventListener('resize', function () {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('collapsed');
+            } else {
+                sidebar.classList.remove('collapsed');
+                content.classList.remove('collapsed');
+            }
+        });
+    });
 </script>
