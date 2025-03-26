@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -19,22 +20,18 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        // Just validate credentials here, OTP will handle login
+        $user = User::where('username', $request->username)->first();
 
-            // Redirect users based on their roles
-            switch ($user->role) {
-                case 'admin':
-                    return redirect()->route('admin.deliveryrecords');
-                case 'manager':
-                    return redirect()->route('manager.deliveryrecords');
-                case 'driver':
-                    return redirect()->route('driver.deliveryrecords');
-                default:
-                    return redirect()->route('home');
-            }
+        if (!$user || !\Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['login_error' => 'Invalid username or password']);
         }
 
-        return back()->withErrors(['login_error' => 'Invalid username or password']);
+        // Store credentials in session for OTP process
+        $request->session()->put('otp_username', $request->username);
+        $request->session()->put('otp_password', $request->password);
+
+        // Redirect to OTP verification
+        return redirect()->route('verify.otp.view');
     }
 }

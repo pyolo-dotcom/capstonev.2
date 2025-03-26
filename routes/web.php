@@ -26,10 +26,12 @@ use App\Http\Controllers\AuthController;
 use App\Models\Tracking;
 use App\Models\User;
 use App\Http\Controllers\DriverTrackingController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\OTPController;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
-Route::post('/', [LoginController::class, 'processLogin'])->name('login.post');
+Route::post('/', [OTPController::class, 'sendOTP'])->name('login.post');
 
 // Admin Routes
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
@@ -180,3 +182,14 @@ Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTr
 //Archive Trip Records Restore & Delete
 Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
 Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');
+
+// Forgot Password Routes
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
+// OTP Verification Routes
+Route::get('/verify-otp', [OTPController::class, 'showOTPForm'])->name('verify.otp.view');
+Route::post('/verify-otp', [OTPController::class, 'verifyOTP'])->name('verify.otp');
+Route::post('/send-otp', [OTPController::class, 'sendOTP'])->name('send.otp');

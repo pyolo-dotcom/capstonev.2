@@ -21,19 +21,24 @@ class User extends Authenticatable
         'password',
         'truck_id',
         'profile_picture',
-        'driver_license_number', // Added driver's license number
-        'license_expiry_date',   // Added license expiry date
-        'license_type',          // Added license type
+        'driver_license_number',
+        'license_expiry_date',
+        'license_type',
+        'otp',
+        'otp_expires_at'
     ];
 
-    protected $dates = ['deleted_at']; // Idagdag ang deleted_at sa dates
+    protected $dates = ['deleted_at'];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'otp',
+        'otp_expires_at'
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'otp_expires_at' => 'datetime'
     ];
 }

@@ -157,11 +157,15 @@
     </div>
 
     <!-- Login Form -->
-    <form method="POST" action="{{ route('login') }}" class="login-form">
+    <!-- Login Form -->
+    <form method="POST" action="{{ route('login.post') }}" class="login-form">
       @csrf
       <input type="text" name="username" placeholder="username" class="input-field" required>
       <input type="password" name="password" placeholder="password" class="input-field" required>
       <button type="submit" class="login-button">LOGIN</button>
+      <div style="text-align: center; margin-top: 15px;">
+          <a href="{{ route('password.request') }}" style="color: #4da6ff; text-decoration: none;">Forgot Password?</a>
+      </div>
     </form>
 
     <!-- Error Display -->
