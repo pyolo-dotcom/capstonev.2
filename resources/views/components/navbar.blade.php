@@ -215,6 +215,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('admin.truckdetails') }}" class="menu-item" id="trucksBtn">
+                <i class="bi bi-truck"></i> Truck Details
+            </a>
+        </li>
+        <li>
             <a href="#" class="menu-item dropdown-toggle" id="settings-toggle">
                 <i class="bi bi-fuel-pump"></i> Settings
                 <i class="bi bi-chevron-down dropdown-arrow"></i> <!-- Arrow icon -->

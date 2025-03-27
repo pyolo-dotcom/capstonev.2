@@ -7,18 +7,20 @@ use App\Models\User; // Gamitin ang User model para sa mga account
 use App\Models\Profit; // Gamitin ang Profit model para sa mga profit records
 use App\Models\FuelConsumption;
 use App\Models\Cargo;
+use App\Models\Truck;
 
 class ArchiveController extends Controller
 {
     // Ipakita ang archived accounts
     public function showArchive()
     {
-        $archivedUsers = User::onlyTrashed()->get(); // Kunin ang mga archived accounts
-        $archivedProfits = Profit::onlyTrashed()->get(); // Kunin ang mga archived profit records
-        $archivedFuel = FuelConsumption::onlyTrashed()->get(); // Kunin ang mga archived fuel consumption records
-        $archivedTrips = Cargo::where('is_archived', 1)->get(); // Kunin ang mga archived trips
+        $archivedUsers = User::onlyTrashed()->get();
+        $archivedProfits = Profit::onlyTrashed()->get();
+        $archivedFuel = FuelConsumption::onlyTrashed()->get();
+        $archivedTrips = Cargo::where('is_archived', 1)->get();
+        $archivedTrucks = Truck::onlyTrashed()->get();
 
-        return view('admin.archive', compact('archivedUsers', 'archivedProfits', 'archivedFuel', 'archivedTrips'));
+        return view('admin.archive', compact('archivedUsers', 'archivedProfits', 'archivedFuel', 'archivedTrips', 'archivedTrucks'));
     }
 
     // I-archive ang account
@@ -97,5 +99,28 @@ class ArchiveController extends Controller
         $trip = Cargo::findOrFail($id);
         $trip->delete(); // Permanenteng tanggalin ang trip
         return redirect()->route('admin.archive')->with('success', 'Trip permanently deleted.');
+    }
+
+    // Add these methods to your ArchiveController
+
+    public function archiveTruck($id)
+    {
+        $truck = Truck::findOrFail($id);
+        $truck->delete();
+        return redirect()->back()->with('success', 'Truck archived successfully.');
+    }
+
+    public function restoreTruck($id)
+    {
+        $truck = Truck::onlyTrashed()->findOrFail($id);
+        $truck->restore();
+        return redirect()->route('admin.archive')->with('success', 'Truck restored successfully.');
+    }
+
+    public function destroyTruck($id)
+    {
+        $truck = Truck::onlyTrashed()->findOrFail($id);
+        $truck->forceDelete();
+        return redirect()->route('admin.archive')->with('success', 'Truck permanently deleted.');
     }
 }

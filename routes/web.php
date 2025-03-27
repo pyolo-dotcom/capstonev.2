@@ -28,6 +28,7 @@ use App\Models\User;
 use App\Http\Controllers\DriverTrackingController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\OTPController;
+use App\Http\Controllers\TruckController;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -42,6 +43,7 @@ Route::get('admin/managetrip', [ManageTripController::class, 'ShowManageTrip'])-
 Route::put('/admin/update-trip/{id}', [ManageTripController::class, 'UpdateManageTrip'])->name('admin.updateTrip');
 Route::get('admin/managegps', [ManageGPSController::class, 'showManageGPS'])->name('admin.managegps');
 Route::get('admin/fuel', [FuelController::class, 'showFuel'])->name('admin.fuel');
+Route::get('admin/truckdetails', [TruckController::class, 'showTruck'])->name('admin.truckdetails');
 Route::get('admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
 Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name('admin.activeaccount');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
@@ -193,3 +195,15 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name
 Route::get('/verify-otp', [OTPController::class, 'showOTPForm'])->name('verify.otp.view');
 Route::post('/verify-otp', [OTPController::class, 'verifyOTP'])->name('verify.otp');
 Route::post('/send-otp', [OTPController::class, 'sendOTP'])->name('send.otp');
+
+// Add this with your other admin routes
+Route::post('admin/truckdetails/store', [TruckController::class, 'store'])->name('admin.truckdetails.store');
+
+// Add these with your other truck routes
+Route::put('admin/truckdetails/{id}', [TruckController::class, 'update'])->name('admin.truckdetails.update');
+Route::delete('admin/truckdetails/{id}', [TruckController::class, 'destroy'])->name('admin.truckdetails.destroy');
+
+// Truck archive routes
+Route::delete('admin/truckdetails/archive/{id}', [ArchiveController::class, 'archiveTruck'])->name('admin.truckdetails.archive');
+Route::put('admin/archive/restore/truck/{id}', [ArchiveController::class, 'restoreTruck'])->name('admin.archive.restore.truck');
+Route::delete('admin/archive/delete/truck/{id}', [ArchiveController::class, 'destroyTruck'])->name('admin.archive.delete.truck');
