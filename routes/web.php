@@ -35,6 +35,7 @@ Route::get('/', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/', [OTPController::class, 'sendOTP'])->name('login.post');
 
 // Admin Routes
+Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
 Route::get('admin/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
 Route::put('/trips/update/{id}', [DeliveryRecordsController::class, 'update'])->name('trips.update');
@@ -81,6 +82,7 @@ Route::put('admin/archive/restore/profit/{id}', [ArchiveController::class, 'rest
 Route::delete('admin/archive/delete/profit/{id}', [ArchiveController::class, 'destroyProfit'])->name('admin.archive.delete.profit');
 
 // Manager Routes
+Route::post('/manager/reset-distance/{truck_id}', [GPSControlController::class, 'resetDistance']);
 Route::get('manager/deliveryrecords', [DeliveryManagerController::class, 'showDeliveryManager'])->name('manager.deliveryrecords');
 Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])->name('manager.managetrip');
 Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
