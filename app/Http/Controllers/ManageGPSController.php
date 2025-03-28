@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\GpsData;
 
 class ManageGPSController extends Controller
@@ -15,30 +16,12 @@ class ManageGPSController extends Controller
         return view('admin.managegps', compact('gpsData'));
     }
 
-    public function storeGpsData(Request $request)
+    public function resetDistance($truck_id)
     {
-        // I-validate ang data
-        $request->validate([
-            'device_id' => 'required|string',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-        ]);
-
-        // I-save ang GPS data sa database
-        GpsData::create([
-            'device_id' => $request->device_id,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'timestamp' => now(),
-        ]);
-
-        return response()->json(['message' => 'GPS data saved successfully']);
-    }
-
-    public function fetchGpsData()
-    {
-        // Kunin ang latest GPS data
-        $gpsData = GpsData::latest()->first();
-        return response()->json($gpsData);
+        $updated = DB::table('trackings')
+                    ->where('truck_id', $truck_id)
+                    ->update(['total_distance' => 0.00]);
+    
+        return response()->json(['success' => $updated]);
     }
 }

@@ -44,6 +44,16 @@ async function getFromDB(key) {
     });
 }
 
+// Function to update multiple IndexedDB values in one transaction
+async function updateDB(location, distance) {
+    let db = await openDB();
+    let tx = db.transaction("tracking", "readwrite");
+    let store = tx.objectStore("tracking");
+    store.put({ id: "latestLocation", value: location });
+    store.put({ id: "totalDistance", value: distance });
+    return tx.complete;
+}
+
 // Haversine formula to calculate distance
 function haversine(lat1, lon1, lat2, lon2) {
     const R = 6371; // Earth's radius in km
@@ -57,68 +67,69 @@ function haversine(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-function sendLocation(truckId, latitude, longitude, totalDistance) {
+// Function to send location to backend
+async function sendLocation(truckId, latitude, longitude, totalDistance) {
     let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    fetch('/update-location', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
-        },
-        body: JSON.stringify({ 
-            truck_id: truckId, 
-            latitude, 
-            longitude,
-            total_distance: totalDistance // Send total distance to backend
-        })
-    })
-    .then(response => response.json())
-    .then(data => console.log(`📡 Truck ${truckId} updated successfully:`, data))
-    .catch(error => console.error(`❌ Error updating truck ${truckId}:`, error));
+    for (let attempt = 0; attempt < 3; attempt++) { // Retry up to 3 times
+        try {
+            let response = await fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ 
+                    truck_id: truckId, 
+                    latitude, 
+                    longitude,
+                    total_distance: totalDistance
+                })
+            });
+
+            let data = await response.json();
+            console.log(`📡 Truck ${truckId} updated successfully:`, data);
+            return; // Exit loop if successful
+        } catch (error) {
+            console.error(`❌ Attempt ${attempt + 1} failed for truck ${truckId}:`, error);
+        }
+    }
+
+    console.error("❌ Failed to update truck after multiple attempts.");
 }
 
-async function updateDriverLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async position => {
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            let lastLocation = await getFromDB("latestLocation");
-            let totalDistance = await getFromDB("totalDistance") || 0;
+// Function to track driver location
+navigator.geolocation.watchPosition(
+    async position => {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        let accuracy = position.coords.accuracy; // Accuracy in meters
 
-            // 🔄 **Reset total distance if a new day starts**
-            let lastReset = await getFromDB("lastResetDate");
-            let today = new Date().toISOString().split("T")[0]; // Get YYYY-MM-DD format
+        console.log(`📍 GPS Accuracy: ${accuracy} meters`);
+        
+        if (accuracy > 50) { // Ignore low-accuracy readings
+            console.warn("⚠️ GPS accuracy too low, skipping update.");
+            return;
+        }
 
-            if (lastReset !== today) {
-                totalDistance = 0; // Reset total distance
-                await saveToDB("lastResetDate", today);
-                console.log("✅ Total distance reset for new day:", today);
-            }
+        let lastLocation = await getFromDB("latestLocation");
+        let totalDistance = await getFromDB("totalDistance") || 0;
 
-            // ✅ **Calculate distance only if last location exists**
-            if (lastLocation) {
-                let distance = haversine(lastLocation.latitude, lastLocation.longitude, latitude, longitude);
+        if (lastLocation) {
+            let distance = haversine(lastLocation.latitude, lastLocation.longitude, latitude, longitude);
+            if (distance > 0.01) { // Ignore small movements to prevent false tracking
                 totalDistance += distance;
             }
+        }
 
-            // **Save new location and updated total distance**
-            await saveToDB("latestLocation", { latitude, longitude });
-            await saveToDB("totalDistance", totalDistance);
-
-            console.log(`📍 New Location: ${latitude}, ${longitude}`);
-            console.log(`🚛 Total Distance Today: ${totalDistance.toFixed(2)} km`);
-
-            let truckId = "{{ Auth::user()->truck_id ?? '' }}".trim(); // Ensure truckId is defined
-            sendLocation(truckId, latitude, longitude, totalDistance);
-        }, error => console.error("❌ Geolocation error:", error));
-    } else {
-        console.error("❌ Geolocation is not supported by this browser.");
-    }
-}
-
-// **Run tracking every 5 seconds**
-setInterval(updateDriverLocation, 5000);
+        await updateDB({ latitude, longitude }, totalDistance);
+        
+        let truckId = "{{ Auth::user()->truck_id ?? '' }}".trim();
+        sendLocation(truckId, latitude, longitude, totalDistance);
+    },
+    error => console.error("❌ Geolocation error:", error),
+    { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+);
     </script>
 </body>
 </html>
