@@ -37,7 +37,7 @@ Route::post('/', [OTPController::class, 'sendOTP'])->name('login.post');
 // Admin Routes
 Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
-Route::get('admin/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
+Route::get('admin/get-trip-counts', [DeliveryRecordsController::class, 'getTripCounts']);
 Route::put('/trips/update/{id}', [DeliveryRecordsController::class, 'update'])->name('trips.update');
 Route::delete('/trips/reset', [DeliveryRecordsController::class, 'reset'])->name('trips.reset');
 Route::get('admin/managetrip', [ManageTripController::class, 'ShowManageTrip'])->name('admin.managetrip');

@@ -65,53 +65,6 @@ $(document).ready(function () {
     });
 });
 
-// Open Modal on Update Button Click
-$(document).ready(function () {
-    $(".update-btn").on("click", function () {
-        let row = $(this).closest("tr");
-        let tripId = row.data("id");
-        let plateNo = row.data("plate");
-        let tripType = row.data("trip");
-        let numTrips = row.data("num");
-
-        $("#trip_id").val(tripId);
-        $("#update_plate_no").val(plateNo);
-        $("#update_trip_type").val(tripType);
-        $("#update_num_trips").val(numTrips);
-
-        $("#updateModal").fadeIn();
-    });
-
-    $(".close").on("click", function () {
-        $("#updateModal").fadeOut();
-    });
-
-    $("#updateTripForm").on("submit", function (e) {
-        e.preventDefault();
-
-        let formData = {
-            _token: $("meta[name=csrf-token]").attr("content"),
-            trip_id: $("#trip_id").val(),
-            plate_no: $("#update_plate_no").val(),
-            trip_type: $("#update_trip_type").val(),
-            num_trips: $("#update_num_trips").val(),
-        };
-
-        $.ajax({
-            url: "/trips/update",
-            method: "POST",
-            data: formData,
-            success: function (response) {
-                alert(response.success);
-                location.reload();
-            },
-            error: function (error) {
-                alert("Something went wrong!");
-            }
-        });
-    });
-});
-
 // Reset Button Functionality
 $(document).ready(function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -147,86 +100,50 @@ $(document).ready(function () {
         });
     });
 
-    // Open "Update Trip" Modal
-    $(".update-btn").click(function () {
-        let row = $(this).closest("tr");
-
-        $("#trip_id").val(row.data("id"));
-        $("#update_plate_no").val(row.data("plate"));
-        $("#update_trip_type").val(row.data("trip"));
-        $("#update_num_trips").val(row.data("num"));
-
-        $("#updateModal").show();
-    });
-
-    // Submit "Update Trip" Form
-    $("#updateTripForm").submit(function (e) {
-        e.preventDefault();
-        let tripId = $("#trip_id").val();
-
-        $.ajax({
-            url: `/trips/update/${tripId}`,
-            type: "PUT",
-            headers: {
-                "X-CSRF-TOKEN": csrfToken
-            },
-            data: $(this).serialize(),
-            success: function (response) {
-                Swal.fire("Success", response.message, "success");
-                location.reload();
-            },
-            error: function (xhr) {
-                Swal.fire("Error", "Failed to update trip.", "error");
-            }
-        });
-    });
-
     // Reset Button
-    $(document).ready(function () {
-        $(".reset-btn").click(function () {
-            let tripType = $(this).data("trip-type");
-            let plateNo = $("#plateNumberSelect").val(); 
-    
-            if (!plateNo) {
-                Swal.fire("Error", "Please select a plate number first.", "error");
-                return;
-            }
-    
-            plateNo = plateNo.replace(/\s+/g, ""); // Remove spaces from the plate number
-    
-            Swal.fire({
-                title: "Are you sure?",
-                text: `Reset all "${tripType}" trips for ${plateNo}?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, reset it!",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "/trips/reset",
-                        type: "DELETE",
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                        },
-                        data: {
-                            plate_no: plateNo, // Send formatted plate number
-                            trip_type: tripType
-                        },
-                        success: function (response) {
-                            Swal.fire("Success", response.message, "success");
-                            location.reload();
-                        },
-                        error: function (xhr) {
-                            Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
-                        }
-                    });
-                }
-            });
-        });
-    });    
-}    
-); 
+    $(".reset-btn").click(function () {
+        let tripType = $(this).data("trip-type");
+        let plateNo = $("#plateNumberSelect").val(); 
 
+        if (!plateNo) {
+            Swal.fire("Error", "Please select a plate number first.", "error");
+            return;
+        }
+
+        plateNo = plateNo.replace(/\s+/g, ""); // Remove spaces from the plate number
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Reset all "${tripType}" trips for ${plateNo}?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, reset it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/trips/reset",
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    data: {
+                        plate_no: plateNo, // Send formatted plate number
+                        trip_type: tripType
+                    },
+                    success: function (response) {
+                        Swal.fire("Success", response.message, "success");
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
+                    }
+                });
+            }
+        });
+    });
+});
+
+// Filtering by Date (Weekly, Monthly, Annually)
 document.addEventListener("DOMContentLoaded", function () {
     const filterButtons = document.querySelectorAll(".date-btn"); // Select all filter buttons
     const rows = document.querySelectorAll(".trip-table tbody tr"); // Select all table rows
@@ -272,25 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-function openTripModal(id, createdAt, eirNo, containerVanNo, size, shipperConsignee, voyageVessel, voyageNo, pickupLocation, deliveryLocation) {
-    document.getElementById("cargo_id").value = id;
-    document.getElementById("eir_no").value = eirNo;
-    document.getElementById("container_van_no").value = containerVanNo;
-    document.getElementById("size").value = size;
-    document.getElementById("shipper_consignee").value = shipperConsignee;
-    document.getElementById("voyage_vessel").value = voyageVessel;
-    document.getElementById("voyage_no").value = voyageNo;
-    document.getElementById("pickup_location").value = pickupLocation;
-    document.getElementById("delivery_location").value = deliveryLocation;
 
-    document.getElementById("tripForm").action = `/manager/update-trip/${id}`;
-    document.getElementById("tripModal").style.display = "flex";
-}
-
-function closeTripModal() {
-    document.getElementById("tripModal").style.display = "none";
-}
-
+// Archive Trip Function
 function archiveTrip(tripId) {
     Swal.fire({
         title: "Are you sure?",
@@ -320,3 +220,26 @@ function archiveTrip(tripId) {
         }
     });
 }
+$(document).ready(function () {
+    $(".update-btn").click(function () {
+        let row = $(this).closest("tr");
+    
+        console.log("Row data attributes:", row[0].attributes); // Debugging
+    
+        let tripId = row.attr("data-id");  // Use `.attr()` instead of `.data()`
+        console.log("Trip ID:", tripId); // Debugging
+    
+        if (!tripId || tripId === "undefined") {
+            Swal.fire("Error", "Trip ID is missing from the row!", "error");
+            return;
+        }
+    
+        $("#trip_id").val(tripId);
+        $("#update_plate_no").val(row.attr("data-plate").trim());
+        $("#update_trip_type").val(row.attr("data-trip"));
+        $("#update_num_trips").val(row.attr("data-num"));
+    
+        $("#updateModal").fadeIn();
+    });
+    
+});

@@ -11,10 +11,16 @@ class DeliveryManagerController extends Controller
 {
     public function showDeliveryManager()
     {
-        // Fetch all trip records
-        $trips = Trip::select('plate_no', 'trip_type', 'num_trips')->get();
+        // Fetch all trip records with consistent plate number formatting
+        $trips = Trip::select('id', 'plate_no', 'trip_type', 'num_trips')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($trip) {
+                $trip->plate_no = trim(str_replace(' ', '', $trip->plate_no));
+                return $trip;
+            });
 
-        // Default counts set to zero (so no trips appear initially)
+        // Default counts set to zero
         $oneWayTrip = 0;
         $roundTrip = 0;
         $doorToDoorTrip = 0;
@@ -22,20 +28,6 @@ class DeliveryManagerController extends Controller
         return view('manager.deliveryrecords', compact('trips', 'oneWayTrip', 'roundTrip', 'doorToDoorTrip'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'plate_no' => 'required',
-            'trip_type' => 'required',
-            'num_trips' => 'required|integer|min:1',
-        ]);
-
-        Trip::create($request->all());
-
-        return response()->json(['message' => 'Trip added successfully!']);
-    }
-
-    // Update a trip
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -44,12 +36,21 @@ class DeliveryManagerController extends Controller
             'num_trips' => 'required|integer|min:1',
         ]);
 
-        $trip = Trip::findOrFail($id);
-        $trip->update($request->all());
+        // Clean plate number by removing spaces
+        $cleanPlateNo = str_replace(' ', '', $request->plate_no);
+
+        // Find the trip
+        $trip = Trip::where('id', $id)->firstOrFail();
+
+        // Update the trip details
+        $trip->update([
+            'plate_no' => $cleanPlateNo,
+            'trip_type' => $request->trip_type,
+            'num_trips' => $request->num_trips
+        ]);
 
         return response()->json(['message' => 'Trip updated successfully!']);
     }
-
     // Reset trips of a certain typepublic function reset(Request $request)
     public function reset(Request $request)
     {
