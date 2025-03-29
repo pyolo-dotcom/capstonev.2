@@ -6,19 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class ShipmentDriverController extends Controller
 {
     public function showShipmentDriver(){
         return view('driver.shipment');
     }
-    public function generateQRCode(Request $request)
+    
+// In your ShipmentDriverController
+public function generateQRCode(Request $request)
 {
-    $qrData = url('/cargo/store-via-scan?') . http_build_query($request->all());
+    // Ensure all parameters are properly URL encoded
+    $queryParams = http_build_query($request->all());
+    $qrData = url('/cargo/store-via-scan?') . $queryParams;
 
-    $qrCode = QrCode::size(200)->generate($qrData);
+    // Generate QR code with error correction
+    $qrCode = QrCode::size(300)
+                ->margin(4)
+                ->errorCorrection('H') // High error correction
+                ->generate($qrData);
 
     return response($qrCode)->header('Content-Type', 'image/svg+xml');
-}    
+}  
+    
     // Store Cargo when QR Code is scanned
     public function storeViaScan(Request $request)
     {
@@ -34,10 +44,11 @@ class ShipmentDriverController extends Controller
             'delivery_location' => $request->delivery_location,
         ]);
 
-        return response()->json([
+        // Return a view with SweetAlert instead of JSON
+        return view('driver.qr-scan-response', [
             'success' => true,
             'message' => 'Cargo details stored via QR code scan!',
             'cargo' => $cargo
         ]);
     }
-}    
+}

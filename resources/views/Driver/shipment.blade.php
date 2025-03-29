@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cargo QR Code</title>
+    <!-- Add SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         * {
@@ -16,6 +18,8 @@
 
         body {
             display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -26,6 +30,7 @@
             position: fixed;
             left: 0;
             top: 0;
+            overflow-y: auto;
         }
 
         .sidebar h2 {
@@ -57,9 +62,11 @@
         }
 
         .content {
-            margin-left: 270px;
+            margin-left: 250px;
             padding: 20px;
             flex-grow: 1;
+            min-height: 100vh;
+            overflow-y: auto;
         }
 
         #cargoForm {
@@ -103,72 +110,64 @@
         #qrCodeContainer {
             text-align: center;
             margin-top: 20px;
+            padding-bottom: 40px;
         }
 
         @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
+                overflow-y: visible;
             }
+
             .content {
                 margin-left: 0;
                 padding: 15px;
+                min-height: auto;
+            }
+
+            #cargoForm {
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+            }
+
+            #cargoForm h2 {
+                margin-left: 0;
+                text-align: center;
+            }
+
+            #cargoForm input {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            #cargoForm button {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            #qrCodeContainer {
+                margin-top: 15px;
             }
         }
-        @media (max-width: 768px) {
-        body {
-            flex-direction: column; /* Stack sidebar and content vertically */
-        }
 
-        .sidebar {
-            width: 100%; /* Full width for the sidebar */
-            height: auto; /* Adjust height */
-            position: relative; /* Remove fixed positioning */
-        }
+        @media (max-width: 480px) {
+            #cargoForm input {
+                font-size: 12px;
+                padding: 6px;
+            }
 
-        .content {
-            margin-left: 0; /* Remove left margin */
-            padding: 10px; /* Add padding for better spacing */
+            #cargoForm button {
+                font-size: 12px;
+                padding: 6px;
+            }
         }
-
-        #cargoForm {
-            width: 100%; /* Full width for the form */
-            margin: 0; /* Remove auto centering */
-            padding: 10px; /* Add padding for better spacing */
-        }
-
-        #cargoForm h2 {
-            margin-left: 0; /* Align heading properly */
-            text-align: center; /* Center the heading */
-        }
-
-        #cargoForm input {
-            font-size: 14px; /* Adjust font size for smaller screens */
-            padding: 8px; /* Adjust padding for inputs */
-        }
-
-        #cargoForm button {
-            font-size: 14px; /* Adjust button font size */
-            padding: 8px; /* Adjust button padding */
-        }
-
-        #qrCodeContainer {
-            margin-top: 15px; /* Adjust spacing for QR code container */
-        }
-    }
-
-    @media (max-width: 480px) {
-        #cargoForm input {
-            font-size: 12px; /* Further reduce font size for very small screens */
-            padding: 6px; /* Adjust padding for inputs */
-        }
-
-        #cargoForm button {
-            font-size: 12px; /* Further reduce button font size */
-            padding: 6px; /* Adjust button padding */
-        }
-    }
     </style>
 </head>
 
@@ -194,6 +193,9 @@
         <div id="qrCodeContainer"></div>
     </div>
 
+    <!-- Add SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         document.getElementById("cargoForm").addEventListener("submit", function(event) {
             event.preventDefault();
@@ -206,6 +208,11 @@
                 .then(response => {
                     // Insert the SVG QR code as HTML
                     document.getElementById('qrCodeContainer').innerHTML = response.data;
+                    
+                    // Scroll to the QR code after generation
+                    document.getElementById('qrCodeContainer').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
                 })
                 .catch(error => console.log(error));
         });
