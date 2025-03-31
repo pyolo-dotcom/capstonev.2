@@ -119,6 +119,10 @@ Route::get('/get-locations', function () {
 
     return response()->json($locations);
 });
+Route::get('/manager/qrscanner', function () {
+    return view('Manager.qrscanner');
+})->name('manager.qrscanner');
+Route::post('/cargo/scanned', [ShipmentDriverController::class, 'storeScannedData']);
 
 //Driver
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
