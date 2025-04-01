@@ -11,10 +11,44 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+    </style>
 </head>
 
 <body>
-
     <div class="sidebar">
         <h2><i>SYA</i></h2>
         <ul>
@@ -26,11 +60,11 @@
         <div class="plate-number-section">
             <select id="plateNumberSelect" style="font-size: 17px; border-radius: 8px;">
                 <option disabled selected>-- Plate Number --</option>
-                <option value="UVP 353">UVP353</option>
-                <option value="TQE 262">TQE262</option>
-                <option value="NBB 7212">NBB7212</option>
-                <option value="APA 3309">APA3309</option>
-                <option value="WIE 914">WIE914</option>
+                <option value="UVP353">UVP353</option>
+                <option value="TQE262">TQE262</option>
+                <option value="NBB7212">NBB7212</option>
+                <option value="APA3309">APA3309</option>
+                <option value="WIE914">WIE914</option>
             </select>
         </div>
 
@@ -69,100 +103,216 @@
                 </tr>
             </thead>
             <tbody id="tripTableBody">
-    @if(count($trips) == 0)
-        <tr>
-            <td colspan="4" style="text-align: center;">No data available</td>
-        </tr>
-    @else
-        @foreach($trips as $trip)
-        <tr data-id="{{ $trip->id }}" data-plate="{{ $trip->plate_no }}" data-trip="{{ $trip->trip_type }}" data-num="{{ $trip->num_trips }}">
-            <td>{{ $trip->plate_no }}</td>
-            <td>{{ $trip->trip_type }}</td>
-            <td>{{ $trip->num_trips }}</td>
-            <td>
-                <button class="update-btn" data-id="{{ $trip->id }}">Update</button>
-            </td>
-        </tr>
-        @endforeach
-    @endif
-</tbody>
-
+                @if(count($trips) == 0)
+                    <tr>
+                        <td colspan="4" style="text-align: center;">No data available</td>
+                    </tr>
+                @else
+                    @foreach ($trips as $trip)
+                    <tr 
+                        data-id="{{ $trip->id }}" 
+                        data-plate="{{ trim(str_replace(' ', '', $trip->plate_no)) }}" 
+                        data-trip="{{ $trip->trip_type }}" 
+                        data-num="{{ $trip->num_trips }}"
+                    >
+                        <td>{{ $trip->plate_no }}</td>
+                        <td>{{ $trip->trip_type }}</td>
+                        <td>{{ $trip->num_trips }}</td>
+                        <td>
+                            <button class="update-btn" data-trip-id="{{ $trip->id }}">UPDATE</button>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
+            </tbody>
         </table>
-
     </main>
 
-    <div id="updateModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Update Trip</h2>
-            <form id="updateTripForm">
-                @csrf
-                <input type="hidden" id="trip_id" name="trip_id">
-
-                <label for="update_plate_no">Plate No.:</label>
-                <select id="update_plate_no" name="plate_no" required>
-                    <option disabled>-- Plate Number --</option>
-                    <option value="UVP353">UVP353</option>
-                    <option value="TQE262">TQE262</option>
-                    <option value="NBB7212">NBB7212</option>
-                    <option value="APA3309">APA3309</option>
-                    <option value="WIE914">WIE914</option>
-                </select>
-
-                <label for="update_trip_type">Trip Type:</label>
-                <select id="update_trip_type" name="trip_type" required>
-                    <option disabled>-- Select Trip --</option>
-                    <option value="One Way Trip">One Way Trip</option>
-                    <option value="Round Trip">Round Trip</option>
-                    <option value="Door-To-Door Trip">Door-To-Door Trip</option>
-                </select>
-
-                <label for="update_num_trips">Number of Trips:</label>
-                <input type="number" id="update_num_trips" name="num_trips" min="1" required>
-
-                <button type="submit">Update</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Trip Modal -->
-    <div id="tripModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Trip</h2>
-            <form id="tripForm">
-                @csrf
-                <label for="plate_no">Plate No.:</label>
-                <select id="plate_no" name="plate_no" required>
-                    <option disabled selected>-- Plate Number --</option>
-                    <option value="UVP353">UVP353</option>
-                    <option value="TQE262">TQE262</option>
-                    <option value="NBB7212">NBB7212</option>
-                    <option value="APA3309">APA3309</option>
-                    <option value="WIE914">WIE914</option>
-                </select>
-
-                <label for="trip_type">Trip Type:</label>
-                <select id="trip_type" name="trip_type" required>
-                    <option disabled selected>-- Select Trip --</option>
-                    <option value="One Way Trip">One Way Trip</option>
-                    <option value="Round Trip">Round Trip</option>
-                    <option value="Door-To-Door Trip">Door-To-Door Trip</option>
-                </select>
-
-                <label for="num_trips">Number of Trips:</label>
-                <input type="number" id="num_trips" name="num_trips" min="1" required>
-
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
+    {{-- Include the modals --}}
+    @include('Manager.modals.add_trip')
+    @include('Manager.modals.update_trip')
 
     <script>
         var tripStoreUrl = @json(route('trips.store'));
+        var tripUpdateUrl = @json(route('trips.update', ['id' => ':id']));
+        
+        $(document).ready(function() {
+            // Initialize - hide all rows initially
+            $("#tripTableBody tr").hide();
+            
+            // Handle plate number selection change
+            $("#plateNumberSelect").change(function() {
+                const plateNo = $(this).val();
+                
+                // Update trip counts
+                $.ajax({
+                    url: "/get-trip-counts",
+                    type: "GET",
+                    data: { plate_no: plateNo },
+                    success: function(response) {
+                        $("#oneWayTripCount").text(response.oneWayTrip);
+                        $("#roundTripCount").text(response.roundTrip);
+                        $("#doorToDoorTripCount").text(response.doorToDoorTrip);
+                    },
+                    error: function() {
+                        alert("Error fetching data. Please try again.");
+                    }
+                });
+                
+                // Filter table rows
+                const selectedPlate = plateNo.replace(/\s+/g, "");
+                if (!selectedPlate) {
+                    $("#tripTableBody tr").hide();
+                    return;
+                }
+
+                $("#tripTableBody tr").hide();
+                $("#tripTableBody tr").each(function() {
+                    const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "");
+                    if (rowPlate === selectedPlate) {
+                        $(this).show();
+                    }
+                });
+            });
+            
+            // Handle Add Trip modal opening
+            $("#openModal").click(function() {
+                $("#tripModal").fadeIn();
+            });
+            
+            // Handle update button click
+            $(document).on('click', '.update-btn', function() {
+                const row = $(this).closest('tr');
+                const tripId = $(this).data('trip-id') || row.data('id');
+                const plateNo = row.data('plate');
+                const tripType = row.data('trip');
+                const numTrips = row.data('num');
+                
+                console.log('Data to update:', {
+                    tripId: tripId,
+                    plateNo: plateNo,
+                    tripType: tripType,
+                    numTrips: numTrips
+                });
+
+                if (!tripId) {
+                    Swal.fire('Error', 'Trip ID is missing!', 'error');
+                    return;
+                }
+
+                $('#trip_id').val(tripId);
+                $('#update_plate_no').val(plateNo);
+                $('#update_trip_type').val(tripType);
+                $('#update_num_trips').val(numTrips);
+                $('#updateModal').fadeIn();
+            });
+
+            // Reset button functionality
+            $(".reset-btn").click(function() {
+                const tripType = $(this).data("trip-type");
+                let plateNo = $("#plateNumberSelect").val(); 
+
+                if (!plateNo) {
+                    Swal.fire("Error", "Please select a plate number first.", "error");
+                    return;
+                }
+
+                plateNo = plateNo.replace(/\s+/g, "");
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `Reset all "${tripType}" trips for ${plateNo}?`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, reset it!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/trips/reset",
+                            type: "DELETE",
+                            headers: {
+                                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                            },
+                            data: {
+                                plate_no: plateNo,
+                                trip_type: tripType
+                            },
+                            success: function(response) {
+                                Swal.fire("Success", response.message, "success");
+                                location.reload();
+                            },
+                            error: function(xhr) {
+                                Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Modal controls
+            $('.close').click(function() {
+                $('.modal').fadeOut();
+            });
+
+            $(window).click(function(event) {
+                if ($(event.target).hasClass('modal')) {
+                    $('.modal').fadeOut();
+                }
+            });
+
+            // Handle form submissions
+            $("#tripForm").submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: tripStoreUrl,
+                    type: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        Swal.fire("Success", response.message, "success");
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", "Failed to add trip.", "error");
+                    }
+                });
+            });
+
+            $('#updateTripForm').submit(function(e) {
+                e.preventDefault();
+                const tripId = $('#trip_id').val();
+                if (!tripId) {
+                    Swal.fire('Error', 'Trip ID is missing!', 'error');
+                    return;
+                }
+
+                const updateUrl = tripUpdateUrl.replace(':id', tripId);
+                const formData = {
+                    plate_no: $('#update_plate_no').val().trim(),
+                    trip_type: $('#update_trip_type').val(),
+                    num_trips: $('#update_num_trips').val(),
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    _method: 'PUT'
+                };
+
+                $.ajax({
+                    url: updateUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire('Success', response.message, 'success');
+                        $('#updateModal').fadeOut();
+                        setTimeout(() => location.reload(), 1500);
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'Failed to update trip';
+                        Swal.fire('Error', errorMsg, 'error');
+                    }
+                });
+            });
+        });
     </script>
-
-    <script src="{{ asset('js/manager.js') }}"></script>
 </body>
-
 </html>

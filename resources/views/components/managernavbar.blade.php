@@ -205,6 +205,12 @@
             </a>
         </li>
         <li>
+    <a href="{{ route('manager.qrscanner') }}" class="menu-item" id="qrScannerBtn">
+        <i class="bi bi-qr-code"></i> QR Code Scanner
+    </a>
+</li>
+
+        <li>
             <a href="{{ route('manager.fuel') }}" class="menu-item" id="fuelManagementBtn">
                 <i class="bi bi-geo-alt"></i> Fuel Management
             </a>

@@ -27,15 +27,66 @@
     background-color: #2f4156;
     color: white;
     position: relative;
+    overflow: hidden;
   }
 
-  .truck-image {
+  .carousel {
     width: 100%;
     height: 80%;
-    object-fit: fill;
+    position: relative;
     margin-top: 40px;
+  }
+
+  .carousel-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
     border-top-right-radius: 20%;
     border-bottom-right-radius: 20%;
+  }
+
+  .carousel-item {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .carousel-item.active {
+    opacity: 1;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .carousel-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+  }
+
+  .carousel-control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+
+  .carousel-control.active {
+    background-color: white;
   }
 
   .right-section {
@@ -116,9 +167,12 @@
       padding: 10px; /* Reduce padding for mobile */
     }
 
-    .truck-image {
-      height: auto; /* Adjust image height for mobile */
+    .carousel {
+      height: 300px; /* Fixed height for mobile */
       margin-top: 20px; /* Reduce margin for mobile */
+    }
+
+    .carousel-inner {
       border-radius: 10px; /* Adjust border radius for mobile */
     }
 
@@ -144,9 +198,26 @@
   }
 </style>
 <body>
-  <!-- Left Section with Image -->
+  <!-- Left Section with Carousel -->
   <div class="left-section">
-    <img src="{{ asset('images/truck.jpg') }}" alt="Truck Image" class="truck-image">
+    <div class="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{ asset('images/truck4.jpg') }}" alt="Truck Image 1">
+        </div>
+        <div class="carousel-item">
+          <img src="{{ asset('images/truck3.jpg') }}" alt="Truck Image 2">
+        </div>
+        <div class="carousel-item">
+          <img src="{{ asset('images/truck2.jpg') }}" alt="Truck Image 3">
+        </div>
+      </div>
+      <div class="carousel-controls">
+        <button class="carousel-control active" data-index="0"></button>
+        <button class="carousel-control" data-index="1"></button>
+        <button class="carousel-control" data-index="2"></button>
+      </div>
+    </div>
   </div>
 
   <!-- Right Section with Login Form -->
@@ -156,7 +227,6 @@
       <p>Since 2020</p>
     </div>
 
-    <!-- Login Form -->
     <!-- Login Form -->
     <form method="POST" action="{{ route('login.post') }}" class="login-form">
       @csrf
@@ -173,5 +243,55 @@
       <p style="color: red; text-align: center;">{{ $errors->first('login_error') }}</p>
     @endif
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const items = document.querySelectorAll('.carousel-item');
+      const controls = document.querySelectorAll('.carousel-control');
+      let currentIndex = 0;
+      const intervalTime = 3000; // 3 seconds
+      let carouselInterval;
+
+      function showItem(index) {
+        items.forEach(item => item.classList.remove('active'));
+        controls.forEach(control => control.classList.remove('active'));
+        
+        items[index].classList.add('active');
+        controls[index].classList.add('active');
+        currentIndex = index;
+      }
+
+      function nextItem() {
+        const newIndex = (currentIndex + 1) % items.length;
+        showItem(newIndex);
+      }
+
+      // Start auto-rotation
+      function startCarousel() {
+        carouselInterval = setInterval(nextItem, intervalTime);
+      }
+
+      // Add click event to controls
+      controls.forEach(control => {
+        control.addEventListener('click', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          showItem(index);
+          // Reset timer when manually changing slide
+          clearInterval(carouselInterval);
+          startCarousel();
+        });
+      });
+
+      // Start the carousel
+      startCarousel();
+
+      // Pause on hover (optional)
+      const carousel = document.querySelector('.carousel');
+      carousel.addEventListener('mouseenter', () => {
+        clearInterval(carouselInterval);
+      });
+      carousel.addEventListener('mouseleave', startCarousel);
+    });
+  </script>
 </body>
 </html>
