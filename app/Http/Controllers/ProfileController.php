@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash; // Import the Hash facade
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -26,38 +27,43 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Validate the request
-        $request->validate([
-            'username' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:255|unique:users,username,'.$user->id,
             'fullname' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'dob' => 'nullable|date',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'remove_profile_image' => 'nullable|boolean'
         ]);
 
-        // Prepare data for update
-        $data = [
-            'username' => $request->username,
-            'fullname' => $request->fullname,
-            'email' => $request->email,
-            'dob' => $request->dob,
-        ];
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Handle profile picture removal
+        if ($request->remove_profile_image) {
+            $this->removeProfileImage($user);
+            $user->profile_picture = null;
+        }
 
         // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
-            // Delete the old profile picture if it exists
-            if ($user->profile_picture) {
-                Storage::delete('public/' . $user->profile_picture);
-            }
-            // Store the new profile picture
+            $this->removeProfileImage($user);
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $data['profile_picture'] = $path;
+            $user->profile_picture = $path;
         }
 
-        // Update the user's profile
-        $user->update($data);
+        // Update user data
+        $user->update([
+            'username' => $request->username,
+            'fullname' => $request->fullname,
+            'email' => $request->email,
+            'dob' => $request->dob ?: null,
+        ]);
 
-        return redirect()->route('admin.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('admin.profile')->with('success', 'Profile updated successfully');
     }
 
     /**
@@ -65,30 +71,67 @@ class ProfileController extends Controller
      */
     public function changePassword(Request $request)
     {
-        $user = Auth::user();
-
-        // Validate the request
-        $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
+        $validator = Validator::make($request->all(), [
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'current_password.required' => 'The current password field is required.',
+            'new_password.required' => 'The new password field is required.',
+            'new_password.min' => 'The new password must be at least 8 characters.',
+            'new_password.confirmed' => 'The new password confirmation does not match.',
         ]);
 
-        // Verify the current password
-        if (!Hash::check($request->current_password, $user->password)) {
+        if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => 'The current password is incorrect.',
-            ], 422); // 422 is the HTTP status code for validation errors
+                'errors' => $validator->errors(),
+                'message' => 'Validation failed'
+            ], 422);
         }
 
-        // Update the password
-        $user->update([
-            'password' => Hash::make($request->new_password),
-        ]);
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'The current password is incorrect.',
+                'errors' => [
+                    'current_password' => ['The current password is incorrect.']
+                ]
+            ], 422);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Password changed successfully.',
+            'message' => 'Password changed successfully!'
         ]);
+    }
+
+    /**
+     * Remove the user's profile image.
+     */
+    public function removeImage(Request $request)
+    {
+        $user = Auth::user();
+        
+        $this->removeProfileImage($user);
+        
+        $user->profile_picture = null;
+        $user->save();
+        
+        return redirect()->route('admin.profile')->with('success', 'Profile image removed successfully');
+    }
+
+    /**
+     * Helper method to remove profile image from storage.
+     */
+    private function removeProfileImage(User $user)
+    {
+        if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            Storage::disk('public')->delete($user->profile_picture);
+            return true;
+        }
+        return false;
     }
 }

@@ -174,13 +174,14 @@
         }
         
         .btn-action {
-            padding: 6px 12px;
+            padding: 6px 10px;
             font-size: 0.85rem;
             border-radius: 5px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .btn-view {
@@ -230,8 +231,58 @@
         
         .action-btns {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: nowrap;
+        }
+
+        .truck-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .truck-image-lg {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+        
+        .image-placeholder {
+            width: 60px;
+            height: 60px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border: 1px dashed #dee2e6;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+        }
+        
+        .search-input i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .search-input input {
+            padding-left: 35px;
         }
         
         @media (max-width: 768px) {
@@ -260,13 +311,26 @@
             }
             
             .action-btns {
-                flex-direction: column;
-                gap: 5px;
+                flex-wrap: wrap;
+                gap: 4px;
             }
             
             .btn-action {
-                width: 100%;
-                justify-content: center;
+                padding: 5px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .table thead th, 
+            .table tbody td {
+                padding: 8px 12px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                max-width: 100%;
             }
         }
     </style>
@@ -297,41 +361,71 @@
                 </div>
                 @endif
                 
+                @if(session('error'))
+                <div class="alert alert-danger m-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                </div>
+                @endif
+                
+                <!-- Search Bar -->
+                <div class="search-container m-3">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by plate number...">
+                    </div>
+                </div>
+                
                 @if($trucks->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="trucksTable">
                         <thead>
                             <tr>
+                                <th>ID</th>
+                                <th>Image</th>
                                 <th>CR Number</th>
                                 <th>Plate Number</th>
                                 <th>Owner Name</th>
                                 <th>Make</th>
                                 <th>Year Model</th>
-                                <th>Actions</th>
+                                <th style="min-width: 220px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($trucks as $truck)
-                            <tr>
+                            <tr class="truck-row">
+                                <td>{{ $truck->id }}</td>
+                                <td>
+                                    @if($truck->image_path)
+                                        <img src="{{ $truck->image_url }}" 
+                                             alt="Truck {{ $truck->plate_number }}"
+                                             class="truck-image">
+                                    @else
+                                        <div class="image-placeholder">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>{{ $truck->cr_number }}</td>
-                                <td>{{ $truck->plate_number }}</td>
+                                <td class="plate-number">{{ $truck->plate_number }}</td>
                                 <td>{{ $truck->owner_name }}</td>
                                 <td>{{ $truck->make }}</td>
                                 <td>{{ $truck->year_model }}</td>
-                                <td class="action-btns">
-                                    <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewTruckModal{{ $truck->id }}">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                    <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editTruckModal{{ $truck->id }}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <form action="{{ route('admin.truckdetails.destroy', $truck->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-action btn-archive" onclick="return confirm('Are you sure you want to archive this truck?')">
-                                            <i class="fas fa-archive"></i> Archive
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewTruckModal{{ $truck->id }}">
+                                            <i class="fas fa-eye"></i> View
                                         </button>
-                                    </form>
+                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editTruckModal{{ $truck->id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form action="{{ route('admin.truckdetails.destroy', $truck->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-action btn-archive" onclick="return confirm('Are you sure you want to archive this truck?')">
+                                                <i class="fas fa-archive"></i> Archive
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -349,11 +443,69 @@
         </div>
     </div>
 
-    <!-- Include all modals -->
     @include('Admin.modals.add-truck-modal')
     @include('Admin.modals.view-truck-modal')
     @include('Admin.modals.edit-truck-modal')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Image preview for add form - only runs if element exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const addImageInput = document.getElementById('image');
+            if (addImageInput) {
+                addImageInput.addEventListener('change', function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    const file = e.target.files[0];
+                    
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+    
+            // Image preview for edit forms - only runs if elements exist
+            document.querySelectorAll('.edit-image').forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const previewId = this.dataset.preview;
+                    if (previewId) {
+                        const preview = document.getElementById(previewId);
+                        if (preview) {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    preview.src = e.target.result;
+                                }
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('.truck-row');
+                    
+                    rows.forEach(row => {
+                        const plateNumber = row.querySelector('.plate-number').textContent.toLowerCase();
+                        if (plateNumber.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -4,13 +4,58 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editTruckModalLabel{{ $truck->id }}">Edit Truck Details</h5>
+                <h5 class="modal-title" id="editTruckModalLabel{{ $truck->id }}">Edit Truck - {{ $truck->plate_number }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.truckdetails.update', $truck->id) }}" method="POST">
+            <form action="{{ route('admin.truckdetails.update', $truck->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
+                    <!-- Image Editing Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="current-image mb-3 text-center">
+                                @if($truck->image_path)
+                                    <img src="{{ $truck->image_url }}" 
+                                         alt="Current Truck Image"
+                                         class="img-fluid rounded mb-2"
+                                         style="max-height: 200px;">
+                                @else
+                                    <div class="bg-light p-4 text-center rounded">
+                                        <i class="fas fa-truck fa-3x text-muted mb-2"></i>
+                                        <p class="mb-0">No current image</p>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label for="editImage{{ $truck->id }}" class="form-label">Change Image</label>
+                                <input type="file" 
+                                       class="form-control" 
+                                       id="editImage{{ $truck->id }}" 
+                                       name="image"
+                                       accept="image/*">
+                                <small class="text-muted">Leave blank to keep current image (Max 2MB, JPEG/PNG/JPG)</small>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="removeImage{{ $truck->id }}" name="remove_image">
+                                <label class="form-check-label" for="removeImage{{ $truck->id }}">
+                                    Remove current image
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="image-preview text-center" style="display: none;">
+                                <p class="text-muted">New Image Preview</p>
+                                <img id="imagePreview{{ $truck->id }}" 
+                                     src="#" 
+                                     alt="Preview" 
+                                     class="img-fluid rounded"
+                                     style="max-height: 200px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rest of the form fields (maintained exactly as you had them) -->
                     <div class="form-row">
                         <div class="form-col">
                             <div class="form-group mb-3">
@@ -168,7 +213,6 @@
                                 <input type="text" class="form-control" id="address" name="address" value="{{ $truck->address }}" required>
                             </div>
                         </div>
-                        <!-- Empty column to maintain layout -->
                         <div class="form-col"></div>
                     </div>
                 </div>
@@ -180,4 +224,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Image preview for edit form
+    document.getElementById('editImage{{ $truck->id }}')?.addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview{{ $truck->id }}');
+        const previewContainer = document.querySelector('#editTruckModal{{ $truck->id }} .image-preview');
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            previewContainer.style.display = 'none';
+        }
+    });
+</script>
 @endforeach

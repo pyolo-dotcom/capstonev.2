@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Truck extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'image_path',  // Make sure this exists
         'cr_number',
         'date',
         'mv_file_number',
@@ -35,8 +37,30 @@ class Truck extends Model
     ];
 
     protected $dates = ['date', 'deleted_at'];
-
     protected $casts = [
         'date' => 'date:Y-m-d'
     ];
+    protected $appends = ['image_url'];
+
+    // Accessor for easy image URL retrieval
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image_path) {
+            return asset('images/default-truck.png');
+        }
+
+        if (filter_var($this->image_path, FILTER_VALIDATE_URL)) {
+            return $this->image_path;
+        }
+
+        return Storage::url($this->image_path);
+    }
+
+    // Delete the physical image file
+    public function deleteImageFile()
+    {
+        if ($this->image_path && Storage::exists($this->image_path)) {
+            Storage::delete($this->image_path);
+        }
+    }
 }

@@ -258,10 +258,10 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Employee ID</th>
                                 <th>Username</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
+                                <th>Mobile Number</th>
                                 <th>Role</th>
                                 <th>Actions</th>
                             </tr>
@@ -269,10 +269,10 @@
                         <tbody>
                             @foreach($archivedUsers as $user)
                             <tr>
-                                <td>{{ $user->id }}</td>
                                 <td>{{ $user->username }}</td>
                                 <td>{{ $user->fullname }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->mobile_number }}</td>
                                 <td><span class="badge bg-primary">{{ ucfirst($user->role) }}</span></td>
                                 <td class="actions">
                                     <form id="restoreAccountForm{{ $user->id }}" action="{{ route('admin.archive.restore.account', $user->id) }}" method="POST" style="display: inline;">
@@ -374,7 +374,6 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Date</th>
                                 <th>Plate No.</th>
                                 <th>Total KM</th>
@@ -386,7 +385,6 @@
                         <tbody>
                             @foreach($archivedFuel as $fuel)
                             <tr>
-                                <td>{{ $fuel->id }}</td>
                                 <td>{{ $fuel->date }}</td>
                                 <td>{{ $fuel->plate_no }}</td>
                                 <td>{{ $fuel->total_km }} km</td>
@@ -492,37 +490,51 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>CR Number</th>
                                 <th>Plate Number</th>
                                 <th>Owner Name</th>
                                 <th>Make</th>
                                 <th>Year Model</th>
-                                <th>Actions</th>
+                                <th style="width: 220px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($archivedTrucks as $truck)
                             <tr>
+                                <td>
+                                    @if($truck->image_path)
+                                        <img src="{{ $truck->image_url }}" 
+                                            alt="Truck {{ $truck->plate_number }}"
+                                            class="truck-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                    @else
+                                        <div style="width: 60px; height: 60px; background-color: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #6c757d; border: 1px dashed #dee2e6;">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>{{ $truck->cr_number }}</td>
                                 <td>{{ $truck->plate_number }}</td>
                                 <td>{{ $truck->owner_name }}</td>
                                 <td>{{ $truck->make }}</td>
                                 <td>{{ $truck->year_model }}</td>
-                                <td class="actions">
-                                    <form id="restoreTruckForm{{ $truck->id }}" action="{{ route('admin.archive.restore.truck', $truck->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTruck({{ $truck->id }})">
-                                            <i class="fas fa-undo"></i> Restore
-                                        </button>
-                                    </form>
-                                    <form id="deleteTruckForm{{ $truck->id }}" action="{{ route('admin.archive.delete.truck', $truck->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTruck({{ $truck->id }})">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </button>
-                                    </form>
+                                <td>
+                                    <div class="actions">
+                                        <form id="restoreTruckForm{{ $truck->id }}" action="{{ route('admin.archive.restore.truck', $truck->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTruck({{ $truck->id }})">
+                                                <i class="fas fa-undo"></i> Restore
+                                            </button>
+                                        </form>
+                                        <form id="deleteTruckForm{{ $truck->id }}" action="{{ route('admin.archive.delete.truck', $truck->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTruck({{ $truck->id }})">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach

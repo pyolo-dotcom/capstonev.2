@@ -6,9 +6,20 @@
                 <h5 class="modal-title" id="addTruckModalLabel">Add New Truck</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.truckdetails.store') }}" method="POST">
+            <form action="{{ route('admin.truckdetails.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
+                    <!-- Image Upload Section - Added at the top -->
+                    <div class="form-group mb-4">
+                        <label for="truck_image" class="form-label">Truck Image</label>
+                        <div class="image-preview mb-2 text-center">
+                            <img id="imagePreview" src="#" alt="Preview" class="truck-image-lg" style="display: none; max-height: 200px;">
+                        </div>
+                        <input type="file" class="form-control" id="truck_image" name="image" accept="image/*">
+                        <small class="text-muted">Upload a clear image of the truck (max 2MB, JPEG/PNG/JPG)</small>
+                    </div>
+
+                    <!-- Rest of your existing form fields -->
                     <div class="form-row">
                         <div class="form-col">
                             <div class="form-group mb-3">
@@ -166,7 +177,6 @@
                                 <input type="text" class="form-control" id="address" name="address" required>
                             </div>
                         </div>
-                        <!-- Empty column to maintain layout -->
                         <div class="form-col"></div>
                     </div>
                 </div>
@@ -178,3 +188,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Image preview functionality
+    document.getElementById('truck_image').addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview');
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

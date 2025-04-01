@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Truck;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TruckController extends Controller
 {
+    /**
+     * Display all trucks
+     */
     public function showTruck()
     {
-        $trucks = Truck::all();
+        $trucks = Truck::orderBy('id')->get();
         return view('admin.truckdetails', compact('trucks'));
     }
 
+    /**
+     * Store a new truck
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'cr_number' => 'required|string|max:255',
             'date' => 'required|date',
             'mv_file_number' => 'required|string|max:255',
@@ -40,14 +47,31 @@ class TruckController extends Controller
             'address' => 'required|string|max:255',
         ]);
 
-        Truck::create($validated);
+        try {
+            // Store image
+            $imagePath = $request->file('image')->store('trucks', 'public');
+            $validated['image_path'] = $imagePath;
 
-        return redirect()->route('admin.truckdetails')->with('success', 'Truck registered successfully!');
+            Truck::create($validated);
+
+            return redirect()->route('admin.truckdetails')
+                   ->with('success', 'Truck added successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                   ->with('error', 'Error adding truck: ' . $e->getMessage())
+                   ->withInput();
+        }
     }
 
+    /**
+     * Update an existing truck
+     */
     public function update(Request $request, $id)
     {
+        $truck = Truck::findOrFail($id);
+
         $validated = $request->validate([
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             'cr_number' => 'required|string|max:255',
             'date' => 'required|date',
             'mv_file_number' => 'required|string|max:255',
@@ -69,19 +93,55 @@ class TruckController extends Controller
             'net_capacity' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
+            'remove_image' => 'sometimes|boolean',
         ]);
 
-        $truck = Truck::findOrFail($id);
-        $truck->update($validated);
+        try {
+            // Handle image removal
+            if ($request->has('remove_image')) {
+                $truck->deleteImageFile();
+                $validated['image_path'] = null;
+            }
+            // Handle image update
+            elseif ($request->hasFile('image')) {
+                // Delete old image
+                $truck->deleteImageFile();
+                
+                // Store new image
+                $imagePath = $request->file('image')->store('trucks', 'public');
+                $validated['image_path'] = $imagePath;
+            }
 
-        return redirect()->route('admin.truckdetails')->with('success', 'Truck updated successfully!');
+            $truck->update($validated);
+
+            return redirect()->route('admin.truckdetails')
+                   ->with('success', 'Truck updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                   ->with('error', 'Error updating truck: ' . $e->getMessage())
+                   ->withInput();
+        }
     }
 
+    /**
+     * Delete a truck
+     */
     public function destroy($id)
     {
-        $truck = Truck::findOrFail($id);
-        $truck->delete();
+        try {
+            $truck = Truck::findOrFail($id);
+            
+            // Delete the image file
+            $truck->deleteImageFile();
+            
+            // Delete the record
+            $truck->delete();
 
-        return redirect()->route('admin.truckdetails')->with('success', 'Truck archived successfully!');
+            return redirect()->route('admin.truckdetails')
+                   ->with('success', 'Truck archived successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                   ->with('error', 'Error archiving truck: ' . $e->getMessage());
+        }
     }
 }

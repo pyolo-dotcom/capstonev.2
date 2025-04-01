@@ -1,125 +1,205 @@
 <!-- Create Account Modal -->
 <div class="modal fade" id="createAccountModal" tabindex="-1" aria-labelledby="createAccountModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="border-radius: 10px; padding: 40px;">
-            <div class="modal-header" style="border-bottom: none;">
-                <h5 class="modal-title" id="createAccountModalLabel">Create New Account</h5>
-                <button type="button" class="close-button" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createAccountModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Create New Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="create-account-form" method="POST" action="{{ route('admin.activeaccount.store') }}">
                     @csrf
-                    @method('POST')
-
-                    <!-- Username Field -->
-                    <div class="form-group">
-                        <input type="text" id="username" name="username" class="form-control input-box" placeholder="Username" required>
+                    
+                    <!-- [All other form fields remain exactly the same] -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fullname" class="form-label">Full Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Enter full name" required>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Full Name Field -->
-                    <div class="form-group">
-                        <input type="text" id="fullname" name="fullname" class="form-control input-box" placeholder="Full Name" required>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter email" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mobile_number" class="form-label">Mobile Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="text" id="mobile_number" name="mobile_number" class="form-control" placeholder="Enter mobile number" required>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Email Field -->
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" class="form-control input-box" placeholder="Enter Email" required>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dob" class="form-label">Date of Birth</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" id="dob" name="dob" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="role" class="form-label">Role</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                    <select id="role" name="role" class="form-select" required>
+                                        <option value="" selected disabled>Select Position</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="driver">Driver</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Date of Birth Field -->
-                    <div class="form-group">
-                        <input type="date" id="dob" name="dob" class="form-control input-box input-size" required>
-                    </div>
-
-                    <!-- Role Selection Field -->
-                    <div class="form-group">
-                        <select id="role" name="role" class="form-control input-box input-size" required onchange="toggleDriverFields()">
-                            <option value="">Select Position</option>
-                            <option value="driver">Driver</option>
-                            <option value="manager">Manager</option>
-                        </select>
-                    </div>
-
-                    <!-- Driver License Fields (Hidden by Default) -->
                     <div id="driverFields" style="display: none;">
-                        <!-- License Number -->
-                        <div class="form-group">
-                            <input type="text" id="driver_license_number" name="driver_license_number" class="form-control input-box" placeholder="Driver License Number">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="driver_license_number" class="form-label">License Number</label>
+                                    <input type="text" id="driver_license_number" name="driver_license_number" class="form-control" placeholder="Driver license number">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="license_type" class="form-label">License Type</label>
+                                    <select id="license_type" name="license_type" class="form-select">
+                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="Professional">Professional</option>
+                                        <option value="Non-Professional">Non-Professional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="license_expiry_date" class="form-label">Expiry Date</label>
+                                    <input type="date" id="license_expiry_date" name="license_expiry_date" class="form-control">
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- License Type -->
-                        <div class="form-group">
-                            <select id="license_type" name="license_type" class="form-control input-box">
-                                <option value="">Select License Type</option>
-                                <option value="Professional">Professional</option>
-                                <option value="Non-Pro">Non-Pro</option>
-                            </select>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="truck_id" class="form-label">Plate Number</label>
+                                    <input type="text" id="truck_id" name="truck_id" class="form-control" placeholder="Enter plate number">
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- License Expiry Date -->
-                        <div class="form-group">
-                            <input type="date" id="license_expiry_date" name="license_expiry_date" class="form-control input-box">
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Truck ID -->
-                        <div class="form-group">
-                            <input type="text" id="truck_id" name="truck_id" class="form-control input-box" placeholder="Plate Number">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirm password" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Password Field -->
-                    <div class="form-group">
-                        <input type="password" id="password" name="password" class="form-control input-box" placeholder="Enter Password" required>
+                    <!-- Error message div - REMOVED THE INLINE STYLE -->
+                    <div id="password-error" class="alert alert-danger d-flex align-items-center mb-3 d-none">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <div>Passwords do not match.</div>
                     </div>
 
-                    <!-- Confirm Password Field -->
-                    <div class="form-group">
-                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control input-box" placeholder="Confirm Password" required>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Create Account
+                        </button>
                     </div>
-
-                    <!-- Error message for password mismatch -->
-                    <div id="password-error" class="text-danger" style="display: none;">Passwords do not match.</div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary w-100 submit-button">Create Account</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- JavaScript for Dynamic Role Selection -->
 <script>
-    function toggleDriverFields() {
-        var role = document.getElementById('role').value;
-        var driverFields = document.getElementById('driverFields');
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. INITIALIZE MODAL - HIDE ERROR ON OPEN
+        const modal = document.getElementById('createAccountModal');
+        modal.addEventListener('show.bs.modal', function() {
+            document.getElementById('password-error').classList.add('d-none');
+        });
 
-        if (role === 'driver') {
-            driverFields.style.display = 'block';
-            document.getElementById('license_number').setAttribute('required', true);
-            document.getElementById('license_type').setAttribute('required', true);
-            document.getElementById('license_expiry_date').setAttribute('required', true);
-            document.getElementById('truck_id').setAttribute('required', true);
-        } else {
-            driverFields.style.display = 'none';
-            document.getElementById('license_number').removeAttribute('required');
-            document.getElementById('license_type').removeAttribute('required');
-            document.getElementById('license_expiry_date').removeAttribute('required');
-            document.getElementById('truck_id').removeAttribute('required');
+        // 2. PASSWORD VISIBILITY TOGGLE
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                input.type = input.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye-slash');
+                icon.classList.toggle('fa-eye');
+            });
+        });
+
+        // 3. DRIVER FIELDS TOGGLE
+        function toggleDriverFields() {
+            const role = document.getElementById('role').value;
+            const driverFields = document.getElementById('driverFields');
+            driverFields.style.display = role === 'driver' ? 'block' : 'none';
         }
-    }
+        document.getElementById('role').addEventListener('change', toggleDriverFields);
 
-    // Password validation
-    document.getElementById('create-account-form').addEventListener('submit', function(event) {
-        var password = document.getElementById('password').value;
-        var passwordConfirmation = document.getElementById('password_confirmation').value;
-        var errorDiv = document.getElementById('password-error');
+        // 4. PASSWORD VALIDATION (ON SUBMIT ONLY)
+        document.getElementById('create-account-form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPass = document.getElementById('password_confirmation').value;
+            const errorDiv = document.getElementById('password-error');
 
-        if (password !== passwordConfirmation) {
-            errorDiv.style.display = 'block';
-            event.preventDefault(); // Prevent form submission
-        } else {
-            errorDiv.style.display = 'none';
-        }
+            // Reset error state
+            errorDiv.classList.add('d-none');
+
+            // Only validate if both fields have values
+            if (password && confirmPass && password !== confirmPass) {
+                errorDiv.classList.remove('d-none');
+                e.preventDefault();
+            }
+        });
     });
 </script>

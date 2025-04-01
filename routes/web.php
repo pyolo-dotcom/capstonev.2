@@ -45,12 +45,11 @@ Route::put('/admin/update-trip/{id}', [ManageTripController::class, 'UpdateManag
 Route::get('admin/managegps', [ManageGPSController::class, 'showManageGPS'])->name('admin.managegps');
 Route::get('admin/fuel', [FuelController::class, 'showFuel'])->name('admin.fuel');
 Route::get('admin/truckdetails', [TruckController::class, 'showTruck'])->name('admin.truckdetails');
-Route::get('admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
 Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name('admin.activeaccount');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
 Route::get('/get-locations', function () {
     $locations = DB::table('trackings')
-        ->join('users', 'trackings.truck_id', '=', 'users.truck_id') // ✅ Join driver info
+        ->join('users', 'trackings.truck_id', '=', 'users.truck_id')
         ->select(
             'trackings.truck_id',
             'trackings.latitude',
@@ -60,7 +59,6 @@ Route::get('/get-locations', function () {
         )
         ->where('users.role', 'driver')
         ->get();
-
     return response()->json($locations);
 });
 
@@ -88,7 +86,6 @@ Route::get('manager/managetrip', [ManageTripManagerController::class, 'index'])-
 Route::put('/manager/update-trip/{id}', [ManageTripManagerController::class, 'update'])->name('manager.updateTrip');
 Route::get('manager/gpscontrol', [GPSControlController::class, 'showGPSControl'])->name('manager.gpscontrol');
 Route::get('manager/fuel-manager', [FuelManagerController::class, 'showFuelManager'])->name('manager.fuel');
-Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
 Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
@@ -101,30 +98,13 @@ Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'
 Route::delete('/cargo/{id}/delete', [ManageTripManagerController::class, 'destroy'])->name('cargo.delete');
 Route::post('/fuel-consumption', [FuelManagerController::class, 'store'])->name('fuel.store');
 Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
-Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']);
-Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']); // ✅ New route for multiple trucks
+Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']);
 Route::get('/get-truck-distance', [GPSControlController::class, 'getTruckDistances']);
-Route::get('/get-locations', function () {
-    $locations = DB::table('trackings')
-        ->join('users', 'trackings.truck_id', '=', 'users.truck_id') // ✅ Join driver info
-        ->select(
-            'trackings.truck_id',
-            'trackings.latitude',
-            'trackings.longitude',
-            'trackings.total_distance',
-            'users.fullname'
-        )
-        ->where('users.role', 'driver')
-        ->get();
 
-    return response()->json($locations);
-});
-
-//Driver
+// Driver Routes
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
 Route::get('driver/shipment', [ShipmentDriverController::class, 'showShipmentDriver'])->name('driver.shipment');
-Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
 Route::get('driver/helpdriver', [HelpDriverController::class, 'showHelpDriver'])->name('driver.helpdriver');
 Route::post('/trips/store', [DeliveryDriverController::class, 'store'])->name('trips.store');
 Route::get('/get-trip-counts', [DeliveryDriverController::class, 'getTripCounts']);
@@ -137,53 +117,48 @@ Route::get('/tracking', function () {
     return view('Driver.tracking');
 });
 
-
+// Account Management
 Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');
-// Edit Account Route
 Route::put('admin/activeaccount/{id}', [ActiveController::class, 'edit'])->name('editaccount');
-
-// Archive Account Route
 Route::delete('admin/activeaccount/{id}', [ActiveController::class, 'archive'])->name('archiveaccount');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
-    Route::put('/admin/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
-});
-
-// New Route for Creating Account with Truck ID
 Route::post('admin/activeaccount/store', [ActiveController::class, 'store'])->name('admin.activeaccount.store');
 
-//Profile Management
-Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
+// Profile Routes
+Route::middleware(['auth'])->group(function () {
+    // Admin Profile
+    Route::prefix('admin')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
+        Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update'); // Changed from POST to PUT
+        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
+        Route::post('/profile/remove-image', [ProfileController::class, 'removeImage'])->name('admin.profile.remove-image');
+    });
 
-// Manager Profile Routes
-Route::get('manager/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
-Route::put('manager/profile/update', [ProfileManagerController::class, 'updateProfileManager'])->name('manager.profile.update');
-Route::put('manager/profile/change-password', [ProfileManagerController::class, 'changePasswordManager'])->name('manager.profile.change-password');
+    // Manager Profile
+    Route::prefix('manager')->group(function () {
+        Route::get('/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
+        Route::put('/profile/update', [ProfileManagerController::class, 'updateProfile'])->name('manager.profile.update');
+        Route::post('/profile/change-password', [ProfileManagerController::class, 'changePassword'])->name('manager.profile.change-password');
+        Route::post('/profile/remove-image', [ProfileManagerController::class, 'removeImage'])->name('manager.profile.remove-image');
+    });
 
-// Driver Profile Routes
-Route::get('driver/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
-Route::put('driver/profile/update', [ProfileDriverController::class, 'updateProfileDriver'])->name('driver.profile.update');
-Route::put('driver/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password');
-Route::put('driver/profile/update-license', [ProfileDriverController::class, 'updateDriverLicense'])->name('driver.profile.update-license');
+    // Driver Profile
+    Route::prefix('driver')->group(function () {
+        Route::get('/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
+        Route::put('/profile/update', [ProfileDriverController::class, 'updateProfileDriver'])->name('driver.profile.update');
+        Route::post('/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password'); // Changed from PUT to POST
+        Route::put('/profile/update-license', [ProfileDriverController::class, 'updateDriverLicense'])->name('driver.profile.update-license');
+    });
+});
 
-//Fuel Route
+// Fuel Routes
 Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
 Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');
 Route::delete('admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
-
-//Fuel Route
 Route::put('admin/archive/restore/fuel/{id}', [ArchiveController::class, 'restoreFuel'])->name('admin.archive.restore.fuel');
 Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'destroyFuel'])->name('admin.archive.delete.fuel');
 
-//Fuel Route
-Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
-Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');
-
-//Admin Trip Records Archive
+// Trip Archive Routes
 Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTrip'])->name('admin.archive.trip');
-
-//Archive Trip Records Restore & Delete
 Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
 Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');
 
@@ -198,14 +173,10 @@ Route::get('/verify-otp', [OTPController::class, 'showOTPForm'])->name('verify.o
 Route::post('/verify-otp', [OTPController::class, 'verifyOTP'])->name('verify.otp');
 Route::post('/send-otp', [OTPController::class, 'sendOTP'])->name('send.otp');
 
-// Add this with your other admin routes
+// Truck Routes
 Route::post('admin/truckdetails/store', [TruckController::class, 'store'])->name('admin.truckdetails.store');
-
-// Add these with your other truck routes
 Route::put('admin/truckdetails/{id}', [TruckController::class, 'update'])->name('admin.truckdetails.update');
 Route::delete('admin/truckdetails/{id}', [TruckController::class, 'destroy'])->name('admin.truckdetails.destroy');
-
-// Truck archive routes
 Route::delete('admin/truckdetails/archive/{id}', [ArchiveController::class, 'archiveTruck'])->name('admin.truckdetails.archive');
 Route::put('admin/archive/restore/truck/{id}', [ArchiveController::class, 'restoreTruck'])->name('admin.archive.restore.truck');
 Route::delete('admin/archive/delete/truck/{id}', [ArchiveController::class, 'destroyTruck'])->name('admin.archive.delete.truck');

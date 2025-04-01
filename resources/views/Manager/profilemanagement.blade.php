@@ -1,343 +1,486 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Profile Management</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #17a2b8;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
             display: flex;
-            background-color: #f8f9fa;
+            background-color: #f5f7fa;
+            min-height: 100vh;
         }
-
+        
         .sidebar {
             width: 250px;
             height: 100vh;
-            background: #333;
-            padding: 20px;
+            background: var(--secondary-color);
+            padding: 20px 0;
             position: fixed;
             left: 0;
             top: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
-
-        .sidebar h2 {
-            color: #fff;
+        
+        .sidebar-brand {
+            padding: 0 20px 20px;
             text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             margin-bottom: 20px;
         }
-
+        
         .sidebar ul {
             list-style: none;
             padding: 0;
         }
-
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-
+        
         .sidebar ul li a {
-            color: #fff;
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             display: block;
-            transition: 0.3s;
+            padding: 12px 20px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
         }
-
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
+        
+        .sidebar ul li a:hover, 
+        .sidebar ul li a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 17px;
         }
-
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            flex-grow: 1;
+        
+        .sidebar ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
-        .profile-card {
-            background: #fff;
+        
+        .main-content {
+            margin-left: 250px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 250px);
+            height: 100vh;
+            overflow-y: auto;
         }
+        
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-header h2 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
         .profile-picture-container {
             position: relative;
-            display: inline-block;
+            width: 150px;
+            height: 150px;
             margin-bottom: 20px;
         }
-        .profile-picture-container img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border: 3px solid #ddd;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .profile-picture-container .edit-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        
+        .profile-picture {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .default-profile-picture {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #757575;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .initials {
+            transform: translateY(5px);
+        }
+        
+        .edit-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
             cursor: pointer;
-        }
-        .profile-picture-container:hover .edit-overlay {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             opacity: 1;
+            transition: all 0.3s;
         }
-        .form-group {
-            margin-bottom: 15px;
+        
+        .edit-overlay:hover {
+            background: #2980b9;
+            transform: scale(1.05);
         }
-        .form-group label {
-            font-weight: bold;
+        
+        .profile-info {
+            width: 100%;
         }
-        .btn-primary {
-            background-color: #007bff;
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .info-value {
+            color: #555;
+        }
+        
+        .btn-edit-profile {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+            display: block;
+        }
+        
+        .btn-edit-profile:hover {
+            background: #2980b9 !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-change-password {
+            background: var(--warning-color) !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+            display: block;
+        }
+        
+        .btn-change-password:hover {
+            background: #e67e22 !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .modal-content {
+            border-radius: 12px;
             border: none;
-            padding: 10px;
-            font-size: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
+        
+        .modal-header {
+            border-bottom: none;
+            padding: 20px 25px 10px;
         }
+        
+        .modal-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .modal-body {
+            padding: 20px 25px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn-close {
+            filter: brightness(0.5);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 400px;
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 70px;
+                overflow: hidden;
             }
-            .content {
-                margin-left: 0;
-                padding: 15px;
+            
+            .sidebar ul li a span {
+                display: none;
+            }
+            
+            .sidebar ul li a i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 20px 15px;
+            }
+            
+            .profile-picture-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
 </head>
-
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Menu</h2>
         <ul>
-            <x-managernavbar />
+            <x-managernavbar/>
         </ul>
     </div>
 
     <!-- Main Content -->
-    <div class="container mt-5 content">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="profile-card text-center">
-                    <!-- Profile Picture with Edit Overlay -->
-                    <div class="profile-picture-container">
-                        <img src="{{ asset($user->profile_picture ? 'storage/' . $user->profile_picture : 'images/profile.png') }}"
-                            alt="Profile Image"
-                            id="profileImagePreview">
+    <div class="main-content">
+        <div class="profile-header">
+            <h2><i class="fas fa-user-circle me-2"></i>Profile Management</h2>
+        </div>
+        
+        <div class="profile-card">
+            <!-- Profile Picture Section -->
+            <div class="profile-picture-container">
+                @if($user->profile_picture)
+                    <img src="{{ $user->profile_picture_url }}" 
+                        class="profile-picture"
+                        id="profileImagePreview"
+                        alt="Profile picture of {{ $user->fullname }}">
+                @else
+                    <div class="default-profile-picture" id="profileImagePreview">
+                        <span class="initials">{{ $user->initials }}</span>
                     </div>
-
-                    <!-- User Info -->
-                    <h4 class="mt-3">{{ $user->fullname }}</h4>
-                    <p class="text-muted">{{ $user->role }}</p>
-                    <hr>
-
-                    <!-- Display Profile Information -->
-                    <div class="text-start">
-                        <p><strong>Username:</strong> {{ $user->username }}</p>
-                        <p><strong>Full Name:</strong> {{ $user->fullname }}</p>
-                        <p><strong>Email:</strong> {{ $user->email }}</p>
-                        <p><strong>Date of Birth:</strong> {{ $user->dob }}</p>
-                    </div>
-
-                    <!-- Edit Button to Open Modal -->
-                    <button type="button" class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                        Edit Profile
-                    </button>
-
-                    <!-- Change Password Button to Open Modal -->
-                    <button type="button" class="btn btn-warning w-100 mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                        Change Password
-                    </button>
+                @endif
+                <div class="edit-overlay" data-bs-toggle="modal" data-bs-target="#editProfileModal" aria-label="Edit profile picture">
+                    <i class="fas fa-pencil-alt"></i>
                 </div>
             </div>
+            
+            <!-- Profile Information Section -->
+            <div class="profile-info">
+                <div class="info-item">
+                    <span class="info-label">Username:</span>
+                    <span class="info-value">{{ $user->username }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value">{{ $user->fullname }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ $user->email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date of Birth:</span>
+                    <span class="info-value">{{ $user->dob ? date('F j, Y', strtotime($user->dob)) : 'Not set' }}</span>
+                </div>
+            </div>
+            
+            <!-- ACTION BUTTONS -->
+            <button type="button" class="btn btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                <i class="fas fa-edit me-2"></i>Edit Profile
+            </button>
+            
+            <button type="button" class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                <i class="fas fa-key me-2"></i>Change Password
+            </button>
         </div>
     </div>
 
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Profile Update Form -->
-                    <form action="{{ route('manager.profile.update') }}" method="POST" enctype="multipart/form-data" id="profileForm">
-                        @csrf
-                        @method('PUT')
+    <!-- Include Modals -->
+    @include('Manager.modals.edit-profile-modal')
+    @include('Manager.modals.change-password-modal')
 
-                        <!-- Username -->
-                        <div class="form-group text-start">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" class="form-control" value="{{ $user->username }}" required>
-                        </div>
-
-                        <!-- Full Name -->
-                        <div class="form-group text-start">
-                            <label for="fullname">Full Name</label>
-                            <input type="text" id="fullname" name="fullname" class="form-control" value="{{ $user->fullname }}" required>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="form-group text-start">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" value="{{ $user->email }}" required>
-                        </div>
-
-                        <!-- Date of Birth -->
-                        <div class="form-group text-start">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" class="form-control" value="{{ $user->dob }}">
-                        </div>
-
-                        <!-- Profile Picture Upload -->
-                        <div class="form-group text-start">
-                            <label for="profile_picture">Profile Picture</label>
-                            <input type="file" id="profile_picture" name="profile_picture" class="form-control" onchange="previewImage(event)">
-                        </div>
-
-                        <!-- Save Changes Button -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Change Password Modal -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Change Password Form -->
-                    <form action="{{ route('manager.profile.change-password') }}" method="POST" id="changePasswordForm">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Display Validation Errors -->
-                        <div id="errorContainer" class="alert alert-danger" style="display: none;"></div>
-
-                        <!-- Current Password -->
-                        <div class="form-group text-start">
-                            <label for="current_password">Current Password</label>
-                            <input type="password" id="current_password" name="current_password" class="form-control" required>
-                        </div>
-
-                        <!-- New Password -->
-                        <div class="form-group text-start">
-                            <label for="new_password">New Password</label>
-                            <input type="password" id="new_password" name="new_password" class="form-control" required>
-                        </div>
-
-                        <!-- Confirm New Password -->
-                        <div class="form-group text-start">
-                            <label for="new_password_confirmation">Confirm New Password</label>
-                            <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="form-control" required>
-                        </div>
-
-                        <!-- Save Changes Button -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Change Password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript for Image Preview and Form Handling -->
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Function to preview uploaded image
-        function previewImage(event) {
+        function previewImage(event, targetId) {
             const reader = new FileReader();
-            const output = document.getElementById('profileImagePreview');
+            const output = document.getElementById(targetId);
+            
+            if (!output) return;
+            
             reader.onload = function() {
-                output.src = reader.result;
+                if (output.tagName.toLowerCase() === 'div') {
+                    const img = document.createElement('img');
+                    img.src = reader.result;
+                    img.className = 'profile-picture';
+                    img.id = targetId;
+                    img.alt = 'Profile picture preview';
+                    output.parentNode.replaceChild(img, output);
+                } else {
+                    output.src = reader.result;
+                }
             };
             reader.readAsDataURL(event.target.files[0]);
         }
 
-        // Function to handle the Change Password form submission
-        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
-
-            const errorContainer = document.getElementById('errorContainer');
-            errorContainer.style.display = 'none'; // Hide error container initially
-
-            // Submit the form via AJAX
-            fetch(this.action, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                    'Accept': 'application/json',
-                },
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        throw err;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all modals with proper accessibility
+            const modals = ['editProfileModal', 'changePasswordModal'];
+            
+            modals.forEach(modalId => {
+                const modalElement = document.getElementById(modalId);
+                if (modalElement) {
+                    modalElement.addEventListener('show.bs.modal', function() {
+                        this.removeAttribute('aria-hidden');
+                    });
+                    
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        this.setAttribute('aria-hidden', 'true');
                     });
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // If successful, close the modal and show a success message
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-                    modal.hide(); // Close the modal using Bootstrap's JavaScript API
-                    alert(data.message); // Show a success message
-                    window.location.reload(); // Optional: Reload the page to reflect changes
-                } else {
-                    // If there are errors, display them in the modal
-                    errorContainer.innerHTML = data.message || 'An error occurred. Please try again.';
-                    errorContainer.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                errorContainer.innerHTML = error.message || 'An error occurred. Please try again.';
-                errorContainer.style.display = 'block';
             });
-        });
-    </script>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            // Remove image handler
+            const modalRemoveBtn = document.getElementById('removeProfileImageModalBtn');
+            const removeInput = document.getElementById('remove_profile_image');
+            
+            if (modalRemoveBtn && removeInput) {
+                modalRemoveBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to remove your profile image?')) {
+                        removeInput.value = '1';
+                        const modalPreview = document.getElementById('modalProfilePreview');
+                        if (modalPreview) {
+                            modalPreview.outerHTML = `
+                                <div class="default-profile-picture" id="modalProfilePreview">
+                                    <span class="initials">{{ $user->initials }}</span>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            }
+            
+            // Show alerts if any
+            @if(session('success'))
+                showAlert('{{ session('success') }}', 'success');
+            @endif
+            
+            @if(session('error'))
+                showAlert('{{ session('error') }}', 'danger');
+            @endif
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '1100';
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 150);
+            }, 5000);
+        }
+    </script>
 </body>
 </html>
