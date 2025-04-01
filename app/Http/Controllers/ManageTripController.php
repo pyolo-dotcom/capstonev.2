@@ -52,22 +52,36 @@ class ManageTripController extends Controller
     /**
      * Update a cargo trip record.
      */
-    public function UpdateManageTrip(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $cargo = Cargo::findOrFail($id);
-
-        $cargo->update([
-            'eir_no' => $request->eir_no,
-            'container_van_no' => $request->container_van_no,
-            'size' => $request->size,
-            'shipper_consignee' => $request->shipper_consignee,
-            'voyage_vessel' => $request->voyage_vessel,
-            'voyage_no' => $request->voyage_no,
-            'pickup_location' => $request->pickup_location,
-            'delivery_location' => $request->delivery_location,
-        ]);
-
-        return redirect()->route('admin.managetrip')->with('success', 'Trip updated successfully.');
+        try {
+            $cargo = Cargo::findOrFail($id);
+    
+            $validatedData = $request->validate([
+                'plate_no' => 'required',
+                'eir_no' => 'required',
+                'container_van_no' => 'required',
+                'size' => 'required',
+                'shipper_consignee' => 'required',
+                'voyage_vessel' => 'required',
+                'voyage_no' => 'required',
+                'pickup_location' => 'required',
+                'delivery_location' => 'required'
+            ]);
+    
+            $cargo->update($validatedData);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Trip updated successfully'
+            ]);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating trip: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

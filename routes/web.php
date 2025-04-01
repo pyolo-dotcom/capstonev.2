@@ -41,7 +41,7 @@ Route::get('admin/get-trip-counts', [DeliveryRecordsController::class, 'getTripC
 Route::put('/trips/update/{id}', [DeliveryRecordsController::class, 'update'])->name('trips.update');
 Route::delete('/trips/reset', [DeliveryRecordsController::class, 'reset'])->name('trips.reset');
 Route::get('admin/managetrip', [ManageTripController::class, 'ShowManageTrip'])->name('admin.managetrip');
-Route::put('/admin/update-trip/{id}', [ManageTripController::class, 'UpdateManageTrip'])->name('admin.updateTrip');
+Route::put('/admin/update-trip/{id}', [ManageTripController::class, 'update'])->name('admin.updateTrip');
 Route::get('admin/managegps', [ManageGPSController::class, 'showManageGPS'])->name('admin.managegps');
 Route::get('admin/fuel', [FuelController::class, 'showFuel'])->name('admin.fuel');
 Route::get('admin/truckdetails', [TruckController::class, 'showTruck'])->name('admin.truckdetails');
