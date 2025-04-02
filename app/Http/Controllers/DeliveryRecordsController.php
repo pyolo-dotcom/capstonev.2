@@ -19,17 +19,16 @@ class DeliveryRecordsController extends Controller
                 $trip->plate_no = trim(str_replace(' ', '', $trip->plate_no));
                 return $trip;
             });
-
-        // Default counts set to zero
-        $oneWayTrip = 0;
-        $roundTrip = 0;
-        $doorToDoorTrip = 0;
-
-        return view('admin.deliveryrecords', compact('trips', 'oneWayTrip', 'roundTrip', 'doorToDoorTrip'));
+    
+        // Initialize all counts to zero
+        return view('admin.deliveryrecords', [
+            'trips' => $trips,
+            'oneWayTrip' => 0,
+            'roundTrip' => 0,
+            'doorToDoorTrip' => 0
+        ]);
     }
 
-
-    // Update a trip    
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -39,7 +38,7 @@ class DeliveryRecordsController extends Controller
         ]);
 
         // Clean plate number by removing spaces
-        $cleanPlateNo = str_replace(' ', '', $request->plate_no);
+        $cleanPlateNo = strtoupper(str_replace(' ', '', $request->plate_no));
 
         // Find the trip
         $trip = Trip::where('id', $id)->firstOrFail();
@@ -54,65 +53,66 @@ class DeliveryRecordsController extends Controller
         return response()->json(['message' => 'Trip updated successfully!']);
     }
 
-    // Reset trips of a certain typepublic function reset(Request $request)
     public function reset(Request $request)
     {
         $request->validate([
-            'plate_no' => 'required', // Ensure plate number is provided
+            'plate_no' => 'required',
             'trip_type' => 'required'
         ]);
     
-        // Find trips that match the given plate number and trip type
-        $deleted = Trip::where('plate_no', $request->plate_no)
+        // Clean plate number format
+        $cleanPlateNo = strtoupper(str_replace(' ', '', $request->plate_no));
+    
+        // Find and delete matching trips
+        $deleted = Trip::where(\DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $cleanPlateNo)
             ->where('trip_type', $request->trip_type)
             ->delete();
     
         if ($deleted) {
-            return response()->json(['message' => 'Trips reset successfully for ' . $request->plate_no]);
+            return response()->json(['message' => 'Trips reset successfully for ' . $cleanPlateNo]);
         } else {
-            return response()->json(['message' => 'No trips found to reset for ' . $request->plate_no], 404);
+            return response()->json(['message' => 'No trips found to reset for ' . $cleanPlateNo], 404);
         }
     }
+
     public function getTripCounts(Request $request)
     {
-        // Remove spaces from the input to match database format
-        $plateNo = str_replace(' ', '', $request->input('plate_no'));
-    
-        Log::info("Received Plate Number (Formatted): " . $plateNo); // Debugging
-    
-        // Fetch trip data from the database with corrected plate number formatting
-        $trips = Trip::whereRaw("REPLACE(plate_no, ' ', '') = ?", [$plateNo])
+        $plateNo = strtoupper(str_replace(' ', '', $request->input('plate_no')));
+        
+        if (empty($plateNo)) {
+            return response()->json([
+                'oneWayTrip' => 0,
+                'roundTrip' => 0,
+                'doorToDoorTrip' => 0
+            ]);
+        }
+
+        // Use consistent formatting for comparison
+        $trips = Trip::select('trip_type', \DB::raw('SUM(num_trips) as total_trips'))
+            ->where(\DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $plateNo)
             ->groupBy('trip_type')
-            ->selectRaw('trip_type, SUM(num_trips) as total_trips')
             ->get();
-    
-        // Initialize counts
+
         $counts = [
             'oneWayTrip' => 0,
             'roundTrip' => 0,
             'doorToDoorTrip' => 0
         ];
-    
-        // Map the results
+
         foreach ($trips as $trip) {
-            if ($trip->trip_type === 'One Way Trip') {
-                $counts['oneWayTrip'] = $trip->total_trips;
-            } elseif ($trip->trip_type === 'Round Trip') {
-                $counts['roundTrip'] = $trip->total_trips;
-            } elseif ($trip->trip_type === 'Door-To-Door Trip') {
-                $counts['doorToDoorTrip'] = $trip->total_trips;
+            switch ($trip->trip_type) {
+                case 'One Way Trip':
+                    $counts['oneWayTrip'] = (int)$trip->total_trips;
+                    break;
+                case 'Round Trip':
+                    $counts['roundTrip'] = (int)$trip->total_trips;
+                    break;
+                case 'Door-To-Door Trip':
+                    $counts['doorToDoorTrip'] = (int)$trip->total_trips;
+                    break;
             }
         }
-    
-        // Debugging output
-        Log::info("Trip Counts: ", [
-            'plateNo' => $plateNo,
-            'oneWayTrip' => $counts['oneWayTrip'],
-            'roundTrip' => $counts['roundTrip'],
-            'doorToDoorTrip' => $counts['doorToDoorTrip']
-        ]);
-    
+
         return response()->json($counts);
-    }    
-    
+    }
 }

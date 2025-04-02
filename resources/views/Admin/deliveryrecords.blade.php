@@ -59,7 +59,7 @@
     <main class="main-content">
         <div class="plate-number-section">
             <select id="plateNumberSelect" style="font-size: 17px; border-radius: 8px;">
-                <option disabled selected>-- Plate Number --</option>
+                <option value="" disabled selected>-- Plate Number --</option>
                 <option value="UVP353">UVP353</option>
                 <option value="TQE262">TQE262</option>
                 <option value="NBB7212">NBB7212</option>
@@ -77,17 +77,17 @@
             <div class="trip-summary">
                 <div class="trip-card">
                     <h3>ONE WAY TRIP</h3>
-                    <p id="oneWayTripCount">{{ $oneWayTrip }}</p>
+                    <p id="oneWayTripCount">{{ $oneWayTrip ?? 0 }}</p>
                     <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
                 </div>
                 <div class="trip-card">
                     <h3>ROUND TRIP</h3>
-                    <p id="roundTripCount">{{ $roundTrip }}</p>
+                    <p id="roundTripCount">{{ $roundTrip ?? 0 }}</p>
                     <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
                 </div>
                 <div class="trip-card">
                     <h3>DOOR TO DOOR TRIP</h3>
-                    <p id="doorToDoorTripCount">{{ $doorToDoorTrip }}</p>
+                    <p id="doorToDoorTripCount">{{ $doorToDoorTrip ?? 0 }}</p>
                     <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
                 </div>
             </div>
@@ -140,13 +140,24 @@
             // Initialize - hide all rows initially
             $("#tripTableBody tr").hide();
             
+            // Load counts for the first plate number by default
+            const initialPlateNo = $("#plateNumberSelect").val();
+            if (initialPlateNo) {
+                updateTripCounts(initialPlateNo);
+            }
+
             // Handle plate number selection change
             $("#plateNumberSelect").change(function() {
                 const plateNo = $(this).val();
+                updateTripCounts(plateNo);
+                filterTableRows(plateNo);
+            });
+            
+            function updateTripCounts(plateNo) {
+                if (!plateNo) return;
                 
-                // Update trip counts
                 $.ajax({
-                    url: "/get-trip-counts",
+                    url: "/admin/get-trip-counts",
                     type: "GET",
                     data: { plate_no: plateNo },
                     success: function(response) {
@@ -154,26 +165,42 @@
                         $("#roundTripCount").text(response.roundTrip);
                         $("#doorToDoorTripCount").text(response.doorToDoorTrip);
                     },
-                    error: function() {
-                        alert("Error fetching data. Please try again.");
+                    error: function(xhr) {
+                        console.error("Error fetching trip counts:", xhr.responseText);
+                        $("#oneWayTripCount").text("0");
+                        $("#roundTripCount").text("0");
+                        $("#doorToDoorTripCount").text("0");
                     }
                 });
-                
-                // Filter table rows
-                const selectedPlate = plateNo.replace(/\s+/g, "");
-                if (!selectedPlate) {
+            }
+            
+            function filterTableRows(plateNo) {
+                if (!plateNo) {
                     $("#tripTableBody tr").hide();
+                    $("#tripTableBody tr:first").show(); // Show "no data" row if empty
                     return;
                 }
 
-                $("#tripTableBody tr").hide();
+                const selectedPlate = plateNo.replace(/\s+/g, "").toUpperCase();
+                let hasVisibleRows = false;
+
                 $("#tripTableBody tr").each(function() {
-                    const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "");
-                    if (rowPlate === selectedPlate) {
-                        $(this).show();
+                    if ($(this).data("id")) { // Skip the "no data" row
+                        const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "").toUpperCase();
+                        if (rowPlate === selectedPlate) {
+                            $(this).show();
+                            hasVisibleRows = true;
+                        } else {
+                            $(this).hide();
+                        }
                     }
                 });
-            });
+
+                if (!hasVisibleRows) {
+                    $("#tripTableBody tr").hide();
+                    $("#tripTableBody tr:first").show();
+                }
+            }
             
             // Handle Add Trip modal opening
             $("#openModal").click(function() {
@@ -239,7 +266,8 @@
                             },
                             success: function(response) {
                                 Swal.fire("Success", response.message, "success");
-                                location.reload();
+                                updateTripCounts(plateNo);
+                                filterTableRows(plateNo);
                             },
                             error: function(xhr) {
                                 Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
@@ -275,7 +303,7 @@
                         location.reload();
                     },
                     error: function(xhr) {
-                        Swal.fire("Error", "Failed to add trip.", "error");
+                        Swal.fire("Error", xhr.responseJSON.message || "Failed to add trip.", "error");
                     }
                 });
             });
