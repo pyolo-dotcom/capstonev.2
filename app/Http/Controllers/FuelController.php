@@ -45,22 +45,22 @@ class FuelController extends Controller
     {
         $request->validate([
             'date' => 'required|date',
-            'plateNo' => 'required|string',
-            'totalKm' => 'required|integer',
-            'avgKmL' => 'required|numeric',
+            'plate_no' => 'required|string',
+            'total_km' => 'required|numeric',
+            'avg_km_l' => 'required|numeric',
         ]);
-
-        $totalLiters = $request->totalKm / $request->avgKmL;
-
+    
+        $totalLiters = $request->total_km / $request->avg_km_l;
+    
         $fuel = FuelConsumption::findOrFail($id);
         $fuel->update([
             'date' => $request->date,
-            'plate_no' => $request->plateNo,
-            'total_km' => $request->totalKm,
-            'avg_km_l' => $request->avgKmL,
+            'plate_no' => $request->plate_no,
+            'total_km' => $request->total_km,
+            'avg_km_l' => $request->avg_km_l,
             'total_liters' => $totalLiters,
         ]);
-
+    
         return response()->json(['success' => true, 'message' => 'Fuel consumption updated successfully!'], 200);
     }
 
