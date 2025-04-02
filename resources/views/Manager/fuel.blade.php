@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Fuel Manager</title>
     <style>
-* {
+     * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -189,7 +190,7 @@ body {
     </div>
 
     @include('Manager.modals.fuelmodal')
-</body>
+
 <script>
 let fuelChart = null;
 document.addEventListener('DOMContentLoaded', function () {
@@ -203,7 +204,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchFuelData(plateNumber, timeFilter) {
         if (!plateNumber || plateNumber === "-- Plate Number --") {
-            fuelChartCanvas.style.display = 'none'; // Hide only the graph
+            fuelChartCanvas.style.display = 'none';
+            Swal.fire({
+                icon: 'info',
+                title: 'No Plate Selected',
+                text: 'Please select a plate number to view fuel data',
+                confirmButtonColor: '#3085d6'
+            });
             return;
         }
 
@@ -211,9 +218,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (!Array.isArray(data) || data.length === 0) {
-                    console.warn("No data returned for plate number:", plateNumber);
-                    updateFuelChart([], [], []);
-                    fuelChartCanvas.style.display = 'none'; // Hide if no data
+                    fuelChartCanvas.style.display = 'none';
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Data Available',
+                        text: `No fuel data found for ${plateNumber} in the selected time period`,
+                        confirmButtonColor: '#3085d6'
+                    });
                     return;
                 }
 
@@ -222,9 +233,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 let fuelUsed = data.map(item => item.total_liters);
 
                 updateFuelChart(labels, kilometers, fuelUsed);
-                fuelChartCanvas.style.display = 'block'; // Show graph when data is available
+                fuelChartCanvas.style.display = 'block';
             })
-            .catch(error => console.error('Error fetching fuel data:', error));
+            .catch(error => {
+                console.error('Error fetching fuel data:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load fuel data. Please try again.',
+                    confirmButtonColor: '#d33'
+                });
+            });
     }
 
     function updateFuelChart(labels, kilometers, fuelUsed) {
@@ -294,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedPlateNumber = this.value.trim();
         
         if (selectedPlateNumber === "-- Plate Number --") {
-            fuelChartCanvas.style.display = 'none'; // Hide only the graph
+            fuelChartCanvas.style.display = 'none';
         } else {
             fetchFuelData(selectedPlateNumber, selectedTimeFilter);
         }
@@ -304,7 +323,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.time-filter-btn').forEach(button => {
         button.addEventListener('click', function () {
             if (!selectedPlateNumber || selectedPlateNumber === "-- Plate Number --") {
-                return; // Prevent fetching if no plate is selected
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Plate Selected',
+                    text: 'Please select a plate number first',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
             }
 
             selectedTimeFilter = this.getAttribute('data-filter');
@@ -325,6 +350,16 @@ function closeFuelModal() {
 
 function addFuelConsumption() {
     let formData = new FormData(document.getElementById('fuelForm'));
+    
+    // Show loading indicator
+    Swal.fire({
+        title: 'Processing...',
+        html: 'Adding fuel consumption data',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     fetch('/fuel-consumption', {
         method: 'POST',
@@ -336,15 +371,39 @@ function addFuelConsumption() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            closeFuelModal();
-            document.getElementById('fuelForm').reset();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message,
+                confirmButtonColor: '#3085d6'
+            }).then(() => {
+                closeFuelModal();
+                document.getElementById('fuelForm').reset();
+                // Refresh the chart if a plate number is selected
+                const selectedPlate = document.getElementById('plateNumberSelect').value;
+                if (selectedPlate && selectedPlate !== "-- Plate Number --") {
+                    const timeFilter = document.querySelector('.time-filter-btn.active').getAttribute('data-filter');
+                    fetchFuelData(selectedPlate, timeFilter);
+                }
+            });
         } else {
-            alert('Error adding fuel consumption.');
-            console.log(data);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Failed to add fuel consumption',
+                confirmButtonColor: '#d33'
+            });
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An unexpected error occurred. Please try again.',
+            confirmButtonColor: '#d33'
+        });
+    });
 }
 </script>
 </body>

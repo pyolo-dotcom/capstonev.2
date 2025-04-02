@@ -27,6 +27,12 @@ class OTPController extends Controller
             return back()->withErrors(['login_error' => 'Invalid credentials']);
         }
 
+        // Check if user should bypass OTP (remembered device)
+        if ($request->has('remember') && $user->otp_verified_at) {
+            Auth::login($user, true); // Log in with "remember me"
+            return $this->redirectBasedOnRole($user);
+        }
+
         // Generate OTP (6 digits)
         $otp = rand(100000, 999999);
         $otp_expires_at = now()->addMinutes(15);
@@ -40,8 +46,11 @@ class OTPController extends Controller
         // Send email with OTP
         Mail::to($user->email)->send(new SendOTP($otp));
 
-        // Store user ID in session for verification
+        // Store user ID and remember me in session for verification
         Session::put('otp_user_id', $user->id);
+        if ($request->has('remember')) {
+            Session::put('otp_remember', true);
+        }
 
         return redirect()->route('verify.otp.view');
     }
@@ -63,7 +72,7 @@ class OTPController extends Controller
             'otp' => 'required|digits:6'
         ]);
 
-        $user = User::find(Session::get('otp_user_id'));
+        $user = User::where('id', Session::get('otp_user_id'))->first();
 
         if (!$user) {
             return redirect()->route('login')->withErrors(['login_error' => 'Session expired']);
@@ -74,19 +83,26 @@ class OTPController extends Controller
             return back()->withErrors(['otp_error' => 'Invalid or expired OTP']);
         }
 
-        // Clear OTP fields
+        // Clear OTP fields and mark as verified
         $user->update([
             'otp' => null,
-            'otp_expires_at' => null
+            'otp_expires_at' => null,
+            'otp_verified_at' => now()
         ]);
 
-        // Log the user in
-        Auth::login($user);
+        // Log the user in with remember me if set
+        $remember = Session::get('otp_remember', false);
+        Auth::login($user, $remember);
 
         // Clear session
-        Session::forget('otp_user_id');
+        Session::forget(['otp_user_id', 'otp_remember']);
 
-        // Redirect based on role
+        return $this->redirectBasedOnRole($user);
+    }
+
+    // Helper method for role-based redirection
+    protected function redirectBasedOnRole($user)
+    {
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.deliveryrecords');

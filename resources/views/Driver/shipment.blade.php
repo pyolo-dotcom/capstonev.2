@@ -214,11 +214,11 @@
             <h2>Generate QR Code:</h2>
             <select name="plate_no" id="plate_no" required>
                 <option value="">Select Plate No</option>
-                <option value="UVP 353">UVP 353</option>
-                <option value="TQE 262">TQE 262</option>
-                <option value="NBB 7212">NBB 7212</option>
-                <option value="APA 3309">APA 3309</option>
-                <option value="WIE 914">WIE 914</option>
+                <option value="UVP353">UVP353</option>
+                <option value="TQE262">TQE262</option>
+                <option value="NBB7212">NBB7212</option>
+                <option value="APA3309">APA3309</option>
+                <option value="WIE914">WIE914</option>
             </select>
             <input type="text" name="eir_no" id="eir_no" placeholder="EIR No" required>
             <input type="text" name="container_van_no" id="container_van_no" placeholder="Container Van No" required>
