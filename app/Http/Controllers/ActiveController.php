@@ -8,11 +8,11 @@ use App\Models\User;
 class ActiveController extends Controller
 {
     /**
-     * Display all active accounts
+     * Display all active accounts except admin
      */
     public function showActive()
     {
-        $users = User::all(); 
+        $users = User::where('role', '!=', 'admin')->get(); 
         return view('admin.activeaccount', compact('users'));
     }
 
@@ -123,5 +123,4 @@ class ActiveController extends Controller
         $exists = User::where('username', $request->username)->exists();
         return response()->json(['exists' => $exists]);
     }
-
 }
