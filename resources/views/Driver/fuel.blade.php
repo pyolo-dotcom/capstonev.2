@@ -15,13 +15,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
         }
         
         .sidebar {
@@ -35,70 +35,74 @@
         
         .content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 25px;
             flex-grow: 1;
-            background-color: #fff;
+            background-color: white;
             min-height: 100vh;
         }
         
         .truck-display {
-            background: #f8f9fa;
-            padding: 12px 15px;
+            background: #f1f3f5;
+            padding: 12px 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: inline-block;
             font-size: 16px;
-            font-weight: bold;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+            border: 1px solid #e1e5e9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .truck-display i {
-            margin-right: 10px;
+            margin-right: 12px;
             color: #495057;
         }
         
         .time-filter {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
         
         .time-btn {
-            padding: 10px 20px;
+            padding: 10px 22px;
             border: none;
             background: #e9ecef;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.3s;
             font-size: 14px;
             font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
         .time-btn:hover {
             background: #dee2e6;
+            transform: translateY(-1px);
         }
         
         .time-btn.active {
             background: #1f1a5c;
             color: white;
+            box-shadow: 0 4px 8px rgba(31, 26, 92, 0.2);
         }
         
         .chart-container {
             width: 100%;
-            height: 500px;
+            height: 550px;
             background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             margin-bottom: 30px;
             position: relative;
+            border: 1px solid #e9ecef;
         }
         
         .no-data {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: #6c757d;
             font-size: 18px;
             position: absolute;
@@ -116,15 +120,6 @@
             transform: translate(-50%, -50%);
         }
         
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 220px;
-            }
-            .content {
-                margin-left: 220px;
-            }
-        }
-        
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -137,24 +132,7 @@
             }
             .chart-container {
                 height: 400px;
-                padding: 15px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .truck-display {
-                width: 100%;
-                text-align: center;
-            }
-            .time-filter {
-                justify-content: center;
-            }
-            .time-btn {
-                padding: 8px 15px;
-                font-size: 13px;
-            }
-            .chart-container {
-                height: 350px;
+                padding: 20px;
             }
         }
     </style>
@@ -167,7 +145,7 @@
 
     <!-- Main Content Area -->
     <div class="content">
-        <!-- Truck Display (No Dropdown) -->
+        <!-- Truck Display -->
         <div class="truck-display">
             <i class="fas fa-truck"></i>
             <span id="assignedTruck">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
@@ -184,8 +162,8 @@
         <div class="chart-container">
             <canvas id="fuelChart"></canvas>
             <div class="no-data" id="noDataMessage">
-                <i class="fas fa-info-circle fa-2x mb-3"></i>
-                <p>No fuel consumption data available</p>
+                <i class="fas fa-info-circle fa-3x mb-4" style="color: #adb5bd;"></i>
+                <h5 style="color: #6c757d;">No fuel consumption data available</h5>
             </div>
             <div class="loading-spinner" id="loadingSpinner">
                 <div class="spinner-border text-primary" role="status">
@@ -222,6 +200,7 @@
                     icon: 'warning',
                     title: 'No Truck Assigned',
                     text: 'You need to be assigned a truck to view fuel data',
+                    confirmButtonColor: '#1f1a5c'
                 });
             }
 
@@ -267,6 +246,7 @@
                             icon: 'error',
                             title: 'Error',
                             text: 'Failed to load fuel data. Please try again later.',
+                            confirmButtonColor: '#1f1a5c'
                         });
                         showNoDataMessage();
                     }
@@ -279,14 +259,15 @@
 
         function updateChart(data) {
             const labels = data.map(item => {
-                // Format date based on filter
                 const date = new Date(item.date);
-                if (currentFilter === 'yearly') {
-                    return date.toLocaleDateString('en-US', {month: 'short'});
-                } else if (currentFilter === 'monthly') {
-                    return date.toLocaleDateString('en-US', {day: 'numeric', month: 'short'});
+                switch(currentFilter) {
+                    case 'yearly':
+                        return date.toLocaleDateString('en-US', {month: 'short', year: 'numeric'});
+                    case 'monthly':
+                        return date.toLocaleDateString('en-US', {day: 'numeric', month: 'short'});
+                    default: // weekly
+                        return date.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
                 }
-                return date.toLocaleDateString('en-US', {weekday: 'short', day: 'numeric'});
             });
             
             const kilometers = data.map(item => item.total_km);
@@ -297,7 +278,7 @@
                 fuelChart.destroy();
             }
 
-            // Create new chart
+            // Create new chart with only Distance and Fuel Used
             fuelChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -309,7 +290,8 @@
                             backgroundColor: 'rgba(54, 162, 235, 0.7)',
                             borderColor: 'rgba(54, 162, 235, 1)',
                             borderWidth: 1,
-                            borderRadius: 4
+                            borderRadius: 4,
+                            yAxisID: 'y'
                         },
                         {
                             label: 'Fuel Used (L)',
@@ -317,7 +299,8 @@
                             backgroundColor: 'rgba(255, 99, 132, 0.7)',
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1,
-                            borderRadius: 4
+                            borderRadius: 4,
+                            yAxisID: 'y1'
                         }
                     ]
                 },
@@ -327,24 +310,56 @@
                     plugins: {
                         legend: {
                             position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
                         },
                         tooltip: {
                             mode: 'index',
-                            intersect: false,
+                            intersect: false
                         }
                     },
                     scales: {
                         x: {
                             grid: {
-                                display: false
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
                             }
                         },
                         y: {
-                            beginAtZero: true,
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Distance (KM)'
+                            },
                             grid: {
-                                drawBorder: false
-                            }
+                                drawOnChartArea: true
+                            },
+                            beginAtZero: true
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Fuel (L)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            beginAtZero: true
                         }
+                    },
+                    animation: {
+                        duration: 1000
                     }
                 }
             });
