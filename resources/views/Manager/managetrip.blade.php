@@ -84,7 +84,6 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: auto;
         }
 
         .trip-table {
@@ -99,6 +98,8 @@
             padding: 12px 15px;
             text-align: left;
             font-weight: 500;
+            position: sticky;
+            top: 0;
         }
 
         .trip-table td {
@@ -208,6 +209,64 @@
             font-style: italic;
         }
 
+        .initial-message {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        /* Table scroll container */
+        .table-scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        /* Pagination controls */
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 0;
+            display: none; /* Initially hidden */
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .page-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            background-color: #2f4156;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            background-color: #004aad;
+        }
+
+        .page-btn:disabled {
+            background-color: #dadada;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -230,7 +289,7 @@
             max-width: 500px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             position: relative;
-            max-height: 90vh; /* Limit modal height */
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
         }
@@ -242,9 +301,9 @@
         }
 
         .modal-body {
-            overflow-y: auto; /* Make form content scrollable */
+            overflow-y: auto;
             flex-grow: 1;
-            padding-right: 10px; /* Prevent content from touching scrollbar */
+            padding-right: 10px;
         }
 
         .modal-footer {
@@ -303,21 +362,25 @@
             margin-top: 10px;
         }
 
-        /* Custom scrollbar for modal */
+        /* Custom scrollbar for table and modal */
+        .table-scroll-container::-webkit-scrollbar,
         .modal-body::-webkit-scrollbar {
             width: 8px;
         }
 
+        .table-scroll-container::-webkit-scrollbar-track,
         .modal-body::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
 
+        .table-scroll-container::-webkit-scrollbar-thumb,
         .modal-body::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 4px;
         }
 
+        .table-scroll-container::-webkit-scrollbar-thumb:hover,
         .modal-body::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
@@ -366,9 +429,9 @@
         </div>
         
         <div class="table-container">
-            <form method="GET" action="{{ route('manager.managetrip') }}">
+            <form method="GET" action="{{ route('manager.managetrip') }}" id="filterForm">
                 <div class="filter-container">
-                    <select name="plate_no" onchange="this.form.submit()" class="truck-select">
+                    <select name="plate_no" class="truck-select" id="plateSelect">
                         <option disabled selected>-- Plate Number --</option>
                         <option value="">All Trucks</option>
                         @foreach(['UVP 353', 'TQE 262', 'NBB 7212', 'APA 3309', 'WIE 914'] as $plate)
@@ -379,7 +442,7 @@
                     <div class="date-filter">
                         @foreach(['weekly' => 'Weekly', 'monthly' => 'Monthly', 'annually' => 'Annually'] as $value => $label)
                             <button type="submit" name="filter" value="{{ $value }}" 
-                                    class="date-btn {{ request('filter') == $value ? 'active' : '' }}">
+                                    class="date-btn {{ request('filter') == $value ? 'active' : '' }}" id="{{ $value }}Btn">
                                 {{ $label }}
                             </button>
                         @endforeach
@@ -387,72 +450,90 @@
                 </div>
             </form>
 
-            <button class="export-btn" onclick="exportToExcel()">
+            <button class="export-btn" onclick="exportToExcel()" id="exportBtn" style="display: none;">
                 <i class="fas fa-file-excel"></i> Export to Excel
             </button>
 
-            <table class="trip-table" id="cargoTable">
-                <thead>
-                    <tr>
-                        <th>Plate No.</th>
-                        <th>Date</th>
-                        <th>EIR No.</th>
-                        <th>Container Van No.</th>
-                        <th>Size</th>
-                        <th>Shipper/Consignee</th>
-                        <th>Voyage Vessel</th>
-                        <th>Voyage No.</th>
-                        <th>Pickup Location</th>
-                        <th>Delivery Location</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($cargos as $cargo)
+            <div class="table-scroll-container" id="tableScrollContainer" style="display: none;">
+                <table class="trip-table" id="cargoTable">
+                    <thead>
                         <tr>
-                            <td>{{ $cargo->plate_no }}</td>
-                            <td>{{ $cargo->created_at->format('Y-m-d') }}</td>
-                            <td>{{ $cargo->eir_no }}</td>
-                            <td>{{ $cargo->container_van_no }}</td>
-                            <td>{{ $cargo->size }}</td>
-                            <td>{{ $cargo->shipper_consignee }}</td>
-                            <td>{{ $cargo->voyage_vessel }}</td>
-                            <td>{{ $cargo->voyage_no }}</td>
-                            <td>{{ $cargo->pickup_location }}</td>
-                            <td>{{ $cargo->delivery_location }}</td>
-                            <td class="actions">
-                                <button class="edit-btn" onclick="openTripModal(
-                                    '{{ $cargo->id }}',
-                                    '{{ $cargo->plate_no }}',
-                                    '{{ $cargo->eir_no }}',
-                                    '{{ $cargo->container_van_no }}',
-                                    '{{ $cargo->size }}',
-                                    '{{ $cargo->shipper_consignee }}',
-                                    '{{ $cargo->voyage_vessel }}',
-                                    '{{ $cargo->voyage_no }}',
-                                    '{{ $cargo->pickup_location }}',
-                                    '{{ $cargo->delivery_location }}'
-                                )">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
+                            <th>Plate No.</th>
+                            <th>Date</th>
+                            <th>EIR No.</th>
+                            <th>Container Van No.</th>
+                            <th>Size</th>
+                            <th>Shipper/Consignee</th>
+                            <th>Voyage Vessel</th>
+                            <th>Voyage No.</th>
+                            <th>Pickup Location</th>
+                            <th>Delivery Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        @if(request()->has('plate_no') || request()->has('filter'))
+                            @forelse($cargos as $cargo)
+                                <tr>
+                                    <td>{{ $cargo->plate_no }}</td>
+                                    <td>{{ $cargo->created_at->format('Y-m-d') }}</td>
+                                    <td>{{ $cargo->eir_no }}</td>
+                                    <td>{{ $cargo->container_van_no }}</td>
+                                    <td>{{ $cargo->size }}</td>
+                                    <td>{{ $cargo->shipper_consignee }}</td>
+                                    <td>{{ $cargo->voyage_vessel }}</td>
+                                    <td>{{ $cargo->voyage_no }}</td>
+                                    <td>{{ $cargo->pickup_location }}</td>
+                                    <td>{{ $cargo->delivery_location }}</td>
+                                    <td class="actions">
+                                        <button class="edit-btn" onclick="openTripModal(
+                                            '{{ $cargo->id }}',
+                                            '{{ $cargo->plate_no }}',
+                                            '{{ $cargo->eir_no }}',
+                                            '{{ $cargo->container_van_no }}',
+                                            '{{ $cargo->size }}',
+                                            '{{ $cargo->shipper_consignee }}',
+                                            '{{ $cargo->voyage_vessel }}',
+                                            '{{ $cargo->voyage_no }}',
+                                            '{{ $cargo->pickup_location }}',
+                                            '{{ $cargo->delivery_location }}'
+                                        )">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
 
-                                <form action="{{ route('trip.archive', $cargo->id) }}" method="POST" class="action-form">
-                                    @csrf
-                                    <button type="submit" class="archive-btn">
-                                        <i class="fas fa-archive"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="11" class="no-data">
-                                {{ request()->has('plate_no') || request()->has('filter') ? 'No cargo records found' : 'Please select a filter to display data' }}
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>    
-            </table>
+                                        <form action="{{ route('trip.archive', $cargo->id) }}" method="POST" class="action-form">
+                                            @csrf
+                                            <button type="submit" class="archive-btn">
+                                                <i class="fas fa-archive"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="11" class="no-data">
+                                        No cargo records found for the selected filter
+                                    </td>
+                                </tr>
+                            @endforelse
+                        @endif
+                    </tbody>    
+                </table>
+            </div>
+
+            <!-- Initial message when no filters are selected -->
+            <div id="initialMessage" class="initial-message">
+                Please select a plate number or date filter to display cargo records
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls" id="paginationControls">
+                <div class="page-info" id="pageInfo">Showing 1-10 of 0 records</div>
+                <div class="page-buttons">
+                    <button class="page-btn" id="prevPage" disabled>Previous</button>
+                    <button class="page-btn" id="nextPage" disabled>Next</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -509,6 +590,96 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterForm = document.getElementById('filterForm');
+            const plateSelect = document.getElementById('plateSelect');
+            const dateBtns = document.querySelectorAll('.date-btn');
+            const tableContainer = document.getElementById('tableScrollContainer');
+            const initialMessage = document.getElementById('initialMessage');
+            const exportBtn = document.getElementById('exportBtn');
+            const paginationControls = document.getElementById('paginationControls');
+            
+            // Check if filters are already applied (on page reload)
+            const hasFilters = window.location.search.includes('plate_no=') || 
+                              window.location.search.includes('filter=');
+            
+            if (hasFilters) {
+                initialMessage.style.display = 'none';
+                tableContainer.style.display = 'block';
+                exportBtn.style.display = 'inline-flex';
+                paginationControls.style.display = 'flex';
+                initializePagination();
+            }
+            
+            // Event listeners for filter changes
+            plateSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+            
+            dateBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterForm.submit();
+                });
+            });
+            
+            // Initialize pagination if there are filters
+            function initializePagination() {
+                const rowsPerPage = 10;
+                const tableBody = document.getElementById('tableBody');
+                const rows = Array.from(tableBody.querySelectorAll('tr'));
+                const totalRows = rows.length;
+                const pageInfo = document.getElementById('pageInfo');
+                const prevBtn = document.getElementById('prevPage');
+                const nextBtn = document.getElementById('nextPage');
+                
+                let currentPage = 1;
+                const totalPages = Math.ceil(totalRows / rowsPerPage);
+                
+                function updateTable() {
+                    // Hide all rows
+                    rows.forEach(row => row.style.display = 'none');
+                    
+                    // Calculate start and end index
+                    const start = (currentPage - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+                    
+                    // Show rows for current page
+                    for (let i = start; i < end && i < totalRows; i++) {
+                        if (rows[i]) rows[i].style.display = '';
+                    }
+                    
+                    // Update page info
+                    const startRow = start + 1;
+                    const endRow = Math.min(end, totalRows);
+                    pageInfo.textContent = `Showing ${startRow}-${endRow} of ${totalRows} records`;
+                    
+                    // Update button states
+                    prevBtn.disabled = currentPage === 1;
+                    nextBtn.disabled = currentPage === totalPages;
+                }
+                
+                // Initial table update
+                updateTable();
+                
+                // Event listeners for pagination buttons
+                prevBtn.addEventListener('click', function() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateTable();
+                        document.querySelector('.table-scroll-container').scrollTop = 0;
+                    }
+                });
+                
+                nextBtn.addEventListener('click', function() {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateTable();
+                        document.querySelector('.table-scroll-container').scrollTop = 0;
+                    }
+                });
+            }
+        });
+
         function exportToExcel() {
             const table = document.getElementById('cargoTable');
             const clone = table.cloneNode(true);
@@ -558,49 +729,49 @@
 
         // Form submission
         document.getElementById('updateTripForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const tripId = document.getElementById('trip_id').value;
-    const formData = new FormData(this);
-    
-    fetch(`/manager/update-trip/${tripId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-            'Accept': 'application/json',
-            'X-HTTP-Method-Override': 'PUT'
-        },
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw err; });
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            Swal.fire({
-                title: 'Success!',
-                text: data.message,
-                icon: 'success'
-            }).then(() => {
-                closeModal();
-                window.location.reload(); // Reload the page to see changes
+            e.preventDefault();
+            
+            const tripId = document.getElementById('trip_id').value;
+            const formData = new FormData(this);
+            
+            fetch(`/manager/update-trip/${tripId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json',
+                    'X-HTTP-Method-Override': 'PUT'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success'
+                    }).then(() => {
+                        closeModal();
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'An error occurred while updating the trip.',
+                    icon: 'error'
+                });
             });
-        } else {
-            throw new Error(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            title: 'Error!',
-            text: error.message || 'An error occurred while updating the trip.',
-            icon: 'error'
         });
-    });
-});
     </script>
 </body>
 </html>

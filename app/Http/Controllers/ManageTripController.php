@@ -91,7 +91,11 @@ class ManageTripController extends Controller
     {
         $cargo = Cargo::findOrFail($id);
         $cargo->update(['is_archived' => 1]);
-
-        return response()->json(['success' => 'Trip archived successfully.']);
+    
+        // Fetch updated cargo list
+        $cargos = Cargo::where('is_archived', 0)->paginate(10); // Adjust pagination as needed
+    
+        return view('admin.managetrip', compact('cargos'))->with('success', 'Trip archived successfully.');
     }
+    
 }
