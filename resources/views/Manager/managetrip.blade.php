@@ -233,7 +233,6 @@
             align-items: center;
             margin-top: 15px;
             padding: 10px 0;
-            display: none; /* Initially hidden */
         }
 
         .page-info {
@@ -265,6 +264,41 @@
             background-color: #dadada;
             color: #6c757d;
             cursor: not-allowed;
+        }
+
+        /* Search bar styles */
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #004aad;
+            box-shadow: 0 0 5px rgba(0, 74, 173, 0.3);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
         }
 
         /* Modal Styles */
@@ -407,6 +441,10 @@
                 flex-grow: 1;
             }
 
+            .search-bar {
+                width: 100%;
+            }
+
             .modal-content {
                 width: 95%;
                 padding: 20px;
@@ -449,6 +487,14 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search records...">
+                </div>
+            </div>
 
             <button class="export-btn" onclick="exportToExcel()" id="exportBtn" style="display: none;">
                 <i class="fas fa-file-excel"></i> Export to Excel
@@ -598,6 +644,7 @@
             const initialMessage = document.getElementById('initialMessage');
             const exportBtn = document.getElementById('exportBtn');
             const paginationControls = document.getElementById('paginationControls');
+            const searchInput = document.getElementById('searchInput');
             
             // Check if filters are already applied (on page reload)
             const hasFilters = window.location.search.includes('plate_no=') || 
@@ -621,12 +668,41 @@
                     filterForm.submit();
                 });
             });
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#tableBody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let shouldShow = false;
+                    
+                    // Check each cell (except the last one which contains action buttons)
+                    for (let i = 0; i < cells.length - 1; i++) {
+                        if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                            shouldShow = true;
+                            break;
+                        }
+                    }
+                    
+                    row.style.display = shouldShow ? '' : 'none';
+                });
+
+                // Update pagination after search
+                if (paginationControls.style.display === 'flex') {
+                    initializePagination();
+                }
+            });
             
             // Initialize pagination if there are filters
             function initializePagination() {
                 const rowsPerPage = 10;
                 const tableBody = document.getElementById('tableBody');
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
+                // Only select visible rows for pagination
+                const rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => 
+                    row.style.display !== 'none'
+                );
                 const totalRows = rows.length;
                 const pageInfo = document.getElementById('pageInfo');
                 const prevBtn = document.getElementById('prevPage');
@@ -636,15 +712,17 @@
                 const totalPages = Math.ceil(totalRows / rowsPerPage);
                 
                 function updateTable() {
-                    // Hide all rows
-                    rows.forEach(row => row.style.display = 'none');
+                    // Hide all rows first
+                    document.querySelectorAll('#tableBody tr').forEach(row => {
+                        row.style.display = 'none';
+                    });
                     
                     // Calculate start and end index
                     const start = (currentPage - 1) * rowsPerPage;
                     const end = start + rowsPerPage;
                     
-                    // Show rows for current page
-                    for (let i = start; i < end && i < totalRows; i++) {
+                    // Show rows for current page (only those that are not hidden by search)
+                    for (let i = start; i < end && i < rows.length; i++) {
                         if (rows[i]) rows[i].style.display = '';
                     }
                     
@@ -769,6 +847,27 @@
                     title: 'Error!',
                     text: error.message || 'An error occurred while updating the trip.',
                     icon: 'error'
+                });
+            });
+        });
+
+        // Archive confirmation with SweetAlert
+        document.querySelectorAll('.action-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: 'Archive Trip Record',
+                    text: 'Are you sure you want to archive this trip record?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, archive it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
                 });
             });
         });

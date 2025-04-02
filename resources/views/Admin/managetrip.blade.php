@@ -362,6 +362,83 @@
             margin-top: 10px;
         }
 
+        /* Search bar styles */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #2f4156;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background-color: #004aad;
+        }
+
+        /* Admin verification modal */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .admin-modal h2 {
+            margin-bottom: 20px;
+            color: #2f4156;
+            text-align: center;
+        }
+
+        .admin-modal input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .admin-modal button {
+            background-color: #004aad;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
         /* Custom scrollbar for table and modal */
         .table-scroll-container::-webkit-scrollbar,
         .modal-body::-webkit-scrollbar {
@@ -411,6 +488,10 @@
                 width: 95%;
                 padding: 20px;
             }
+
+            .search-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -449,6 +530,12 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by EIR No., Container No., Shipper...">
+                <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
 
             <button class="export-btn" onclick="exportToExcel()" id="exportBtn" style="display: none;">
                 <i class="fas fa-file-excel"></i> Export to Excel
@@ -502,11 +589,11 @@
                                         </button>
 
                                         <form action="{{ route('admin.archive.trip', $cargo->id) }}" method="POST" class="action-form">
-                                        @csrf
-                                        <button type="submit" class="archive-btn">
-                                            <i class="fas fa-archive"></i>
-                                        </button>
-                                    </form>
+                                            @csrf
+                                            <button type="button" class="archive-btn" onclick="verifyAdminBeforeArchive(this)">
+                                                <i class="fas fa-archive"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
@@ -589,6 +676,17 @@
         </div>
     </div>
 
+    <!-- Admin Verification Modal -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <span class="close" onclick="closeAdminModal()">&times;</span>
+            <h2>Admin Verification</h2>
+            <p>Please enter admin credentials to archive this record:</p>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="verifyAdmin()">Verify</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const filterForm = document.getElementById('filterForm');
@@ -598,6 +696,8 @@
             const initialMessage = document.getElementById('initialMessage');
             const exportBtn = document.getElementById('exportBtn');
             const paginationControls = document.getElementById('paginationControls');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
             
             // Check if filters are already applied (on page reload)
             const hasFilters = window.location.search.includes('plate_no=') || 
@@ -620,6 +720,35 @@
                 btn.addEventListener('click', function() {
                     filterForm.submit();
                 });
+            });
+            
+            // Search functionality
+            searchBtn.addEventListener('click', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const rows = document.querySelectorAll('#tableBody tr');
+                
+                if (rows.length === 0) {
+                    return;
+                }
+                
+                let hasResults = false;
+                
+                rows.forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(searchTerm)) {
+                        row.style.display = '';
+                        hasResults = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Show no results message if needed
+                const noDataRow = document.querySelector('.no-data');
+                if (!hasResults && !noDataRow) {
+                    const tbody = document.getElementById('tableBody');
+                    tbody.innerHTML = '<tr><td colspan="11" class="no-data">No matching records found</td></tr>';
+                }
             });
             
             // Initialize pagination if there are filters
@@ -720,10 +849,22 @@
             document.getElementById('updateModal').style.display = 'none';
         }
 
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target === document.getElementById('updateModal')) {
                 closeModal();
+            }
+            if (event.target === document.getElementById('adminModal')) {
+                closeAdminModal();
             }
         }
 
@@ -773,28 +914,89 @@
             });
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Archive confirmation
-            document.querySelectorAll('.action-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    Swal.fire({
-                        title: 'Archive Trip Record',
-                        text: 'Are you sure you want to archive this trip record?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, archive it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            this.submit();
-                        }
-                    });
+        // Archive functionality with admin verification
+        let currentArchiveForm = null;
+
+        function verifyAdminBeforeArchive(button) {
+            currentArchiveForm = button.closest('form');
+            openAdminModal();
+        }
+
+        function verifyAdmin() {
+            const adminPassword = document.getElementById('adminPassword').value;
+            
+            // In a real application, you would verify this against your backend
+            // For this example, we'll use a simple password check
+            if (adminPassword === 'admin123') { // Replace with your actual admin password verification
+                closeAdminModal();
+                
+                Swal.fire({
+                    title: 'Archive Trip Record',
+                    text: 'Are you sure you want to archive this trip record?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, archive it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the form
+                        fetch(currentArchiveForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                            },
+                            body: new FormData(currentArchiveForm)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Archived!',
+                                    text: 'The trip record has been archived successfully.',
+                                    icon: 'success'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                throw new Error(data.message || 'Failed to archive the record');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: error.message,
+                                icon: 'error'
+                            });
+                        });
+                    }
                 });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Invalid admin password',
+                    icon: 'error'
+                });
+            }
+        }
+
+        // Check for success message from archiving
+        @if(session('success'))
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success'
             });
-        });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                icon: 'error'
+            });
+        @endif
     </script>
 </body>
 </html>
