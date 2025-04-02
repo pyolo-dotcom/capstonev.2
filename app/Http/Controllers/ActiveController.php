@@ -33,7 +33,7 @@ class ActiveController extends Controller
             'driver_license_number' => 'nullable|string|max:255',
             'license_type' => 'nullable|string|max:255',
             'license_expiry_date' => 'nullable|date',
-            'truck_id' => 'nullable|string|max:255',
+            'truck_id' => 'nullable|string|in:UVP353,TQE262,NBB7212,APA3309,WIE914',
         ]);
     
         $user->update([
@@ -78,7 +78,7 @@ class ActiveController extends Controller
             'driver_license_number' => 'nullable|required_if:role,driver|string',
             'license_type' => 'nullable|required_if:role,driver|string',
             'license_expiry_date' => 'nullable|required_if:role,driver|date',
-            'truck_id' => 'nullable|required_if:role,driver|string',
+            'truck_id' => 'nullable|required_if:role,driver|string|in:UVP353,TQE262,NBB7212,APA3309,WIE914',
         ]);
 
         $user = User::create([

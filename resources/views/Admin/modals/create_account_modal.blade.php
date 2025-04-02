@@ -109,7 +109,14 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="truck_id" class="form-label">Plate Number</label>
-                                    <input type="text" id="truck_id" name="truck_id" class="form-control" placeholder="Enter plate number">
+                                    <select id="truck_id" name="truck_id" class="form-select">
+                                        <option value="" selected disabled>Select Plate Number</option>
+                                        <option value="UVP353">UVP353</option>
+                                        <option value="TQE262">TQE262</option>
+                                        <option value="NBB7212">NBB7212</option>
+                                        <option value="APA3309">APA3309</option>
+                                        <option value="WIE914">WIE914</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
