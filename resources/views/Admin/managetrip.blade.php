@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -390,55 +391,6 @@
             background-color: #004aad;
         }
 
-        /* Admin verification modal */
-        .admin-modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .admin-modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .admin-modal h2 {
-            margin-bottom: 20px;
-            color: #2f4156;
-            text-align: center;
-        }
-
-        .admin-modal input {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .admin-modal button {
-            background-color: #004aad;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-
         /* Custom scrollbar for table and modal */
         .table-scroll-container::-webkit-scrollbar,
         .modal-body::-webkit-scrollbar {
@@ -515,7 +467,7 @@
                     <select name="plate_no" class="truck-select" id="plateSelect">
                         <option disabled selected>-- Plate Number --</option>
                         <option value="">All Trucks</option>
-                        @foreach(['UVP 353', 'TQE 262', 'NBB 7212', 'APA 3309', 'WIE 914'] as $plate)
+                        @foreach(['UVP353', 'TQE262', 'NBB7212', 'APA3309', 'WIE914'] as $plate)
                             <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>{{ $plate }}</option>
                         @endforeach
                     </select>
@@ -590,7 +542,7 @@
 
                                         <form action="{{ route('admin.archive.trip', $cargo->id) }}" method="POST" class="action-form">
                                             @csrf
-                                            <button type="button" class="archive-btn" onclick="verifyAdminBeforeArchive(this)">
+                                            <button type="button" class="archive-btn" onclick="confirmArchive(this)">
                                                 <i class="fas fa-archive"></i>
                                             </button>
                                         </form>
@@ -673,17 +625,6 @@
             <div class="modal-footer">
                 <button type="submit" form="updateTripForm" class="submit-btn">Update</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Admin Verification Modal -->
-    <div id="adminModal" class="admin-modal">
-        <div class="admin-modal-content">
-            <span class="close" onclick="closeAdminModal()">&times;</span>
-            <h2>Admin Verification</h2>
-            <p>Please enter admin credentials to archive this record:</p>
-            <input type="password" id="adminPassword" placeholder="Enter admin password">
-            <button onclick="verifyAdmin()">Verify</button>
         </div>
     </div>
 
@@ -849,22 +790,10 @@
             document.getElementById('updateModal').style.display = 'none';
         }
 
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
-        }
-
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target === document.getElementById('updateModal')) {
                 closeModal();
-            }
-            if (event.target === document.getElementById('adminModal')) {
-                closeAdminModal();
             }
         }
 
@@ -878,7 +807,7 @@
             fetch(`/admin/update-trip/${tripId}`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json',
                     'X-HTTP-Method-Override': 'PUT'
                 },
@@ -914,71 +843,59 @@
             });
         });
 
-        // Archive functionality with admin verification
-        let currentArchiveForm = null;
-
-        function verifyAdminBeforeArchive(button) {
-            currentArchiveForm = button.closest('form');
-            openAdminModal();
-        }
-
-        function verifyAdmin() {
-            const adminPassword = document.getElementById('adminPassword').value;
+        // Archive confirmation with SweetAlert
+        function confirmArchive(button) {
+            const form = button.closest('form');
             
-            // In a real application, you would verify this against your backend
-            // For this example, we'll use a simple password check
-            if (adminPassword === 'admin123') { // Replace with your actual admin password verification
-                closeAdminModal();
-                
-                Swal.fire({
-                    title: 'Archive Trip Record',
-                    text: 'Are you sure you want to archive this trip record?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, archive it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Submit the form
-                        fetch(currentArchiveForm.action, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Accept': 'application/json',
-                            },
-                            body: new FormData(currentArchiveForm)
+            Swal.fire({
+                title: 'Archive Trip Record',
+                text: 'Are you sure you want to archive this trip record?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, archive it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            _method: 'POST'
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire({
-                                    title: 'Archived!',
-                                    text: 'The trip record has been archived successfully.',
-                                    icon: 'success'
-                                }).then(() => {
-                                    window.location.reload();
-                                });
-                            } else {
-                                throw new Error(data.message || 'Failed to archive the record');
-                            }
-                        })
-                        .catch(error => {
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
                             Swal.fire({
-                                title: 'Error!',
-                                text: error.message,
-                                icon: 'error'
+                                title: 'Archived!',
+                                text: data.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
                             });
+                        } else {
+                            throw new Error(data.message || 'Failed to archive the record');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: error.message,
+                            icon: 'error'
                         });
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Invalid admin password',
-                    icon: 'error'
-                });
-            }
+                    });
+                }
+            });
         }
 
         // Check for success message from archiving
