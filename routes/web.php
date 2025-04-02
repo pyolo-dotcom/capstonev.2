@@ -31,6 +31,7 @@ use App\Http\Controllers\DriverTrackingController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\TruckController;
+use Illuminate\Http\Request;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -189,3 +190,32 @@ Route::delete('admin/truckdetails/{id}', [TruckController::class, 'destroy'])->n
 Route::delete('admin/truckdetails/archive/{id}', [ArchiveController::class, 'archiveTruck'])->name('admin.truckdetails.archive');
 Route::put('admin/archive/restore/truck/{id}', [ArchiveController::class, 'restoreTruck'])->name('admin.archive.restore.truck');
 Route::delete('admin/archive/delete/truck/{id}', [ArchiveController::class, 'destroyTruck'])->name('admin.archive.delete.truck');
+
+// Add these routes
+Route::middleware(['web'])->group(function() {
+    Route::get('/check-username', function(Request $request) {
+        $username = $request->input('username');
+        $exists = \App\Models\User::where('username', $username)->exists();
+        return response()->json(['exists' => $exists]);
+    });
+
+    Route::get('/check-email', function(Request $request) {
+        $email = $request->input('email');
+        $exists = \App\Models\User::where('email', $email)->exists();
+        return response()->json(['exists' => $exists]);
+    });
+
+    Route::get('/check-mobile_number', function(Request $request) {
+        $mobile = $request->input('mobile_number');
+        $exists = \App\Models\User::where('mobile_number', $mobile)->exists();
+        return response()->json(['exists' => $exists]);
+    });
+
+    Route::get('/check-truck', function(Request $request) {
+        $truckId = $request->input('truck');
+        $exists = \App\Models\User::where('truck_id', $truckId)
+                                 ->where('role', 'driver')
+                                 ->exists();
+        return response()->json(['assigned' => $exists]);
+    });
+});

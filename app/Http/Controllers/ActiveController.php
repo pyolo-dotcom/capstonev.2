@@ -117,4 +117,11 @@ class ActiveController extends Controller
         $user->forceDelete();
         return redirect()->route('admin.archive')->with('success', 'Account permanently deleted.');
     }
+
+    public function checkUsername(Request $request)
+    {
+        $exists = User::where('username', $request->username)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
 }
