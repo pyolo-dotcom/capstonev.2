@@ -257,6 +257,28 @@
     color: var(--accent-color);
   }
 
+  .remember-me {
+    display: flex;
+    align-items: center;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .remember-me input {
+    margin-right: 0.5rem;
+    accent-color: var(--accent-color);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .remember-me label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
   .login-button {
     padding: 1rem;
     background: linear-gradient(to right, var(--accent-color), #0066cc);
@@ -475,6 +497,12 @@
           <i class="fas fa-eye password-toggle" id="toggle-password"></i>
         </div>
         
+        <!-- Remember Me Checkbox -->
+        <div class="remember-me">
+          <input type="checkbox" id="remember" name="remember">
+          <label for="remember">Remember me</label>
+        </div>
+        
         <button type="submit" class="login-button">LOGIN</button>
         
         <div class="forgot-password">
@@ -565,6 +593,26 @@
         // Toggle the eye icon
         this.classList.toggle('fa-eye');
         this.classList.toggle('fa-eye-slash');
+      });
+
+      // Remember me functionality - save username to localStorage
+      const rememberCheckbox = document.getElementById('remember');
+      const usernameInput = document.querySelector('input[name="username"]');
+      
+      // Check if username was saved
+      const savedUsername = localStorage.getItem('rememberedUsername');
+      if (savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberCheckbox.checked = true;
+      }
+      
+      // Save username when form is submitted if remember me is checked
+      document.querySelector('.login-form').addEventListener('submit', function() {
+        if (rememberCheckbox.checked) {
+          localStorage.setItem('rememberedUsername', usernameInput.value);
+        } else {
+          localStorage.removeItem('rememberedUsername');
+        }
       });
 
       // Add floating animation to elements

@@ -640,7 +640,7 @@
                     <label for="update_plate_no">Plate No.:</label>
                     <select id="update_plate_no" name="plate_no" required>
                         <option disabled value="">-- Plate Number --</option>
-                        @foreach(['UVP 353', 'TQE 262', 'NBB 7212', 'APA 3309', 'WIE 914'] as $plate)
+                        @foreach(['UVP353', 'TQE262', 'NBB7212', 'APA3309', 'WIE914'] as $plate)
                             <option value="{{ $plate }}">{{ $plate }}</option>
                         @endforeach
                     </select>

@@ -9,7 +9,14 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
-    public function showLogin(){
+    public function showLogin()
+    {
+        // Check if user is already logged in with remember token
+        if (Auth::viaRemember()) {
+            $user = Auth::user();
+            return $this->redirectBasedOnRole($user);
+        }
+        
         return view('index');
     }
 
@@ -20,7 +27,6 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        // Just validate credentials here, OTP will handle login
         $user = User::where('username', $request->username)->first();
 
         if (!$user || !\Hash::check($request->password, $user->password)) {
@@ -30,8 +36,28 @@ class LoginController extends Controller
         // Store credentials in session for OTP process
         $request->session()->put('otp_username', $request->username);
         $request->session()->put('otp_password', $request->password);
+        
+        // Store remember me choice in session
+        if ($request->has('remember')) {
+            $request->session()->put('otp_remember', true);
+        }
 
         // Redirect to OTP verification
         return redirect()->route('verify.otp.view');
+    }
+
+    // Helper method for role-based redirection
+    protected function redirectBasedOnRole($user)
+    {
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.deliveryrecords');
+            case 'manager':
+                return redirect()->route('manager.deliveryrecords');
+            case 'driver':
+                return redirect()->route('driver.deliveryrecords');
+            default:
+                return redirect()->route('home');
+        }
     }
 }
