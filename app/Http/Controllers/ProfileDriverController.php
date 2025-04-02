@@ -16,7 +16,7 @@ class ProfileDriverController extends Controller
      */
     public function showProfileDriver()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('truck');
         return view('driver.profilemanagement', compact('user'));
     }
 

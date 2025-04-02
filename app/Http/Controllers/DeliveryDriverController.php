@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
-use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DeliveryDriverController extends Controller
 {
-    public function index(){
-        return view('driver.deliveryrecords');
+    public function index()
+    {
+        // Get the current authenticated user's truck_id (plate number)
+        $plateNumber = Auth::user()->truck_id;
+        
+        return view('driver.deliveryrecords', [
+            'plateNumber' => $plateNumber
+        ]);
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -28,14 +36,18 @@ class DeliveryDriverController extends Controller
     
         return response()->json(['success' => 'Trip added successfully!']);
     }
+
     public function getTripCounts(Request $request)
     {
-        // Remove spaces from the input to match database format
-        $plateNo = str_replace(' ', '', $request->input('plate_no'));
+        // Get the current authenticated user's truck_id (plate number)
+        $plateNo = Auth::user()->truck_id;
+        
+        // Remove spaces from the plate number to match database format
+        $plateNo = str_replace(' ', '', $plateNo);
     
-        Log::info("Received Plate Number (Formatted): " . $plateNo); // Debugging
+        Log::info("Fetching trip counts for plate: " . $plateNo);
     
-        // Fetch trip data from the database with corrected plate number formatting
+        // Fetch trip data from the database
         $trips = Trip::whereRaw("REPLACE(plate_no, ' ', '') = ?", [$plateNo])
             ->groupBy('trip_type')
             ->selectRaw('trip_type, SUM(num_trips) as total_trips')
@@ -58,14 +70,6 @@ class DeliveryDriverController extends Controller
                 $counts['doorToDoorTrip'] = $trip->total_trips;
             }
         }
-    
-        // Debugging output
-        Log::info("Trip Counts: ", [
-            'plateNo' => $plateNo,
-            'oneWayTrip' => $counts['oneWayTrip'],
-            'roundTrip' => $counts['roundTrip'],
-            'doorToDoorTrip' => $counts['doorToDoorTrip']
-        ]);
     
         return response()->json($counts);
     }     

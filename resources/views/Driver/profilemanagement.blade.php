@@ -370,6 +370,12 @@
                     <span class="info-label">License Type:</span>
                     <span class="info-value">{{ $user->license_type ?: 'Not set' }}</span>
                 </div>
+                <div class="info-item">
+                    <span class="info-label">Plate Number:</span>
+                    <span class="info-value">
+                        {{ $user->truck_id ?? 'Not assigned' }}
+                    </span>
+                </div>
             </div>
             
             <!-- ACTION BUTTONS -->

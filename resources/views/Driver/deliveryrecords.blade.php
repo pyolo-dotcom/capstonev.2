@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Delivery Records</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -190,14 +191,10 @@
         <!-- Main Content -->
         <main class="content flex-grow-1">
             <div class="plate-number-section mb-2">
-                <select id="plateNumberSelect" class="form-control" style="font-size: 17px; border-radius: 8px; width: 190px;">
-                    <option disabled selected>-- Plate Number --</option>
-                    <option value="UVP 353">UVP353</option>
-                    <option value="TQE 262">TQE262</option>
-                    <option value="NBB 7212">NBB7212</option>
-                    <option value="APA 3309">APA3309</option>
-                    <option value="WIE 914">WIE914</option>
-                </select>
+                <div class="form-control" style="font-size: 17px; border-radius: 8px; width: 190px; display: flex; align-items: center; height: 38px;">
+                    <i class="fas fa-truck mr-2"></i>
+                    <span id="assignedPlateNumber">{{ $plateNumber ?? 'Not assigned' }}</span>
+                </div>
             </div>
             <div class="top-bar">
                 <button class="add-trip-btn" id="openModal">Add Trip</button>
