@@ -44,7 +44,7 @@ class ManageTripController extends Controller
             }
         }
 
-        $cargos = $query->get();
+        $cargos = $query->orderBy('created_at', 'desc')->get();
 
         return view('admin.managetrip', compact('cargos', 'plateNo', 'filter'));
     }
@@ -89,13 +89,20 @@ class ManageTripController extends Controller
      */
     public function archiveTrip($id)
     {
-        $cargo = Cargo::findOrFail($id);
-        $cargo->update(['is_archived' => 1]);
-    
-        // Fetch updated cargo list
-        $cargos = Cargo::where('is_archived', 0)->paginate(10); // Adjust pagination as needed
-    
-        return view('admin.managetrip', compact('cargos'))->with('success', 'Trip archived successfully.');
+        try {
+            $trip = Cargo::findOrFail($id);
+            $trip->update(['is_archived' => 1]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Trip archived successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-    
 }

@@ -6,6 +6,7 @@
     <title>Archives Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         :root {
@@ -103,6 +104,38 @@
             color: var(--secondary-color);
             font-weight: 600;
             margin: 0;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .search-input i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .search-input input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid #ced4da;
+            height: 40px;
+        }
+        
+        .search-input input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
         
         .card {
@@ -229,6 +262,14 @@
                 margin-left: 70px;
                 width: calc(100% - 70px);
             }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -247,6 +288,17 @@
             <h2><i class="fas fa-archive me-2"></i>Archives Management</h2>
         </div>
         
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search archives...">
+            </div>
+            <button class="btn btn-primary" id="searchBtn">
+                <i class="fas fa-search me-1"></i> Search
+            </button>
+        </div>
+        
         <!-- Archived Accounts Card -->
         <div class="card">
             <div class="card-header">
@@ -255,7 +307,7 @@
             <div class="card-body">
                 @if($archivedUsers->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="accountsTable">
                         <thead>
                             <tr>
                                 <th>Username</th>
@@ -278,14 +330,14 @@
                                     <form id="restoreAccountForm{{ $user->id }}" action="{{ route('admin.archive.restore.account', $user->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PUT')
-                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreAccount({{ $user->id }})">
+                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreAccount({{ $user->id }}, '{{ $user->username }}')">
                                             <i class="fas fa-undo"></i> Restore
                                         </button>
                                     </form>
                                     <form id="deleteAccountForm{{ $user->id }}" action="{{ route('admin.archive.delete.account', $user->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteAccount({{ $user->id }})">
+                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteAccount({{ $user->id }}, '{{ $user->username }}')">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </form>
@@ -313,7 +365,7 @@
             <div class="card-body">
                 @if($archivedProfits->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="profitsTable">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -336,14 +388,14 @@
                                     <form id="restoreProfitForm{{ $profit->id }}" action="{{ route('admin.archive.restore.profit', $profit->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PUT')
-                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreProfit({{ $profit->id }})">
+                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreProfit({{ $profit->id }}, '{{ $profit->plate_number }}')">
                                             <i class="fas fa-undo"></i> Restore
                                         </button>
                                     </form>
                                     <form id="deleteProfitForm{{ $profit->id }}" action="{{ route('admin.archive.delete.profit', $profit->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteProfit({{ $profit->id }})">
+                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteProfit({{ $profit->id }}, '{{ $profit->plate_number }}')">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </form>
@@ -371,7 +423,7 @@
             <div class="card-body">
                 @if($archivedFuel->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="fuelTable">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -394,14 +446,14 @@
                                     <form id="restoreFuelForm{{ $fuel->id }}" action="{{ route('admin.archive.restore.fuel', $fuel->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PUT')
-                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreFuel({{ $fuel->id }})">
+                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreFuel({{ $fuel->id }}, '{{ $fuel->plate_no }}')">
                                             <i class="fas fa-undo"></i> Restore
                                         </button>
                                     </form>
                                     <form id="deleteFuelForm{{ $fuel->id }}" action="{{ route('admin.archive.delete.fuel', $fuel->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteFuel({{ $fuel->id }})">
+                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteFuel({{ $fuel->id }}, '{{ $fuel->plate_no }}')">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </form>
@@ -429,7 +481,7 @@
             <div class="card-body">
                 @if($archivedTrips->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="tripsTable">
                         <thead>
                             <tr>
                                 <th>Plate No.</th>
@@ -452,14 +504,14 @@
                                     <form id="restoreTripForm{{ $trip->id }}" action="{{ route('admin.archive.restore.trip', $trip->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PUT')
-                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTrip({{ $trip->id }})">
+                                        <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTrip({{ $trip->id }}, '{{ $trip->plate_no }}')">
                                             <i class="fas fa-undo"></i> Restore
                                         </button>
                                     </form>
                                     <form id="deleteTripForm{{ $trip->id }}" action="{{ route('admin.archive.delete.trip', $trip->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTrip({{ $trip->id }})">
+                                        <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTrip({{ $trip->id }}, '{{ $trip->plate_no }}')">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </form>
@@ -487,7 +539,7 @@
             <div class="card-body">
                 @if($archivedTrucks->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="trucksTable">
                         <thead>
                             <tr>
                                 <th>Image</th>
@@ -523,14 +575,14 @@
                                         <form id="restoreTruckForm{{ $truck->id }}" action="{{ route('admin.archive.restore.truck', $truck->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('PUT')
-                                            <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTruck({{ $truck->id }})">
+                                            <button type="button" class="btn-action btn-restore" onclick="confirmRestoreTruck({{ $truck->id }}, '{{ $truck->plate_number }}')">
                                                 <i class="fas fa-undo"></i> Restore
                                             </button>
                                         </form>
                                         <form id="deleteTruckForm{{ $truck->id }}" action="{{ route('admin.archive.delete.truck', $truck->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTruck({{ $truck->id }})">
+                                            <button type="button" class="btn-action btn-delete" onclick="confirmDeleteTruck({{ $truck->id }}, '{{ $truck->plate_number }}')">
                                                 <i class="fas fa-trash-alt"></i> Delete
                                             </button>
                                         </form>
@@ -553,52 +605,245 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Confirmation functions
-        function confirmAction(id, message, formId) {
-            if (confirm(message)) {
-                document.getElementById(formId + id).submit();
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            // Search when button is clicked
+            searchBtn.addEventListener('click', function() {
+                performSearch();
+            });
+            
+            // Search when Enter key is pressed
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                if (searchTerm === '') return;
+                
+                // Search through all tables
+                const tables = [
+                    'accountsTable',
+                    'profitsTable',
+                    'fuelTable',
+                    'tripsTable',
+                    'trucksTable'
+                ];
+                
+                let foundResults = false;
+                
+                tables.forEach(tableId => {
+                    const table = document.getElementById(tableId);
+                    if (!table) return;
+                    
+                    const rows = table.getElementsByTagName('tr');
+                    let tableHasResults = false;
+                    
+                    for (let i = 1; i < rows.length; i++) { // Skip header row
+                        const row = rows[i];
+                        const rowText = row.textContent.toLowerCase();
+                        
+                        if (rowText.includes(searchTerm)) {
+                            row.style.display = '';
+                            tableHasResults = true;
+                            foundResults = true;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                    
+                    // Show/hide "no results" message for this table
+                    const noResultsMsg = table.parentElement.querySelector('.no-results-message');
+                    if (!tableHasResults) {
+                        if (!noResultsMsg) {
+                            const msg = document.createElement('div');
+                            msg.className = 'empty-message no-results-message';
+                            msg.innerHTML = `
+                                <i class="fas fa-search"></i>
+                                <h5>No matching results found</h5>
+                                <p class="text-muted">No records match your search criteria.</p>
+                            `;
+                            table.parentElement.appendChild(msg);
+                        }
+                    } else if (noResultsMsg) {
+                        noResultsMsg.remove();
+                    }
+                });
+                
+                // Show overall message if no results found in any table
+                if (!foundResults) {
+                    Swal.fire({
+                        title: 'No Results Found',
+                        text: 'Your search did not match any archived records.',
+                        icon: 'info',
+                        confirmButtonColor: '#2c3e50'
+                    });
+                }
             }
+            
+            // Clear search when input is empty
+            searchInput.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    resetSearch();
+                }
+            });
+            
+            function resetSearch() {
+                const tables = [
+                    'accountsTable',
+                    'profitsTable',
+                    'fuelTable',
+                    'tripsTable',
+                    'trucksTable'
+                ];
+                
+                tables.forEach(tableId => {
+                    const table = document.getElementById(tableId);
+                    if (!table) return;
+                    
+                    const rows = table.getElementsByTagName('tr');
+                    for (let i = 1; i < rows.length; i++) {
+                        rows[i].style.display = '';
+                    }
+                    
+                    // Remove any "no results" messages
+                    const noResultsMsg = table.parentElement.querySelector('.no-results-message');
+                    if (noResultsMsg) {
+                        noResultsMsg.remove();
+                    }
+                });
+            }
+        });
+        
+        // SweetAlert confirmation functions
+        function showConfirmation(title, text, icon, confirmButtonText, callback) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: '#2ecc71',
+                cancelButtonColor: '#e74c3c',
+                confirmButtonText: confirmButtonText,
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    callback();
+                }
+            });
         }
-
+        
         // Account actions
-        function confirmRestoreAccount(id) {
-            confirmAction(id, "Are you sure you want to restore this account?", "restoreAccountForm");
+        function confirmRestoreAccount(id, username) {
+            showConfirmation(
+                'Restore Account?',
+                `Are you sure you want to restore the account "${username}"?`,
+                'question',
+                'Yes, Restore',
+                () => document.getElementById(`restoreAccountForm${id}`).submit()
+            );
         }
-        function confirmDeleteAccount(id) {
-            confirmAction(id, "Are you sure you want to permanently delete this account?", "deleteAccountForm");
+        
+        function confirmDeleteAccount(id, username) {
+            showConfirmation(
+                'Permanently Delete Account?',
+                `WARNING: This will permanently delete the account "${username}". This action cannot be undone!`,
+                'warning',
+                'Yes, Delete Permanently',
+                () => document.getElementById(`deleteAccountForm${id}`).submit()
+            );
         }
-
+        
         // Profit actions
-        function confirmRestoreProfit(id) {
-            confirmAction(id, "Are you sure you want to restore this profit record?", "restoreProfitForm");
+        function confirmRestoreProfit(id, plateNumber) {
+            showConfirmation(
+                'Restore Profit Record?',
+                `Are you sure you want to restore the profit record for plate number "${plateNumber}"?`,
+                'question',
+                'Yes, Restore',
+                () => document.getElementById(`restoreProfitForm${id}`).submit()
+            );
         }
-        function confirmDeleteProfit(id) {
-            confirmAction(id, "Are you sure you want to permanently delete this profit record?", "deleteProfitForm");
+        
+        function confirmDeleteProfit(id, plateNumber) {
+            showConfirmation(
+                'Permanently Delete Profit Record?',
+                `WARNING: This will permanently delete the profit record for plate number "${plateNumber}". This action cannot be undone!`,
+                'warning',
+                'Yes, Delete Permanently',
+                () => document.getElementById(`deleteProfitForm${id}`).submit()
+            );
         }
-
+        
         // Fuel actions
-        function confirmRestoreFuel(id) {
-            confirmAction(id, "Are you sure you want to restore this fuel consumption record?", "restoreFuelForm");
+        function confirmRestoreFuel(id, plateNumber) {
+            showConfirmation(
+                'Restore Fuel Record?',
+                `Are you sure you want to restore the fuel record for plate number "${plateNumber}"?`,
+                'question',
+                'Yes, Restore',
+                () => document.getElementById(`restoreFuelForm${id}`).submit()
+            );
         }
-        function confirmDeleteFuel(id) {
-            confirmAction(id, "Are you sure you want to permanently delete this fuel consumption record?", "deleteFuelForm");
+        
+        function confirmDeleteFuel(id, plateNumber) {
+            showConfirmation(
+                'Permanently Delete Fuel Record?',
+                `WARNING: This will permanently delete the fuel record for plate number "${plateNumber}". This action cannot be undone!`,
+                'warning',
+                'Yes, Delete Permanently',
+                () => document.getElementById(`deleteFuelForm${id}`).submit()
+            );
         }
-
+        
         // Trip actions
-        function confirmRestoreTrip(id) {
-            confirmAction(id, "Are you sure you want to restore this trip?", "restoreTripForm");
+        function confirmRestoreTrip(id, plateNumber) {
+            showConfirmation(
+                'Restore Trip Record?',
+                `Are you sure you want to restore the trip record for plate number "${plateNumber}"?`,
+                'question',
+                'Yes, Restore',
+                () => document.getElementById(`restoreTripForm${id}`).submit()
+            );
         }
-        function confirmDeleteTrip(id) {
-            confirmAction(id, "Are you sure you want to permanently delete this trip?", "deleteTripForm");
+        
+        function confirmDeleteTrip(id, plateNumber) {
+            showConfirmation(
+                'Permanently Delete Trip Record?',
+                `WARNING: This will permanently delete the trip record for plate number "${plateNumber}". This action cannot be undone!`,
+                'warning',
+                'Yes, Delete Permanently',
+                () => document.getElementById(`deleteTripForm${id}`).submit()
+            );
         }
-
+        
         // Truck actions
-        function confirmRestoreTruck(id) {
-            confirmAction(id, "Are you sure you want to restore this truck?", "restoreTruckForm");
+        function confirmRestoreTruck(id, plateNumber) {
+            showConfirmation(
+                'Restore Truck Record?',
+                `Are you sure you want to restore the truck record for plate number "${plateNumber}"?`,
+                'question',
+                'Yes, Restore',
+                () => document.getElementById(`restoreTruckForm${id}`).submit()
+            );
         }
-        function confirmDeleteTruck(id) {
-            confirmAction(id, "Are you sure you want to permanently delete this truck?", "deleteTruckForm");
+        
+        function confirmDeleteTruck(id, plateNumber) {
+            showConfirmation(
+                'Permanently Delete Truck Record?',
+                `WARNING: This will permanently delete the truck record for plate number "${plateNumber}". This action cannot be undone!`,
+                'warning',
+                'Yes, Delete Permanently',
+                () => document.getElementById(`deleteTruckForm${id}`).submit()
+            );
         }
     </script>
 </body>
