@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\DeliveryRecordsController;
@@ -31,7 +30,6 @@ use App\Http\Controllers\DriverTrackingController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\TruckController;
-use Illuminate\Http\Request;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -139,7 +137,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
         Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
-        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
+        Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
         Route::post('/profile/remove-image', [ProfileController::class, 'removeImage'])->name('admin.profile.remove-image');
     });
 
@@ -147,7 +145,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('manager')->group(function () {
         Route::get('/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
         Route::put('/profile/update', [ProfileManagerController::class, 'updateProfileManager'])->name('manager.profile.update');
-        Route::post('/profile/change-password', [ProfileManagerController::class, 'changePasswordManager'])->name('manager.profile.change-password');
+        Route::put('/profile/change-password', [ProfileManagerController::class, 'changePasswordManager'])->name('manager.profile.change-password');
         Route::post('/profile/remove-image', [ProfileManagerController::class, 'removeImage'])->name('manager.profile.remove-image');
     });
 
@@ -155,7 +153,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('driver')->group(function () {
         Route::get('/profile', [ProfileDriverController::class, 'showProfileDriver'])->name('driver.profile');
         Route::put('/profile/update', [ProfileDriverController::class, 'updateProfileDriver'])->name('driver.profile.update');
-        Route::post('/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password');
+        Route::put('/profile/change-password', [ProfileDriverController::class, 'changePasswordDriver'])->name('driver.profile.change-password');
         Route::put('/profile/update-license', [ProfileDriverController::class, 'updateDriverLicense'])->name('driver.profile.update-license');
     });
 });
@@ -190,32 +188,3 @@ Route::delete('admin/truckdetails/{id}', [TruckController::class, 'destroy'])->n
 Route::delete('admin/truckdetails/archive/{id}', [ArchiveController::class, 'archiveTruck'])->name('admin.truckdetails.archive');
 Route::put('admin/archive/restore/truck/{id}', [ArchiveController::class, 'restoreTruck'])->name('admin.archive.restore.truck');
 Route::delete('admin/archive/delete/truck/{id}', [ArchiveController::class, 'destroyTruck'])->name('admin.archive.delete.truck');
-
-// Add these routes
-Route::middleware(['web'])->group(function() {
-    Route::get('/check-username', function(Request $request) {
-        $username = $request->input('username');
-        $exists = \App\Models\User::where('username', $username)->exists();
-        return response()->json(['exists' => $exists]);
-    });
-
-    Route::get('/check-email', function(Request $request) {
-        $email = $request->input('email');
-        $exists = \App\Models\User::where('email', $email)->exists();
-        return response()->json(['exists' => $exists]);
-    });
-
-    Route::get('/check-mobile_number', function(Request $request) {
-        $mobile = $request->input('mobile_number');
-        $exists = \App\Models\User::where('mobile_number', $mobile)->exists();
-        return response()->json(['exists' => $exists]);
-    });
-
-    Route::get('/check-truck', function(Request $request) {
-        $truckId = $request->input('truck');
-        $exists = \App\Models\User::where('truck_id', $truckId)
-                                 ->where('role', 'driver')
-                                 ->exists();
-        return response()->json(['assigned' => $exists]);
-    });
-});

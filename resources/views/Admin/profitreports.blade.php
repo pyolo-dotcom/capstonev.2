@@ -6,6 +6,7 @@
     <title>Profit Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -316,6 +317,24 @@
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
+
+        /* Modal Fixes */
+        .modal {
+            z-index: 1060 !important;
+        }
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+        .modal-content {
+            border: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            border-bottom: 1px solid #eee;
+        }
+        .modal-footer {
+            border-top: 1px solid #eee;
+        }
         
         /* Responsive adjustments */
         @media (max-width: 992px) {
@@ -412,6 +431,9 @@
     <div class="main-content">
         <div class="header">
             <h2><i class="fas fa-chart-line me-2"></i>Profit Reports Management</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profitModal">
+                <i class="fas fa-plus me-2"></i>Add Profit Record
+            </button>
         </div>
         
         <!-- Enhanced Filter Section -->
@@ -450,11 +472,6 @@
                 <h3><i class="fas fa-table me-2"></i>Profit Reports</h3>
             </div>
             <div class="card-body">
-                @include('Admin.modals.profit_modal')
-                @foreach($profits as $profit)
-                    @include('Admin.modals.edit_profit_modal', ['profit' => $profit])
-                @endforeach
-
                 @if($profits->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover" id="profitTable">
@@ -477,15 +494,14 @@
                                 <td>P {{ number_format($profit->total_expenses, 2) }}</td>
                                 <td>P {{ number_format($profit->total_profit, 2) }}</td>
                                 <td class="actions">
-                                    <button type="button" class="btn-action btn-edit" 
-                                        onclick="openEditModal({{ $profit->id }}, '{{ $profit->date }}', '{{ $profit->plate_number }}', {{ $profit->total_income }}, {{ $profit->total_expenses }}, {{ $profit->total_profit }})">
+                                    <button type="button" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editProfitModal-{{ $profit->id }}">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
                                 
-                                    <form action="{{ route('admin.profit.archive', $profit->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('admin.profit.archive', $profit->id) }}" method="POST" style="display: inline;" class="archive-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-action btn-archive" onclick="return confirm('Are you sure you want to archive this record?')">
+                                        <button type="submit" class="btn-action btn-archive">
                                             <i class="fas fa-archive"></i> Archive
                                         </button>
                                     </form>
@@ -518,7 +534,115 @@
         </div>
     </div>
 
+    <!-- Add Profit Modal -->
+    <div class="modal fade" id="profitModal" tabindex="-1" aria-labelledby="profitModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="profitModalLabel">Add Profit Record</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="profitForm" action="{{ route('admin.profit.store') }}" method="POST">
+                        @csrf
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="date" name="date" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="plate_number" class="form-label">Plate Number</label>
+                                <select class="form-select" id="plate_number" name="plate_number" required>
+                                    <option value="">Select Truck</option>
+                                    <option value="UVP353">UVP353</option>
+                                    <option value="TQE262">TQE262</option>
+                                    <option value="NBB7212">NBB7212</option>
+                                    <option value="APA3309">APA3309</option>
+                                    <option value="WIE914">WIE914</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="total_income" class="form-label">Total Income (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="total_income" name="total_income" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="total_expenses" class="form-label">Total Expenses (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="total_expenses" name="total_expenses" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="total_profit" class="form-label">Total Profit (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="total_profit" name="total_profit" readonly>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profit Modals -->
+    @foreach($profits as $profit)
+    <div class="modal fade" id="editProfitModal-{{ $profit->id }}" tabindex="-1" aria-labelledby="editProfitModalLabel-{{ $profit->id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editProfitModalLabel-{{ $profit->id }}">Edit Profit Record</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfitForm-{{ $profit->id }}" action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="id" value="{{ $profit->id }}">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="edit_date-{{ $profit->id }}" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="edit_date-{{ $profit->id }}" name="date" value="{{ $profit->date }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit_plate_number-{{ $profit->id }}" class="form-label">Plate Number</label>
+                                <select class="form-select" id="edit_plate_number-{{ $profit->id }}" name="plate_number" required>
+                                    <option value="UVP353" {{ $profit->plate_number == 'UVP353' ? 'selected' : '' }}>UVP353</option>
+                                    <option value="TQE262" {{ $profit->plate_number == 'TQE262' ? 'selected' : '' }}>TQE262</option>
+                                    <option value="NBB7212" {{ $profit->plate_number == 'NBB7212' ? 'selected' : '' }}>NBB7212</option>
+                                    <option value="APA3309" {{ $profit->plate_number == 'APA3309' ? 'selected' : '' }}>APA3309</option>
+                                    <option value="WIE914" {{ $profit->plate_number == 'WIE914' ? 'selected' : '' }}>WIE914</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="edit_total_income-{{ $profit->id }}" class="form-label">Total Income (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_total_income-{{ $profit->id }}" name="total_income" value="{{ $profit->total_income }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit_total_expenses-{{ $profit->id }}" class="form-label">Total Expenses (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_total_expenses-{{ $profit->id }}" name="total_expenses" value="{{ $profit->total_expenses }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit_total_profit-{{ $profit->id }}" class="form-label">Total Profit (P)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_total_profit-{{ $profit->id }}" name="total_profit" value="{{ $profit->total_profit }}" readonly>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const profitData = @json($profits);
         const ctx = document.getElementById('profitChart').getContext('2d');
@@ -725,28 +849,82 @@
             renderChart(filteredData);
         }
 
-        // Function to open edit modal and populate data
-        function openEditModal(id, date, plateNumber, totalIncome, totalExpenses, totalProfit) {
-            document.getElementById('editProfitModal').style.display = 'block';
-            document.getElementById('edit_id').value = id;
-            document.getElementById('edit_date').value = date;
-            document.getElementById('edit_plate_number').value = plateNumber;
-            document.getElementById('edit_total_income').value = totalIncome;
-            document.getElementById('edit_total_expenses').value = totalExpenses;
-            document.getElementById('edit_total_profit').value = totalProfit;
+        // Initialize profit calculation for add modal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add modal calculation
+            const incomeInput = document.getElementById('total_income');
+            const expensesInput = document.getElementById('total_expenses');
+            if (incomeInput && expensesInput) {
+                incomeInput.addEventListener('input', calculateProfit);
+                expensesInput.addEventListener('input', calculateProfit);
+            }
+
+            // Edit modals calculation (using event delegation)
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.id && e.target.id.startsWith('edit_total_income-')) {
+                    const id = e.target.id.split('-')[2];
+                    calculateEditProfit(id);
+                }
+                if (e.target && e.target.id && e.target.id.startsWith('edit_total_expenses-')) {
+                    const id = e.target.id.split('-')[2];
+                    calculateEditProfit(id);
+                }
+            });
+
+            // Archive confirmation with SweetAlert
+            document.querySelectorAll('.archive-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const form = this;
+                    
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, archive it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Show success message if present in session
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            // Show error message if present in session
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ session('error') }}'
+                });
+            @endif
+        });
+
+        function calculateProfit() {
+            const income = parseFloat(document.getElementById('total_income').value) || 0;
+            const expenses = parseFloat(document.getElementById('total_expenses').value) || 0;
+            document.getElementById('total_profit').value = (income - expenses).toFixed(2);
         }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target == document.getElementById('editProfitModal')) {
-                document.getElementById('editProfitModal').style.display = 'none';
-            }
-        });
-
-        // Close modal when clicking the close button
-        document.querySelector('#editProfitModal .close').addEventListener('click', function() {
-            document.getElementById('editProfitModal').style.display = 'none';
-        });
+        function calculateEditProfit(id) {
+            const income = parseFloat(document.getElementById(`edit_total_income-${id}`).value) || 0;
+            const expenses = parseFloat(document.getElementById(`edit_total_expenses-${id}`).value) || 0;
+            document.getElementById(`edit_total_profit-${id}`).value = (income - expenses).toFixed(2);
+        }
 
         // Initialize with weekly data
         setActiveFilter('weekly');

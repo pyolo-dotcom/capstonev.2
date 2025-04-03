@@ -1,39 +1,54 @@
-<div id="addProfitModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Add Profit</h2>
-        <form action="{{ route('admin.profit.store') }}" method="POST">
-            @csrf
-            <label for="date">Date:</label>
-            <input type="date" name="date" required>
-            
-            <label for="plate_number">Plate Number:</label>
-            <select id="plateNumber" name="plate_number" required>
-                <option disabled selected>-- Plate Number --</option>
-                <option value="UVP353">UVP353</option>
-                <option value="TQE262">TQE262</option>
-                <option value="NBB7212">NBB7212</option>
-                <option value="APA3309">APA3309</option>
-                <option value="WIE914">WIE914</option>
-            </select>
-
-            <label for="total_income">Total Income:</label>
-            <input type="number" id="total_income" name="total_income" step="0.01" required oninput="calculateProfit()">
-            
-            <label for="total_expenses">Total Expenses:</label>
-            <input type="number" id="total_expenses" name="total_expenses" step="0.01" required oninput="calculateProfit()">
-            
-            <label for="total_profit">Total Profit:</label>
-            <input type="text" id="total_profit" name="total_profit" readonly>
-
-            <button type="submit">Save Profit</button>
-        </form>
+<!-- Add this to your Admin.modals.profit_modal -->
+<div class="modal fade" id="profitModal" tabindex="-1" aria-labelledby="profitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="profitModalLabel">Add Profit Record</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profitForm" action="{{ route('admin.profit.store') }}" method="POST">
+                    @csrf
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="plate_number" class="form-label">Plate Number</label>
+                            <select class="form-select" id="plate_number" name="plate_number" required>
+                                <option value="">Select Truck</option>
+                                <option value="UVP353">UVP353</option>
+                                <option value="TQE262">TQE262</option>
+                                <option value="NBB7212">NBB7212</option>
+                                <option value="APA3309">APA3309</option>
+                                <option value="WIE914">WIE914</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="total_income" class="form-label">Total Income (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="total_income" name="total_income" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_expenses" class="form-label">Total Expenses (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="total_expenses" name="total_expenses" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_profit" class="form-label">Total Profit (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="total_profit" name="total_profit" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-
-<!-- Add Profits Button -->
-<button id="openModal" class="tab-button">+ Add Profits</button>
-
 <style>
     .modal {
         display: none;

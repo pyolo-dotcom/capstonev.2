@@ -1,37 +1,53 @@
-<div id="editProfitModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Edit Profit</h2>
-        <form id="editProfitForm" action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
-    @csrf
-    @method('PUT')
-
-    <input type="hidden" name="id" id="edit_id" value="{{ $profit->id }}">
-
-    <label for="edit_date">Date:</label>
-    <input type="date" name="date" id="edit_date" required>
-
-    <label for="edit_plate_number">Plate Number:</label>
-    <select id="edit_plate_number" name="plate_number" required>
-        <option value="UVP353">UVP353</option>
-        <option value="TQE262">TQE262</option>
-        <option value="NBB7212">NBB7212</option>
-        <option value="APA3309">APA3309</option>
-        <option value="WIE914">WIE914</option>
-    </select>
-
-    <label for="edit_total_income">Total Income:</label>
-    <input type="number" id="edit_total_income" name="total_income" step="0.01" required oninput="calculateEditProfit()">
-
-    <label for="edit_total_expenses">Total Expenses:</label>
-    <input type="number" id="edit_total_expenses" name="total_expenses" step="0.01" required oninput="calculateEditProfit()">
-
-    <label for="edit_total_profit">Total Profit:</label>
-    <input type="text" id="edit_total_profit" name="total_profit" readonly>
-
-    <button type="submit">Update Profit</button>
-</form>
-
+<!-- Add this to your Admin.modals.edit_profit_modal (for each profit record) -->
+<div class="modal fade" id="editProfitModal-{{ $profit->id }}" tabindex="-1" aria-labelledby="editProfitModalLabel-{{ $profit->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editProfitModalLabel-{{ $profit->id }}">Edit Profit Record</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfitForm-{{ $profit->id }}" action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" value="{{ $profit->id }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_date-{{ $profit->id }}" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="edit_date-{{ $profit->id }}" name="date" value="{{ $profit->date }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_plate_number-{{ $profit->id }}" class="form-label">Plate Number</label>
+                            <select class="form-select" id="edit_plate_number-{{ $profit->id }}" name="plate_number" required>
+                                <option value="UVP353" {{ $profit->plate_number == 'UVP353' ? 'selected' : '' }}>UVP353</option>
+                                <option value="TQE262" {{ $profit->plate_number == 'TQE262' ? 'selected' : '' }}>TQE262</option>
+                                <option value="NBB7212" {{ $profit->plate_number == 'NBB7212' ? 'selected' : '' }}>NBB7212</option>
+                                <option value="APA3309" {{ $profit->plate_number == 'APA3309' ? 'selected' : '' }}>APA3309</option>
+                                <option value="WIE914" {{ $profit->plate_number == 'WIE914' ? 'selected' : '' }}>WIE914</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="edit_total_income-{{ $profit->id }}" class="form-label">Total Income (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="edit_total_income-{{ $profit->id }}" name="total_income" value="{{ $profit->total_income }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_total_expenses-{{ $profit->id }}" class="form-label">Total Expenses (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="edit_total_expenses-{{ $profit->id }}" name="total_expenses" value="{{ $profit->total_expenses }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edit_total_profit-{{ $profit->id }}" class="form-label">Total Profit (P)</label>
+                            <input type="number" step="0.01" class="form-control" id="edit_total_profit-{{ $profit->id }}" name="total_profit" value="{{ $profit->total_profit }}" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
