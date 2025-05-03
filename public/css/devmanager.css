@@ -1,9 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+
 
 body {
     display: flex;
@@ -119,7 +114,6 @@ transition: text 0.3s ease-in-out;
 
 /* Modal Styles */
 .modal {
-display: none; /* Hide by default */
 position: fixed;
 z-index: 1000;
 left: 0;

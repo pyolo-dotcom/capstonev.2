@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar Menu</title>
+    <title>Help</title>
     <style>
         * {
             margin: 0;
@@ -55,7 +55,6 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-managernavbar/>
         </ul>

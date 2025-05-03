@@ -455,7 +455,6 @@
 
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
             <x-managernavbar />
         </ul>

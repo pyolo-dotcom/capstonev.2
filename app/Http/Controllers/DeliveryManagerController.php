@@ -22,7 +22,7 @@ class DeliveryManagerController extends Controller
             });
     
         // Initialize all counts to zero
-        return view('admin.deliveryrecords', [
+        return view('manager.deliveryrecords', [
             'trips' => $trips,
             'oneWayTrip' => 0,
             'roundTrip' => 0,

@@ -49,7 +49,10 @@ class User extends Authenticatable
     protected $appends = [
         'initials',
         'profile_picture_url',
-        'default_profile_picture'
+        'default_profile_picture',
+        'is_license_expired',
+        'formatted_license_expiry_date',
+        'formatted_dob'
     ];
 
     /**
@@ -106,6 +109,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Relationship to Tracking model
+     */
+    public function tracking()
+    {
+        return $this->hasOne(Tracking::class, 'truck_id', 'truck_id');
+    }
+
+    /**
+     * Check if user is a driver
+     */
+    public function isDriver()
+    {
+        return $this->role === 'driver';
+    }
+
+    /**
      * Check if license is expired
      */
     public function getIsLicenseExpiredAttribute()
@@ -133,5 +152,44 @@ class User extends Authenticatable
         return $this->dob
             ? $this->dob->format('F j, Y')
             : 'Not set';
+    }
+
+    /**
+     * Get current location coordinates (if driver)
+     */
+    public function getCurrentLocationAttribute()
+    {
+        if (!$this->isDriver() || !$this->tracking) {
+            return null;
+        }
+
+        return [
+            'latitude' => $this->tracking->latitude,
+            'longitude' => $this->tracking->longitude
+        ];
+    }
+
+    /**
+     * Get total distance traveled (if driver)
+     */
+    public function getTotalDistanceAttribute()
+    {
+        if (!$this->isDriver() || !$this->tracking) {
+            return 0;
+        }
+
+        return $this->tracking->total_distance;
+    }
+
+    /**
+     * Get current speed (if driver)
+     */
+    public function getCurrentSpeedAttribute()
+    {
+        if (!$this->isDriver() || !$this->tracking) {
+            return 0;
+        }
+
+        return $this->tracking->speed;
     }
 }

@@ -50,7 +50,6 @@
 
 <body>
     <div class="sidebar">
-        <h2><i>SYA</i></h2>
         <ul>
             <x-managernavbar />
         </ul>

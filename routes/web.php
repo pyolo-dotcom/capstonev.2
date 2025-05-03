@@ -51,6 +51,8 @@ Route::get('admin/truckdetails', [TruckController::class, 'showTruck'])->name('a
 Route::get('admin/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
 Route::get('admin/activeaccount', [ActiveController::class, 'showActive'])->name('admin.activeaccount');
 Route::get('admin/help', [HelpController::class, 'showHelp'])->name('admin.help');
+
+// GPS Tracking Routes
 Route::get('/get-locations', function () {
     $locations = DB::table('trackings')
         ->join('users', 'trackings.truck_id', '=', 'users.truck_id')
@@ -59,11 +61,26 @@ Route::get('/get-locations', function () {
             'trackings.latitude',
             'trackings.longitude',
             'trackings.total_distance',
-            'users.fullname'
+            'trackings.speed',
+            'users.fullname',
+            'users.driver_license_number'
         )
         ->where('users.role', 'driver')
         ->get();
     return response()->json($locations);
+});
+
+Route::get('/get-truck-distance', function() {
+    $distances = DB::table('trackings')
+        ->join('users', 'trackings.truck_id', '=', 'users.truck_id')
+        ->select(
+            'trackings.truck_id',
+            'trackings.total_distance',
+            'users.fullname'
+        )
+        ->where('users.role', 'driver')
+        ->get();
+    return response()->json($distances);
 });
 
 // Profit Routes
@@ -106,7 +123,7 @@ Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']
 Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']);
 Route::get('/get-truck-distance', [GPSControlController::class, 'getTruckDistances']);
 Route::get('/manager/qrscanner', function () {
-    return view('Manager.qrscanner');
+    return view('manager.qrscanner');
 })->name('manager.qrscanner');
 Route::post('/cargo/scanned', [ShipmentDriverController::class, 'storeScannedData']);
 
@@ -122,16 +139,16 @@ Route::get('/cargo', [ShipmentDriverController::class, 'index']);
 Route::post('/cargo', [ShipmentDriverController::class, 'store']);
 Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
 Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
-Route::post('/update-location', [DriverTrackingController::class, 'updateLocation']);
+Route::post('/update-location', [DriverTrackingController::class, 'updateLocation'])
+    ->middleware('auth');
 Route::get('/tracking', function () {
-    return view('Driver.tracking');
+    return view('driver.tracking');
 });
 
-// Account Management
-Route::post('admin/activeaccount', [AuthController::class, 'register'])->name('addaccount');
-Route::put('admin/activeaccount/{id}', [ActiveController::class, 'edit'])->name('editaccount');
-Route::delete('admin/activeaccount/{id}', [ActiveController::class, 'archive'])->name('archiveaccount');
+// Account Management Routes
 Route::post('admin/activeaccount/store', [ActiveController::class, 'store'])->name('admin.activeaccount.store');
+Route::put('admin/activeaccount/{id}', [ActiveController::class, 'edit'])->name('admin.activeaccount.update');
+Route::delete('admin/activeaccount/{id}', [ActiveController::class, 'archive'])->name('admin.activeaccount.archive');
 
 // Profile Management
 Route::middleware(['auth'])->group(function () {
@@ -191,7 +208,7 @@ Route::delete('admin/truckdetails/archive/{id}', [ArchiveController::class, 'arc
 Route::put('admin/archive/restore/truck/{id}', [ArchiveController::class, 'restoreTruck'])->name('admin.archive.restore.truck');
 Route::delete('admin/archive/delete/truck/{id}', [ArchiveController::class, 'destroyTruck'])->name('admin.archive.delete.truck');
 
-// Add these routes
+// Field Validation Routes
 Route::middleware(['web'])->group(function() {
     Route::get('/check-username', function(Request $request) {
         $username = $request->input('username');
@@ -219,3 +236,62 @@ Route::middleware(['web'])->group(function() {
         return response()->json(['assigned' => $exists]);
     });
 });
+
+// Additional GPS Tracking Routes
+Route::get('/get-driver-location/{truck_id}', function($truck_id) {
+    $location = DB::table('trackings')
+        ->join('users', 'trackings.truck_id', '=', 'users.truck_id')
+        ->select(
+            'trackings.truck_id',
+            'trackings.latitude',
+            'trackings.longitude',
+            'trackings.total_distance',
+            'trackings.speed',
+            'users.fullname'
+        )
+        ->where('trackings.truck_id', $truck_id)
+        ->where('users.role', 'driver')
+        ->first();
+        
+    return response()->json($location);
+});
+
+Route::get('/get-active-drivers', function() {
+    $drivers = DB::table('users')
+        ->leftJoin('trackings', 'users.truck_id', '=', 'trackings.truck_id')
+        ->select(
+            'users.id',
+            'users.fullname',
+            'users.truck_id',
+            'trackings.latitude',
+            'trackings.longitude',
+            'trackings.total_distance'
+        )
+        ->where('users.role', 'driver')
+        ->whereNotNull('users.truck_id')
+        ->get();
+        
+    return response()->json($drivers);
+});
+
+// Add these new routes
+Route::get('/live-tracking', [ManageGPSController::class, 'showLiveTracking'])->name('live.tracking');
+Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations']);
+
+// Add these routes
+Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations']);
+Route::get('/get-driver-location/{truck_id}', [ManageGPSController::class, 'getDriverLocation']);
+Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
+
+// Add these new routes for WebSocket authentication
+Route::post('/broadcasting/auth', function () {
+    return Broadcast::auth(request());
+});
+
+// Pusher WebHook for presence channels (optional)
+Route::post('/pusher/webhook', function (Request $request) {
+    // Verify webhook signature if needed
+    return response()->json(['status' => 'success']);
+});
+
+Route::get('/admin/activeaccount/{id}/edit-form', [ActiveController::class, 'editForm']);

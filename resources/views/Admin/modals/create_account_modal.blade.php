@@ -56,11 +56,12 @@
                                 <label for="mobile_number" class="form-label">Mobile Number</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                    <input type="text" id="mobile_number" name="mobile_number" class="form-control" placeholder="Enter mobile number" required>
+                                    <input type="text" id="mobile_number" name="mobile_number" class="form-control" 
+                                           placeholder="e.g. 09123456789" required>
                                 </div>
                                 <div id="mobile-error" class="text-danger small mt-1 d-none">
                                     <i class="fas fa-exclamation-circle me-1"></i>
-                                    <span>Mobile number already exists.</span>
+                                    <span>Mobile number already exists or is invalid. Philippine format: 09XXXXXXXXX or +639XXXXXXXXX</span>
                                 </div>
                             </div>
                         </div>
@@ -122,11 +123,9 @@
                                     <label for="truck_id" class="form-label">Plate Number</label>
                                     <select id="truck_id" name="truck_id" class="form-select">
                                         <option value="" selected disabled>Select Plate Number</option>
-                                        <option value="UVP353">UVP353</option>
-                                        <option value="TQE262">TQE262</option>
-                                        <option value="NBB7212">NBB7212</option>
-                                        <option value="APA3309">APA3309</option>
-                                        <option value="WIE914">WIE914</option>
+                                        @foreach(\App\Models\Truck::whereNotIn('plate_number', \App\Models\User::where('role', 'driver')->whereNotNull('truck_id')->pluck('truck_id'))->get() as $truck)
+                                            <option value="{{ $truck->plate_number }}">{{ $truck->plate_number }}</option>
+                                        @endforeach
                                     </select>
                                     <div id="truck-error" class="text-danger small mt-1 d-none">
                                         <i class="fas fa-exclamation-circle me-1"></i>
@@ -181,235 +180,257 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to safely get element
-        function getElement(id) {
-            const el = document.getElementById(id);
-            if (!el) {
-                console.error(`Element with ID ${id} not found`);
-                return null;
-            }
-            return el;
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to safely get element
+    function getElement(id) {
+        const el = document.getElementById(id);
+        if (!el) {
+            console.error(`Element with ID ${id} not found`);
+            return null;
         }
-    
-        // Function to handle API requests
-        async function makeRequest(url) {
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
+        return el;
+    }
+
+    // Function to validate Philippine mobile number
+    function validatePhilippineMobileNumber(number) {
+        // Remove all non-digit characters first
+        const cleaned = number.replace(/\D/g, '');
+        
+        // Check if it starts with 09 (11 digits) or 639 (12 digits with country code)
+        return /^09\d{9}$/.test(cleaned) || /^639\d{9}$/.test(cleaned);
+    }
+
+    // Function to handle API requests
+    async function makeRequest(url) {
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (!response.ok) {
+                let errorDetails = '';
+                try {
+                    const errorData = await response.json();
+                    errorDetails = errorData.message || JSON.stringify(errorData);
+                } catch (e) {
+                    errorDetails = await response.text();
+                }
+                throw new Error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error making request to:', url, 'Error:', error);
+            return { 
+                error: true, 
+                message: error.message,
+                url: url
+            };
+        }
+    }
+
+    // Function to check field availability
+    async function checkFieldAvailability(field, value, errorElement) {
+        if (!errorElement) {
+            console.error('Error element not found for field:', field);
+            return false;
+        }
+
+        // Special validation for mobile number
+        if (field === 'mobile_number' && !validatePhilippineMobileNumber(value)) {
+            errorElement.textContent = 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX)';
+            errorElement.classList.remove('d-none');
+            return true;
+        }
+
+        const paramName = field === 'truck' ? 'truck' : 
+                         field === 'mobile_number' ? 'mobile_number' : field;
+        const url = `/check-${field}?${paramName}=${encodeURIComponent(value)}`;
+        
+        const data = await makeRequest(url);
+        
+        if (data.error) {
+            console.error('Validation error for', field, ':', data.message, 'URL:', data.url);
+            errorElement.textContent = 'Unable to validate this field. Please try again.';
+            errorElement.classList.remove('d-none');
+            return true;
+        }
+
+        if (data.exists || data.assigned) {
+            errorElement.textContent = field === 'truck' ? 
+                'This truck is already assigned to another driver.' : 
+                field === 'mobile_number' ? 'Mobile number already exists.' :
+                `${field.charAt(0).toUpperCase() + field.slice(1)} already exists.`;
+            errorElement.classList.remove('d-none');
+            return true;
+        } else {
+            errorElement.classList.add('d-none');
+            return false;
+        }
+    }
+
+    // Function to update submit button state
+    function updateSubmitButton() {
+        const submitButton = getElement('submit-button');
+        if (!submitButton) return;
+
+        const hasError = document.querySelectorAll('.text-danger:not(.d-none)').length > 0;
+        const passwordError = getElement('password-error');
+        const hasPasswordError = passwordError && !passwordError.classList.contains('d-none');
+        
+        submitButton.disabled = hasError || hasPasswordError;
+    }
+
+    // Initialize modal
+    const modal = getElement('createAccountModal');
+    if (modal) {
+        // When modal is shown
+        modal.addEventListener('show.bs.modal', function() {
+            const form = getElement('create-account-form');
+            if (form) form.reset();
+            
+            document.querySelectorAll('.text-danger').forEach(el => {
+                el.classList.add('d-none');
+            });
+            
+            const driverFields = getElement('driverFields');
+            if (driverFields) driverFields.style.display = 'none';
+            
+            updateSubmitButton();
+        });
+
+        // Password visibility toggle
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                if (!input || !icon) return;
                 
-                if (!response.ok) {
-                    let errorDetails = '';
-                    try {
-                        const errorData = await response.json();
-                        errorDetails = errorData.message || JSON.stringify(errorData);
-                    } catch (e) {
-                        errorDetails = await response.text();
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}, details: ${errorDetails}`);
+                input.type = input.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye-slash');
+                icon.classList.toggle('fa-eye');
+            });
+        });
+
+        // Driver fields toggle
+        const roleSelect = getElement('role');
+        if (roleSelect) {
+            roleSelect.addEventListener('change', function() {
+                const driverFields = getElement('driverFields');
+                if (driverFields) {
+                    driverFields.style.display = this.value === 'driver' ? 'block' : 'none';
+                    
+                    const truckError = getElement('truck-error');
+                    if (truckError) truckError.classList.add('d-none');
+                    
+                    updateSubmitButton();
+                }
+            });
+        }
+
+        // Mobile number input formatting
+        const mobileInput = getElement('mobile_number');
+        if (mobileInput) {
+            mobileInput.addEventListener('input', function(e) {
+                // Remove all non-digit characters
+                let value = this.value.replace(/\D/g, '');
+                
+                // If it starts with 63, keep it as +63
+                if (value.startsWith('63')) {
+                    value = '+63' + value.substring(2);
+                }
+                // Otherwise, format as 09
+                else if (value.startsWith('9') && value.length > 1) {
+                    value = '09' + value.substring(1);
                 }
                 
-                return await response.json();
-            } catch (error) {
-                console.error('Error making request to:', url, 'Error:', error);
-                return { 
-                    error: true, 
-                    message: error.message,
-                    url: url
-                };
-            }
-        }
-    
-        // Function to check field availability
-        async function checkFieldAvailability(field, value, errorElement) {
-            if (!errorElement) {
-                console.error('Error element not found for field:', field);
-                return false;
-            }
-    
-            // Special handling for different field types
-            const paramName = field === 'truck' ? 'truck' : 
-                             field === 'mobile_number' ? 'mobile_number' : field;
-            const url = `/check-${field}?${paramName}=${encodeURIComponent(value)}`;
-            
-            const data = await makeRequest(url);
-            
-            if (data.error) {
-                console.error('Validation error for', field, ':', data.message, 'URL:', data.url);
-                errorElement.textContent = 'Unable to validate this field. Please try again.';
-                errorElement.classList.remove('d-none');
-                return true;
-            }
-    
-            if (data.exists || data.assigned) {
-                errorElement.textContent = field === 'truck' ? 
-                    'This truck is already assigned to another driver.' : 
-                    field === 'mobile_number' ? 'Mobile number already exists.' :
-                    `${field.charAt(0).toUpperCase() + field.slice(1)} already exists.`;
-                errorElement.classList.remove('d-none');
-                return true;
-            } else {
-                errorElement.classList.add('d-none');
-                return false;
-            }
-        }
-    
-        // Function to update submit button state
-        function updateSubmitButton() {
-            const submitButton = getElement('submit-button');
-            if (!submitButton) return;
-    
-            const hasError = document.querySelectorAll('.text-danger:not(.d-none)').length > 0;
-            const passwordError = getElement('password-error');
-            const hasPasswordError = passwordError && !passwordError.classList.contains('d-none');
-            
-            submitButton.disabled = hasError || hasPasswordError;
-        }
-    
-        // Initialize modal
-        const modal = getElement('createAccountModal');
-        if (modal) {
-            // When modal is shown
-            modal.addEventListener('show.bs.modal', function() {
-                const form = getElement('create-account-form');
-                if (form) form.reset();
+                // Limit to 11 digits for 09 or 12 digits for +63
+                const maxLength = value.startsWith('+') ? 13 : 11;
+                if (value.length > maxLength) {
+                    value = value.substring(0, maxLength);
+                }
                 
-                document.querySelectorAll('.text-danger').forEach(el => {
-                    el.classList.add('d-none');
-                });
-                
-                const driverFields = getElement('driverFields');
-                if (driverFields) driverFields.style.display = 'none';
-                
-                updateSubmitButton();
+                this.value = value;
             });
-    
-            // Password visibility toggle
-            document.querySelectorAll('.toggle-password').forEach(button => {
-                button.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('input');
-                    const icon = this.querySelector('i');
-                    if (!input || !icon) return;
-                    
-                    input.type = input.type === 'password' ? 'text' : 'password';
-                    icon.classList.toggle('fa-eye-slash');
-                    icon.classList.toggle('fa-eye');
-                });
-            });
-    
-            // Driver fields toggle
-            const roleSelect = getElement('role');
-            if (roleSelect) {
-                roleSelect.addEventListener('change', function() {
-                    const driverFields = getElement('driverFields');
-                    if (driverFields) {
-                        driverFields.style.display = this.value === 'driver' ? 'block' : 'none';
-                        
-                        const truckError = getElement('truck-error');
-                        if (truckError) truckError.classList.add('d-none');
-                        
-                        updateSubmitButton();
-                    }
-                });
+        }
+
+        // Set up field validations with debounce
+        function setupFieldValidation(field, minLength = 3, isEmail = false) {
+            // Special case for mobile number error element
+            const errorElementId = field === 'mobile_number' ? 'mobile-error' : `${field}-error`;
+            const input = getElement(field);
+            const errorElement = getElement(errorElementId);
+            
+            if (!input || !errorElement) {
+                console.error(`Missing elements for ${field} validation`);
+                return;
             }
-    
-            // Set up field validations with debounce
-            function setupFieldValidation(field, minLength = 3, isEmail = false) {
-                // Special case for mobile number error element
-                const errorElementId = field === 'mobile_number' ? 'mobile-error' : `${field}-error`;
-                const input = getElement(field);
-                const errorElement = getElement(errorElementId);
+            
+            let timeout;
+            input.addEventListener('input', async function() {
+                clearTimeout(timeout);
+                const value = this.value.trim();
                 
-                if (!input || !errorElement) {
-                    console.error(`Missing elements for ${field} validation`);
+                if (value.length < minLength || (isEmail && !value.includes('@'))) {
+                    errorElement.classList.add('d-none');
+                    updateSubmitButton();
                     return;
                 }
                 
-                let timeout;
-                input.addEventListener('input', async function() {
-                    clearTimeout(timeout);
-                    const value = this.value.trim();
+                timeout = setTimeout(async () => {
+                    await checkFieldAvailability(field, value, errorElement);
+                    updateSubmitButton();
+                }, 500);
+            });
+        }
+
+        // Password validation
+        const passwordInput = getElement('password');
+        const confirmPassInput = getElement('password_confirmation');
+        const passwordError = getElement('password-error');
+        
+        if (passwordInput && confirmPassInput && passwordError) {
+            [passwordInput, confirmPassInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const password = passwordInput.value;
+                    const confirmPass = confirmPassInput.value;
                     
-                    if (value.length < minLength || (isEmail && !value.includes('@'))) {
-                        errorElement.classList.add('d-none');
-                        updateSubmitButton();
-                        return;
-                    }
-                    
-                    timeout = setTimeout(async () => {
-                        await checkFieldAvailability(field, value, errorElement);
-                        updateSubmitButton();
-                    }, 500);
-                });
-            }
-    
-            // Password validation
-            const passwordInput = getElement('password');
-            const confirmPassInput = getElement('password_confirmation');
-            const passwordError = getElement('password-error');
-            
-            if (passwordInput && confirmPassInput && passwordError) {
-                [passwordInput, confirmPassInput].forEach(input => {
-                    input.addEventListener('input', function() {
-                        const password = passwordInput.value;
-                        const confirmPass = confirmPassInput.value;
-                        
-                        if (password && confirmPass) {
-                            if (password !== confirmPass) {
-                                passwordError.classList.remove('d-none');
-                            } else {
-                                passwordError.classList.add('d-none');
-                            }
-                            updateSubmitButton();
+                    if (password && confirmPass) {
+                        if (password !== confirmPass) {
+                            passwordError.classList.remove('d-none');
                         } else {
                             passwordError.classList.add('d-none');
-                            updateSubmitButton();
                         }
-                    });
-                });
-            }
-    
-            // Truck assignment validation
-            const truckSelect = getElement('truck_id');
-            if (truckSelect) {
-                truckSelect.addEventListener('change', async function() {
-                    const errorElement = getElement('truck-error');
-                    const roleSelect = getElement('role');
-                    
-                    if (!errorElement || !roleSelect) return;
-                    
-                    if (roleSelect.value !== 'driver') {
-                        errorElement.classList.add('d-none');
-                        return;
-                    }
-                    
-                    await checkFieldAvailability('truck', this.value, errorElement);
-                    updateSubmitButton();
-                });
-            }
-    
-            // Set up all field validations
-            setupFieldValidation('username');
-            setupFieldValidation('email', 3, true);
-            setupFieldValidation('mobile_number', 10);
-    
-            // Form submission
-            const form = getElement('create-account-form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    const submitButton = getElement('submit-button');
-                    if (submitButton && submitButton.disabled) {
-                        e.preventDefault();
-                        alert('Please fix the validation errors before submitting.');
+                        updateSubmitButton();
+                    } else {
+                        passwordError.classList.add('d-none');
+                        updateSubmitButton();
                     }
                 });
-            }
-        } else {
-            console.error('Create Account Modal not found');
+            });
         }
-    });
-    </script>
+
+        // Set up all field validations
+        setupFieldValidation('username');
+        setupFieldValidation('email', 3, true);
+        setupFieldValidation('mobile_number', 11); // Minimum length for PH number (09 + 9 digits)
+
+        // Form submission
+        const form = getElement('create-account-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const submitButton = getElement('submit-button');
+                if (submitButton && submitButton.disabled) {
+                    e.preventDefault();
+                    alert('Please fix the validation errors before submitting.');
+                }
+            });
+        }
+    } else {
+        console.error('Create Account Modal not found');
+    }
+});
+</script>
