@@ -139,6 +139,15 @@
             height: 100%;
         }
 
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -154,6 +163,11 @@
             .card-body {
                 padding: 20px;
                 min-height: 400px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
 
@@ -177,9 +191,12 @@
     <!-- Main Content Area -->
     <div class="content">
         <!-- Header Section -->
-        <div class="truck-display">
-            <i class="fas fa-truck"></i>
-            <span id="assignedTruck">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
+        <div class="header-section">
+            <div class="truck-display">
+                <i class="fas fa-user"></i>
+                <span id="assignedTruck">{{ $driverName ?? 'Not assigned' }}</span>
+                <input type="hidden" id="plateNumber" value="{{ $plateNumber ?? '' }}">
+            </div>
         </div>
 
         <h2 class="section-title">FUEL CONSUMPTION ANALYTICS</h2>
@@ -225,6 +242,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const plateNumber = $('#plateNumber').val().trim();
         const truckId = $('#assignedTruck').text().trim();
         let fuelChart = null;
         let currentFilter = 'weekly';
@@ -241,15 +259,14 @@
             noDataMessage.style.display = 'none';
             loadingSpinner.style.display = 'none';
 
-            // If truck is assigned, load initial data
-            if (truckId !== 'Not assigned') {
-                loadFuelData(truckId, currentFilter);
+            if (plateNumber !== '') {
+                loadFuelData(plateNumber, currentFilter);
             } else {
                 showNoDataMessage();
                 Swal.fire({
                     icon: 'warning',
-                    title: 'No Truck Assigned',
-                    text: 'You need to be assigned a truck to view fuel data',
+                    title: 'Walang Nakatalang Trak',
+                    text: 'Kailangan mong magkaroon ng nakatalagang trak para makita ang fuel data',
                     confirmButtonColor: '#1f1a5c'
                 });
             }
@@ -261,23 +278,23 @@
         function setupEventListeners() {
             // Time filter button clicks
             $('.time-btn').click(function() {
-                if (truckId === 'Not assigned') return;
+                if (plateNumber === '') return;
                 
                 $('.time-btn').removeClass('active');
                 $(this).addClass('active');
                 currentFilter = $(this).data('filter');
-                loadFuelData(truckId, currentFilter);
+                loadFuelData(plateNumber, currentFilter);  // Gamitin ang plateNumber sa halip na truckId
             });
         }
 
-        function loadFuelData(truckId, filter) {
+        function loadFuelData(plateNumber, filter) {
             showLoadingState();
 
             $.ajax({
                 url: '/fuel-analytics',
                 method: 'GET',
                 data: {
-                    plate_number: truckId.replace(/\s+/g, ''),
+                    plate_number: plateNumber,  // Tanggalin ang replace method
                     time_filter: filter
                 },
                 success: function(response) {

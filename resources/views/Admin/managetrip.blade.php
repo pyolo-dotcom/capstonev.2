@@ -771,16 +771,51 @@
         });
 
         function exportToExcel() {
+            // Get the table
             const table = document.getElementById('cargoTable');
-            const clone = table.cloneNode(true);
             
-            // Remove Actions column
-            Array.from(clone.querySelectorAll('tr')).forEach(row => {
-                if (row.cells.length > 0) row.deleteCell(row.cells.length - 1);
-            });
+            // Create workbook and worksheet
+            const wb = XLSX.utils.book_new();
             
-            const wb = XLSX.utils.table_to_book(clone, {sheet: "Cargo Data"});
-            XLSX.writeFile(wb, `Cargo_Data_${new Date().toISOString().slice(0, 10)}.xlsx`);
+            // Convert table data to worksheet format
+            const wsData = [];
+            
+            // Add headers
+            const headers = [];
+            for (let cell of table.rows[0].cells) {
+                if (cell.textContent !== 'Actions') {
+                    headers.push(cell.textContent);
+                }
+            }
+            wsData.push(headers);
+            
+            // Add data rows
+            for (let i = 1; i < table.rows.length; i++) {
+                const row = table.rows[i];
+                const rowData = [];
+                for (let j = 0; j < row.cells.length - 1; j++) { // Skip the Actions column
+                    let cellData = row.cells[j].textContent.trim();
+                    
+                    // Format date if this is the date column (index 1)
+                    if (j === 1) {
+                        const dateValue = new Date(cellData);
+                        if (!isNaN(dateValue)) {
+                            cellData = dateValue.toISOString().split('T')[0];
+                        }
+                    }
+                    
+                    rowData.push(cellData);
+                }
+                wsData.push(rowData);
+            }
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Cargo Records');
+            
+            // Save the file
+            XLSX.writeFile(wb, 'cargo_records.xlsx');
         }
 
         // Modal functions

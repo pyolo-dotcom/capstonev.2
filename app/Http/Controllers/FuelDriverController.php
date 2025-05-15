@@ -5,19 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FuelConsumption;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class FuelDriverController extends Controller
 {
     // Ipakita ang fuel management page para sa driver
     public function showFuelDriver()
     {
-        return view('driver.fuel');
+        $user = Auth::user();
+        return view('driver.fuel', [
+            'driverName' => $user->fullname,
+            'plateNumber' => $user->truck_id
+        ]);
     }
 
     // Mag-add ng bagong fuel consumption
     public function store(Request $request)
     {
-        \Log::info('Received data:', $request->all()); // Log request data
+        Log::info('Received data:', $request->all()); // Log request data
 
         $request->validate([
             'date' => 'required|date',

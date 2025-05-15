@@ -12,11 +12,12 @@ class DeliveryDriverController extends Controller
 {
     public function index()
     {
-        // Get the current authenticated user's truck_id (plate number)
-        $plateNumber = Auth::user()->truck_id;
+        // Get the current authenticated user
+        $user = Auth::user();
         
         return view('driver.deliveryrecords', [
-            'plateNumber' => $plateNumber
+            'plateNumber' => $user->truck_id,
+            'driverName' => $user->fullname
         ]);
     }
 

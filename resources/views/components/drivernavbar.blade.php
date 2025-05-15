@@ -235,7 +235,7 @@
             </li>
             <li>
                 <a href="{{ route('driver.fuel') }}" class="menu-item" id="fuelManagementBtn">
-                    <i class="bi bi-geo-alt"></i> <span>Fuel Management</span>
+                    <i class="bi bi-fuel-pump"></i> <span>Fuel Management</span>
                 </a>
             </li>
             <li>

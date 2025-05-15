@@ -6,11 +6,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Truck;
 
 class ShipmentDriverController extends Controller
 {
     public function showShipmentDriver(){
-        return view('driver.shipment');
+        // Get the current authenticated user
+        $user = Auth::user();
+        
+        // Get all plate numbers from Truck model
+        $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all();
+        
+        return view('driver.shipment', [
+            'plateNumber' => $user->truck_id,
+            'driverName' => $user->fullname,
+            'plateNumbers' => $plateNumbers
+        ]);
     }
     
     public function generateQRCode(Request $request)

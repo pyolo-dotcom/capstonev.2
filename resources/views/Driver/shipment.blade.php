@@ -169,10 +169,12 @@
 
     <!-- Main Content Area -->
     <div class="content">
-        <!-- Truck Display -->
-        <div class="truck-display">
-            <i class="fas fa-truck"></i>
-            <span id="assignedPlateNumber">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="truck-display">
+                <i class="fas fa-user"></i>
+                <span id="assignedPlateNumber">{{ $driverName ?? 'Not assigned' }}</span>
+            </div>
         </div>
 
         <h2 class="section-title">GENERATE CARGO QR CODE</h2>
@@ -182,9 +184,14 @@
             <form id="cargoForm">
                 <div class="mb-3">
                     <label for="plate_no" class="form-label">Plate Number</label>
-                    <input type="text" class="form-control" name="plate_no" id="plate_no" 
-                           value="{{ Auth::user()->truck_id ?? '' }}" 
-                           {{ Auth::user()->truck_id ? 'readonly' : '' }} required>
+                    <select class="form-select" name="plate_no" id="plate_no" required>
+                        <option value="">Select Plate Number</option>
+                        @foreach($plateNumbers as $plate)
+                            <option value="{{ $plate }}" {{ Auth::user()->truck_id == $plate ? 'selected' : '' }}>
+                                {{ $plate }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 
                 <div class="mb-3">

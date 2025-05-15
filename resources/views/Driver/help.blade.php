@@ -112,6 +112,15 @@
             border-left: 4px solid #1f1a5c;
         }
 
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -126,6 +135,11 @@
             
             .help-container {
                 padding: 15px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
 
@@ -145,10 +159,13 @@
 
     <!-- Main Content Area -->
     <div class="content">
-        <!-- Truck Display -->
-        <div class="truck-display">
-            <i class="fas fa-truck"></i>
-            <span id="assignedPlateNumber">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="truck-display">
+                <i class="fas fa-user"></i>
+                <span id="assignedTruck">{{ Auth::user()->fullname ?? 'Not assigned' }}</span>
+                <input type="hidden" id="plateNumber" value="{{ Auth::user()->truck_id ?? '' }}">
+            </div>
         </div>
 
         <h2 class="section-title">HELP & SUPPORT</h2>

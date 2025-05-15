@@ -178,8 +178,8 @@
         <!-- Header Section -->
         <div class="header-section">
             <div class="truck-display">
-                <i class="fas fa-truck"></i>
-                <span id="assignedPlateNumber">{{ $plateNumber ?? 'Not assigned' }}</span>
+                <i class="fas fa-user"></i>
+                <span id="assignedPlateNumber" data-plate="{{ $plateNumber }}">{{ $driverName }}</span>
             </div>
             <button class="add-trip-btn" id="openModal">
                 <i class="fas fa-plus"></i> Add Trip
@@ -232,8 +232,8 @@
 
         // Combined JavaScript from driver.js
         document.addEventListener("DOMContentLoaded", function () {
-            // Get the assigned plate number from the page
-            const plateNumber = $('#assignedPlateNumber').text().trim();
+            // Get the assigned plate number from the data attribute
+            const plateNumber = $('#assignedPlateNumber').data('plate');
             
             // Ensure modal is hidden initially
             var modal = document.getElementById("tripModal");
@@ -265,7 +265,7 @@
             if (btn) {
                 btn.addEventListener("click", function () {
                     // Check if plate number is assigned
-                    if (plateNumber === 'Not assigned') {
+                    if (plateNumber === '') {
                         Swal.fire({
                             icon: 'error',
                             title: 'No Plate Number Assigned',
@@ -280,18 +280,18 @@
             }
 
             // Load initial trip counts if plate number is assigned
-            if (plateNumber && plateNumber !== 'Not assigned') {
+            if (plateNumber && plateNumber !== '') {
                 fetchTripCounts(plateNumber);
             }
 
             // Disable "Add Trip" button if no plate number is assigned
-            if (plateNumber === 'Not assigned') {
+            if (plateNumber === '') {
                 $('#openModal').prop('disabled', true)
                     .css('opacity', '0.7')
                     .attr('title', 'You need an assigned plate number to add trips');
             }
         });
-
+    
         // Function to fetch trip counts
         function fetchTripCounts(plateNo) {
             const formattedPlateNo = plateNo.replace(/\s+/g, '');
@@ -315,17 +315,16 @@
                 }
             });
         }
-
-
+    
         // AJAX form submission with jQuery and SweetAlert
         $(document).ready(function () {
             $('#tripForm').submit(function (e) {
                 e.preventDefault(); // Prevent page reload
                 
-                // Get the assigned plate number
-                const plateNumber = $('#assignedPlateNumber').text().trim();
+                // Get the assigned plate number from the data attribute
+                const plateNumber = $('#assignedPlateNumber').data('plate');
                 
-                if (plateNumber === 'Not assigned') {
+                if (plateNumber === '') {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -333,7 +332,7 @@
                     });
                     return;
                 }
-
+    
                 // Prepare form data with the assigned plate number
                 const formData = {
                     plate_no: plateNumber.replace(/\s+/g, ''),
@@ -341,7 +340,7 @@
                     num_trips: $('#num_trips').val(),
                     _token: $('meta[name="csrf-token"]').attr('content')
                 };
-
+    
                 $.ajax({
                     url: tripStoreUrl,
                     method: "POST",
