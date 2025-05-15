@@ -13,11 +13,9 @@
         <label for="plateNo">Plate No.:</label>
         <select id="plateNo" name="plateNo" required>
             <option disabled selected>-- Plate Number --</option>
-            <option value="UVP353">UVP353</option>
-            <option value="TQE262">TQE262</option>
-            <option value="NBB7212">NBB7212</option>
-            <option value="APA3309">APA3309</option>
-            <option value="WIE914">WIE914</option>
+            @foreach($plateNumbers as $plate)
+                <option value="{{ $plate }}">{{ $plate }}</option>
+            @endforeach
         </select>
     </div>
     <div class="form-group">

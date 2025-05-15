@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Active Accounts</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
@@ -16,7 +14,7 @@
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
-            --info-color: #17a2b8;
+            --info-color: #1abc9c;
             --light-color: #ecf0f1;
             --dark-color: #34495e;
         }
@@ -30,21 +28,19 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
+            background: #343a40;
+            color: white;
             padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            height: 100%;
         }
-        
+
         .sidebar-brand {
             padding: 0 20px 20px;
             text-align: center;
@@ -57,39 +53,18 @@
             font-size: 1.5rem;
             font-weight: 600;
         }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar ul li a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar ul li a:hover, 
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px;
-        }
-        
-        .sidebar ul li a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
+
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
         
         .main-content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 25px;
             width: calc(100% - 250px);
         }
         
@@ -106,6 +81,28 @@
             color: var(--secondary-color);
             font-weight: 600;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-success {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .card {
@@ -116,13 +113,27 @@
             overflow: hidden;
         }
         
+        .card-body {
+            padding: 0;
+        }
+        
+        .alert {
+            border-radius: 8px;
+        }
+        
         .table-responsive {
             overflow-x: auto;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            width: 100%;
         }
         
         .table thead th {
             background-color: var(--secondary-color);
             color: white;
+            border-bottom: none;
             font-weight: 500;
             padding: 15px 20px;
             text-align: center;
@@ -133,6 +144,19 @@
             padding: 12px 20px;
             vertical-align: middle;
             text-align: center;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(0,0,0,0.02);
         }
         
         .btn-action {
@@ -153,21 +177,19 @@
         }
         
         .btn-view:hover {
-            background-color: #138496;
+            background-color: #16a085;
             color: white;
-            transform: translateY(-1px);
         }
         
         .btn-edit {
-            background-color: var(--primary-color);
+            background-color: var(--warning-color);
             color: white;
             border: none;
         }
         
         .btn-edit:hover {
-            background-color: #2980b9;
+            background-color: #d35400;
             color: white;
-            transform: translateY(-1px);
         }
         
         .btn-archive {
@@ -179,86 +201,99 @@
         .btn-archive:hover {
             background-color: #c0392b;
             color: white;
-            transform: translateY(-1px);
+        }
+        
+        .empty-message {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .empty-message i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #dee2e6;
         }
         
         .action-btns {
             display: flex;
             gap: 6px;
             justify-content: center;
+            flex-wrap: nowrap;
         }
-        
-        .modal-content {
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
+
+        .badge {
+            padding: 6px 10px;
             font-weight: 500;
-            margin-bottom: 5px;
-            display: block;
+            border-radius: 4px;
         }
         
-        .input-box {
-            border-radius: 5px;
-            border: 1px solid #ced4da;
-            padding: 10px 15px;
-            width: 100%;
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
         }
         
-        .input-box:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        .search-input {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
         }
         
-        .submit-button {
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: 500;
-            margin-top: 15px;
+        .search-input i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
         }
         
-        .alert {
-            border-radius: 8px;
+        .search-input input {
+            padding-left: 35px;
         }
         
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                position: relative;
             }
             
-            .sidebar-brand h2 {
-                display: none;
-            }
-            
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
+            .content {
+                margin-left: 0;
             }
             
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
+                margin-left: 0;
+                width: 100%;
                 padding: 15px;
             }
             
             .action-btns {
-                flex-direction: column;
+                flex-wrap: wrap;
                 gap: 4px;
             }
             
             .btn-action {
-                width: 100%;
-                justify-content: center;
+                padding: 8px 12px;
+                font-size: 14px;
+                min-height: 36px;
+            }
+            
+            .table thead th, 
+            .table tbody td {
+                padding: 12px 15px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                max-width: 100%;
+            }
+        
+            .table-responsive {
+                margin: 0 -15px;
             }
         }
     </style>
@@ -275,30 +310,36 @@
 
     <div class="main-content">
         <div class="header">
-            <h2><i class="fas fa-users me-2"></i>Active Accounts</h2>
+            <h2><i class="fas fa-users"></i> Active Accounts</h2>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-                <i class="fas fa-plus me-2"></i>Create New Account
+                <i class="fas fa-plus"></i> Create New Account
             </button>
         </div>
         
         <div class="card">
             <div class="card-body">
                 @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
+                <div class="alert alert-success m-3">
                     <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 @endif
                 
                 @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
+                <div class="alert alert-danger m-3">
                     <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 @endif
                 
+                <!-- Search Bar -->
+                <div class="search-container m-3">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by username...">
+                    </div>
+                </div>
+                
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="accountsTable">
                         <thead>
                             <tr>
                                 <th>Username</th>
@@ -306,13 +347,13 @@
                                 <th>Email</th>
                                 <th>Mobile Number</th>
                                 <th>Role</th>
-                                <th>Actions</th>
+                                <th style="min-width: 220px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="active-accounts-body">
                             @foreach($users as $user)
-                            <tr>
-                                <td>{{ $user->username }}</td>
+                            <tr class="account-row">
+                                <td class="username">{{ $user->username }}</td>
                                 <td>{{ $user->fullname }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->mobile_number }}</td>
@@ -369,12 +410,32 @@
     </div>
 
     <!-- Include Modals -->
-    @include('Admin.modals.view_account_modal')
-    @include('Admin.modals.edit_account_modal')
-    @include('Admin.modals.create_account_modal')
+    @include('admin.modals.view_account_modal')
+    @include('admin.modals.edit_account_modal')
+    @include('admin.modals.create_account_modal')
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('.account-row');
+                    
+                    rows.forEach(row => {
+                        const username = row.querySelector('.username').textContent.toLowerCase();
+                        if (username.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
             // View button click handler
             document.querySelectorAll('.btn-view').forEach(button => {
                 button.addEventListener('click', () => {

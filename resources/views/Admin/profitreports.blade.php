@@ -29,62 +29,42 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
             min-height: 100vh;
         }
         
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
-            padding: 20px 0;
-            position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-        
+        /* Tanggalin ang mga lumang sidebar styles */
         .sidebar-brand {
-            padding: 0 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
+            display: none;
         }
         
-        .sidebar-brand h2 {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar ul li a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar ul li a:hover, 
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px;
-        }
-        
-        .sidebar ul li a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
+        /* I-update ang mobile view */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
+            .content {
+                margin-left: 0;
+            }
         }
         
         .main-content {
@@ -350,27 +330,59 @@
         
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                position: relative;
             }
             
-            .sidebar-brand h2 {
-                display: none;
-            }
-            
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
+            .content {
+                margin-left: 0;
             }
             
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
+                margin-left: 0;
+                width: 100%;
                 padding: 15px;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .date-filter {
+                width: 100%;
+            }
+            
+            .date-btn {
+                flex-grow: 1;
+            }
+
+            .action-btns {
+                flex-wrap: wrap;
+                gap: 4px;
+                justify-content: center;
+            }
+            
+            .btn-action {
+                padding: 8px 12px;
+                font-size: 14px;
+                min-height: 36px;
+            }
+            
+            .table thead th, 
+            .table tbody td {
+                padding: 12px 15px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                max-width: 100%;
+            }
+
+            .table-responsive {
+                margin: 0 -15px;
             }
             
             .filter-section {
@@ -403,8 +415,18 @@
             .header h2 {
                 font-size: 1.5rem;
             }
+            
+            .actions {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
         }
-        
+
         @media (max-width: 480px) {
             .actions {
                 flex-direction: column;
@@ -428,7 +450,7 @@
         </ul>
     </div>
 
-    <div class="main-content">
+    <div class="content">
         <div class="header">
             <h2><i class="fas fa-chart-line me-2"></i>Profit Reports Management</h2>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profitModal">
@@ -457,11 +479,9 @@
                 <label for="plateNumberSelect" class="filter-label me-2">Truck:</label>
                 <select id="plateNumberSelect" class="form-select">
                     <option value="all" selected>All Trucks</option>
-                    <option value="UVP353">UVP353</option>
-                    <option value="TQE262">TQE262</option>
-                    <option value="NBB7212">NBB7212</option>
-                    <option value="APA3309">APA3309</option>
-                    <option value="WIE914">WIE914</option>
+                    @foreach($plateNumbers as $plateNumber)
+                        <option value="{{ $plateNumber }}">{{ $plateNumber }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -534,111 +554,10 @@
         </div>
     </div>
 
-    <!-- Add Profit Modal -->
-    <div class="modal fade" id="profitModal" tabindex="-1" aria-labelledby="profitModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="profitModalLabel">Add Profit Record</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="profitForm" action="{{ route('admin.profit.store') }}" method="POST">
-                        @csrf
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="date" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="date" name="date" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="plate_number" class="form-label">Plate Number</label>
-                                <select class="form-select" id="plate_number" name="plate_number" required>
-                                    <option value="">Select Truck</option>
-                                    <option value="UVP353">UVP353</option>
-                                    <option value="TQE262">TQE262</option>
-                                    <option value="NBB7212">NBB7212</option>
-                                    <option value="APA3309">APA3309</option>
-                                    <option value="WIE914">WIE914</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="total_income" class="form-label">Total Income (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="total_income" name="total_income" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="total_expenses" class="form-label">Total Expenses (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="total_expenses" name="total_expenses" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="total_profit" class="form-label">Total Profit (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="total_profit" name="total_profit" readonly>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Record</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Profit Modals -->
+    <!-- Include Modals -->
+    @include('admin.modals.profit_modal')
     @foreach($profits as $profit)
-    <div class="modal fade" id="editProfitModal-{{ $profit->id }}" tabindex="-1" aria-labelledby="editProfitModalLabel-{{ $profit->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="editProfitModalLabel-{{ $profit->id }}">Edit Profit Record</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfitForm-{{ $profit->id }}" action="{{ route('admin.profit.update', $profit->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="id" value="{{ $profit->id }}">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="edit_date-{{ $profit->id }}" class="form-label">Date</label>
-                                <input type="date" class="form-control" id="edit_date-{{ $profit->id }}" name="date" value="{{ $profit->date }}" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit_plate_number-{{ $profit->id }}" class="form-label">Plate Number</label>
-                                <select class="form-select" id="edit_plate_number-{{ $profit->id }}" name="plate_number" required>
-                                    <option value="UVP353" {{ $profit->plate_number == 'UVP353' ? 'selected' : '' }}>UVP353</option>
-                                    <option value="TQE262" {{ $profit->plate_number == 'TQE262' ? 'selected' : '' }}>TQE262</option>
-                                    <option value="NBB7212" {{ $profit->plate_number == 'NBB7212' ? 'selected' : '' }}>NBB7212</option>
-                                    <option value="APA3309" {{ $profit->plate_number == 'APA3309' ? 'selected' : '' }}>APA3309</option>
-                                    <option value="WIE914" {{ $profit->plate_number == 'WIE914' ? 'selected' : '' }}>WIE914</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="edit_total_income-{{ $profit->id }}" class="form-label">Total Income (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="edit_total_income-{{ $profit->id }}" name="total_income" value="{{ $profit->total_income }}" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="edit_total_expenses-{{ $profit->id }}" class="form-label">Total Expenses (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="edit_total_expenses-{{ $profit->id }}" name="total_expenses" value="{{ $profit->total_expenses }}" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="edit_total_profit-{{ $profit->id }}" class="form-label">Total Profit (P)</label>
-                                <input type="number" step="0.01" class="form-control" id="edit_total_profit-{{ $profit->id }}" name="total_profit" value="{{ $profit->total_profit }}" readonly>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Update Record</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+        @include('admin.modals.edit_profit_modal', ['profit' => $profit])
     @endforeach
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

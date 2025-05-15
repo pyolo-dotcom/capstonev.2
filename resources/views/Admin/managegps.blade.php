@@ -3,57 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truck Tracking System</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Truck Tracking System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
         }
+
         .sidebar {
             width: 250px;
-            min-height: 100vh;
-            background: #2c3e50;
+            background: #343a40;
+            color: white;
             padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
+            height: 100%;
         }
-        .sidebar ul {
-            list-style: none;
-        }
-        .sidebar ul li a {
-            color: #ecf0f1;
-            text-decoration: none;
-            display: block;
-            padding: 15px 20px;
-            transition: all 0.3s;
-        }
-        .sidebar ul li a:hover {
-            background: #34495e;
-            padding-left: 25px;
-        }
+
         .content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
-        .header {
+
+        .content-header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
+
+        .content-header h2 {
+            color: #1f1a5c;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
         .map-container {
             height: 600px;
             width: 100%;
@@ -62,6 +72,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
         }
+
         .truck-info {
             background: white;
             padding: 15px;
@@ -69,6 +80,7 @@
             margin-top: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
         .truck-list {
             margin-top: 20px;
             background: white;
@@ -76,6 +88,7 @@
             padding: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
         .truck-item {
             padding: 10px;
             border-bottom: 1px solid #eee;
@@ -83,9 +96,11 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .truck-item:last-child {
             border-bottom: none;
         }
+
         .connection-status {
             position: fixed;
             bottom: 20px;
@@ -96,14 +111,17 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             font-size: 14px;
         }
+
         .connection-status.realtime {
             background: #d4edda;
             color: #155724;
         }
+
         .connection-status.polling {
             background: #fff3cd;
             color: #856404;
         }
+
         .connection-status.error {
             background: #f8d7da;
             color: #721c24;
@@ -149,15 +167,17 @@
             padding: 5px 8px;
             font-size: 12px;
         }
-        
+
         @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
             .content {
                 margin-left: 0;
-                padding: 15px;
             }
-            .sidebar {
-                display: none;
-            }
+            
             .map-container {
                 height: 400px;
             }
@@ -172,13 +192,13 @@
 <body>
     <div class="sidebar">
         <ul>
-            <x-navbar/>
+            <x-navbar />
         </ul>
     </div>
 
     <div class="content">
-        <div class="header">
-            <h2>Live Truck Tracking</h2>
+        <div class="content-header">
+            <h2><i class="fas fa-truck me-2"></i>Live Truck Tracking</h2>
             <div id="last-updated">Last updated: --:--:--</div>
         </div>
 

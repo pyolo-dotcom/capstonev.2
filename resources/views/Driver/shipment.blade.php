@@ -1,242 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Cargo QR Code</title>
-    <!-- Add SweetAlert CSS -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
-
+        
         body {
             display: flex;
             min-height: 100vh;
-            overflow-x: hidden;
+            background-color: #f8f9fa;
         }
-
+        
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: #333;
-            padding: 20px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-            overflow-y: auto;
+            height: 100%;
         }
-
-        .sidebar h2 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
-        }
-
+        
         .content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 25px;
             flex-grow: 1;
-            height: 100vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            background-color: white;
+            min-height: 100vh;
         }
-
-        #cargoForm {
-            max-width: 600px;
-            background: #fff;
-            padding: 20px;
+        
+        .truck-display {
+            background: #f1f3f5;
+            padding: 12px 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* Form Inputs */
-        #cargoForm input, #cargoForm select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            margin-bottom: 25px;
+            display: inline-block;
             font-size: 16px;
+            font-weight: 600;
+            border: 1px solid #e1e5e9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .truck-display i {
+            margin-right: 12px;
+            color: #495057;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #343a40;
         }
 
-        /* Submit Button */
-        #cargoForm button {
-            background: #2c3e50;
-            color: #fff;
-            padding: 10px;
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #1f1a5c;
+            box-shadow: 0 0 0 0.25rem rgba(31, 26, 92, 0.25);
+        }
+
+        .btn-primary {
+            background-color: #1f1a5c;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        #cargoForm button:hover {
-            background: #34495e;
+        .btn-primary:hover {
+            background-color: #161245;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* Clear Button */
-        #cargoForm button.clear-btn {
-            background: #e74c3c;
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        #cargoForm button.clear-btn:hover {
-            background: #c0392b;
+        .btn-danger:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* QR Code Container */
-        #qrCodeContainer {
+        .qr-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             text-align: center;
-            margin-top: 20px;
-            padding-bottom: 40px;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            margin-top: 25px;
+            border: 1px solid #e9ecef;
         }
 
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
             .sidebar {
                 width: 100%;
-                height: auto;
                 position: relative;
-                overflow-y: visible;
+                height: auto;
             }
-
+            
             .content {
                 margin-left: 0;
                 padding: 15px;
-                height: auto;
-                min-height: calc(100vh - 200px);
             }
-
-            #cargoForm {
-                width: 100%;
-                margin: 0;
-                padding: 10px;
-            }
-
-            #cargoForm h2 {
-                margin-left: 0;
-                text-align: center;
-            }
-
-            #cargoForm input, #cargoForm select {
-                font-size: 14px;
-                padding: 8px;
-            }
-
-            #cargoForm button {
-                font-size: 14px;
-                padding: 8px;
-            }
-
-            #qrCodeContainer {
-                margin-top: 15px;
+            
+            .form-container {
+                padding: 15px;
             }
         }
 
-        @media (max-width: 480px) {
-            #cargoForm input, #cargoForm select {
-                font-size: 12px;
-                padding: 6px;
-            }
-
-            #cargoForm button {
-                font-size: 12px;
-                padding: 6px;
+        @media (max-width: 576px) {
+            .btn-primary, .btn-danger {
+                width: 100%;
+                margin-bottom: 10px;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <x-drivernavbar />
-
-    <div class="content">
-        <form id="cargoForm">
-            <h2>Generate QR Code:</h2>
-            <select name="plate_no" id="plate_no" required>
-                <option value="">Select Plate No</option>
-                <option value="UVP353">UVP353</option>
-                <option value="TQE262">TQE262</option>
-                <option value="NBB7212">NBB7212</option>
-                <option value="APA3309">APA3309</option>
-                <option value="WIE914">WIE914</option>
-            </select>
-            <input type="text" name="eir_no" id="eir_no" placeholder="EIR No" required>
-            <input type="text" name="container_van_no" id="container_van_no" placeholder="Container Van No" required>
-            <input type="text" name="size" id="size" placeholder="Size" required>
-            <input type="text" name="shipper_consignee" id="shipper_consignee" placeholder="Shipper/Consignee" required>
-            <input type="text" name="voyage_vessel" id="voyage_vessel" placeholder="Voyage Vessel" required>
-            <input type="text" name="voyage_no" id="voyage_no" placeholder="Voyage Number" required>
-            <input type="text" name="pickup_location" id="pickup_location" placeholder="Pickup Location" required>
-            <input type="text" name="delivery_location" id="delivery_location" placeholder="Delivery Location" required>
-            <button type="submit">Generate QR Code</button>
-            <button type="button" class="clear-btn" onclick="clearSavedFormData()">Clear Form</button>
-        </form>
-
-        <div id="qrCodeContainer"></div>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <x-drivernavbar />
     </div>
 
-    <!-- Add SweetAlert JS -->
+    <!-- Main Content Area -->
+    <div class="content">
+        <!-- Truck Display -->
+        <div class="truck-display">
+            <i class="fas fa-truck"></i>
+            <span id="assignedPlateNumber">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
+        </div>
+
+        <h2 class="section-title">GENERATE CARGO QR CODE</h2>
+        
+        <!-- Form Container -->
+        <div class="form-container">
+            <form id="cargoForm">
+                <div class="mb-3">
+                    <label for="plate_no" class="form-label">Plate Number</label>
+                    <input type="text" class="form-control" name="plate_no" id="plate_no" 
+                           value="{{ Auth::user()->truck_id ?? '' }}" 
+                           {{ Auth::user()->truck_id ? 'readonly' : '' }} required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="eir_no" class="form-label">EIR No</label>
+                    <input type="text" class="form-control" name="eir_no" id="eir_no" placeholder="Enter EIR No" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="container_van_no" class="form-label">Container Van No</label>
+                    <input type="text" class="form-control" name="container_van_no" id="container_van_no" placeholder="Enter Container Van No" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="size" class="form-label">Size</label>
+                    <input type="text" class="form-control" name="size" id="size" placeholder="Enter Size" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="shipper_consignee" class="form-label">Shipper/Consignee</label>
+                    <input type="text" class="form-control" name="shipper_consignee" id="shipper_consignee" placeholder="Enter Shipper/Consignee" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="voyage_vessel" class="form-label">Voyage Vessel</label>
+                    <input type="text" class="form-control" name="voyage_vessel" id="voyage_vessel" placeholder="Enter Voyage Vessel" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="voyage_no" class="form-label">Voyage Number</label>
+                    <input type="text" class="form-control" name="voyage_no" id="voyage_no" placeholder="Enter Voyage Number" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="pickup_location" class="form-label">Pickup Location</label>
+                    <input type="text" class="form-control" name="pickup_location" id="pickup_location" placeholder="Enter Pickup Location" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="delivery_location" class="form-label">Delivery Location</label>
+                    <input type="text" class="form-control" name="delivery_location" id="delivery_location" placeholder="Enter Delivery Location" required>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-danger me-md-2" onclick="clearSavedFormData()">
+                        <i class="fas fa-trash-alt me-1"></i> Clear Form
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="generateBtn" {{ !Auth::user()->truck_id ? 'disabled' : '' }}>
+                        <i class="fas fa-qrcode me-1"></i> Generate QR Code
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- QR Code Container -->
+        <div id="qrCodeContainer" class="qr-container" style="display: none;">
+            <h5 class="mb-3">Generated QR Code</h5>
+            <div id="qrCodeImage"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
     <script>
         // Save form data to localStorage whenever any input changes
@@ -247,6 +263,19 @@
         // Form submission handler
         document.getElementById("cargoForm").addEventListener("submit", function(event) {
             event.preventDefault();
+            
+            // Check if plate number is assigned
+            const plateNo = document.getElementById('plate_no').value;
+            if (!plateNo || plateNo === 'Not assigned') {
+                Swal.fire({
+                    title: 'No Plate Number Assigned',
+                    text: 'You cannot generate QR codes without an assigned plate number',
+                    icon: 'error',
+                    confirmButtonColor: '#1f1a5c'
+                });
+                return;
+            }
+            
             saveFormData();
             generateQRCode();
         });
@@ -271,11 +300,25 @@
         function generateQRCode() {
             const formData = JSON.parse(localStorage.getItem('cargoFormData') || '{}');
             
+            // Show loading state
+            Swal.fire({
+                title: 'Generating QR Code',
+                html: 'Please wait...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
             axios.get("{{ url('/cargo/qrcode') }}", {
                     params: formData
                 })
                 .then(response => {
-                    document.getElementById('qrCodeContainer').innerHTML = response.data;
+                    Swal.close();
+                    document.getElementById('qrCodeImage').innerHTML = response.data;
+                    document.getElementById('qrCodeContainer').style.display = 'block';
+                    
+                    // Scroll to QR code
                     document.getElementById('qrCodeContainer').scrollIntoView({ 
                         behavior: 'smooth' 
                     });
@@ -297,29 +340,39 @@
             if (savedData) {
                 const formData = JSON.parse(savedData);
                 
-                // Restore all fields
-                for (const [key, value] of Object.entries(formData)) {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        if (element.tagName === 'SELECT') {
-                            // For dropdowns
-                            for (let option of element.options) {
-                                if (option.value === value) {
-                                    option.selected = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            // For input fields
-                            element.value = value;
-                        }
-                    }
+                // Restore all fields except plate_no if user has an assigned truck
+                const plateNoInput = document.getElementById('plate_no');
+                const assignedPlateNo = "{{ Auth::user()->truck_id }}";
+                
+                if (assignedPlateNo) {
+                    plateNoInput.value = assignedPlateNo;
+                } else if (formData.plate_no) {
+                    plateNoInput.value = formData.plate_no;
                 }
+                
+                // Restore other fields
+                document.getElementById('eir_no').value = formData.eir_no || '';
+                document.getElementById('container_van_no').value = formData.container_van_no || '';
+                document.getElementById('size').value = formData.size || '';
+                document.getElementById('shipper_consignee').value = formData.shipper_consignee || '';
+                document.getElementById('voyage_vessel').value = formData.voyage_vessel || '';
+                document.getElementById('voyage_no').value = formData.voyage_no || '';
+                document.getElementById('pickup_location').value = formData.pickup_location || '';
+                document.getElementById('delivery_location').value = formData.delivery_location || '';
                 
                 // Regenerate QR code if there was one
                 if (formData.plate_no) {
                     generateQRCode();
                 }
+            }
+            
+            // Disable generate button if no plate number is assigned
+            const generateBtn = document.getElementById('generateBtn');
+            const plateNo = "{{ Auth::user()->truck_id }}";
+            
+            if (!plateNo) {
+                generateBtn.disabled = true;
+                generateBtn.title = 'You need an assigned plate number to generate QR codes';
             }
         });
 
@@ -337,8 +390,14 @@
                 if (result.isConfirmed) {
                     localStorage.removeItem('cargoFormData');
                     document.getElementById('cargoForm').reset();
-                    document.getElementById('qrCodeContainer').innerHTML = '';
-                    document.getElementById('plate_no').selectedIndex = 0;
+                    document.getElementById('qrCodeContainer').style.display = 'none';
+                    
+                    // Reset plate number to assigned value
+                    const plateNoInput = document.getElementById('plate_no');
+                    const assignedPlateNo = "{{ Auth::user()->truck_id }}";
+                    if (assignedPlateNo) {
+                        plateNoInput.value = assignedPlateNo;
+                    }
                     
                     Swal.fire(
                         'Cleared!',
@@ -350,5 +409,4 @@
         }
     </script>
 </body>
-
 </html>

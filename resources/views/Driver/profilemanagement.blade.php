@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Driver Profile Management</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         :root {
@@ -29,28 +33,61 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+        
+        /* Updated Sidebar to match help.blade.php */
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
             min-height: 100vh;
         }
         
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
-            padding: 20px 0;
-            position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+        /* Truck display styling from help.blade.php */
+        .truck-display {
+            background: #f1f3f5;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid #e1e5e9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        .main-content {
-            margin-left: 250px;
-            padding: 30px;
-            width: calc(100% - 250px);
-            height: 100vh;
-            overflow-y: auto;
+        .truck-display i {
+            margin-right: 12px;
+            color: #495057;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #343a40;
+        }
+
+        /* Profile card styling */
+        .profile-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
         }
         
         .profile-header {
@@ -64,14 +101,6 @@
             color: var(--secondary-color);
             font-weight: 600;
             margin: 0;
-        }
-        
-        .profile-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 30px;
-            margin-bottom: 30px;
         }
         
         .profile-section {
@@ -276,23 +305,14 @@
         
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                position: relative;
+                height: auto;
             }
             
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
-            }
-            
-            .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 20px 15px;
+            .content {
+                margin-left: 0;
+                padding: 15px;
             }
             
             .profile-picture-container {
@@ -305,21 +325,26 @@
                 gap: 5px;
             }
         }
+
+        @media (max-width: 576px) {
+            .btn-edit-profile,
+            .btn-change-password,
+            .btn-update-license {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    <!-- Sidebar Navigation - Matching help.blade.php -->
     <div class="sidebar">
-        <ul>
-            <x-drivernavbar/>
-        </ul>
+        <x-drivernavbar />
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="profile-header">
-            <h2><i class="fas fa-user-circle me-2"></i>Driver Profile Management</h2>
-        </div>
+    <!-- Main Content Area -->
+    <div class="content">
+        <h2 class="section-title"><i class="fas fa-user-circle me-2"></i>Driver Profile Management</h2>
         
         <div class="profile-card">
             <!-- Profile Picture Section -->
@@ -394,9 +419,9 @@
     </div>
 
     <!-- Include Modals -->
-    @include('Driver.modals.edit-profile-modal')
-    @include('Driver.modals.change-password-modal')
-    @include('Driver.modals.update-license-modal')
+    @include('driver.modals.edit-profile-modal')
+    @include('driver.modals.change-password-modal')
+    @include('driver.modals.update-license-modal')
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

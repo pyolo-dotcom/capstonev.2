@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Profit;
+use App\Models\Truck;
 
 class ProfitController extends Controller
 {
@@ -11,7 +12,7 @@ class ProfitController extends Controller
     public function showProfit()
     {
         $profits = Profit::all(); // Kunin ang lahat ng profit records
-        $plateNumbers = Profit::pluck('plate_number')->unique(); // Kunin ang lahat ng unique plate numbers
+        $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all(); // Kunin ang lahat ng unique plate numbers mula sa Truck model
         return view('admin.profitreports', compact('profits', 'plateNumbers')); // I-pasa ang $profits at $plateNumbers sa view
     }
 

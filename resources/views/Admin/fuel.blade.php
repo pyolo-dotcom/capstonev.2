@@ -4,364 +4,437 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Fuel Management - Admin</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Fuel Management</title>
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
         body {
             display: flex;
-            background-color: #f5f5f5;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
+
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: #333;
-            padding: 20px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
+            height: 100%;
         }
-        .sidebar h2 {
-            color: #fff;
-            text-align: center;
+
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .content-header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
+
+        .content-header h2 {
+            color: #1f1a5c;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
         }
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-        }
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
-        }
-        .content {
-            margin-left: 270px;
+
+        .table-container {
+            background: #fff;
             padding: 20px;
-            flex-grow: 1;
-            width: calc(100% - 270px);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .truck-select {
+            padding: 8px 15px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #495057;
+            background-color: #fff;
+            width: 200px;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .date-btn {
+            padding: 8px 15px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #495057;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .date-btn.active, 
+        .date-btn:hover {
+            background-color: #1f1a5c;
+            color: #fff;
+            border-color: #1f1a5c;
+        }
+
+        .export-btn {
+            background: #1f1a5c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #161245;
+            transform: translateY(-1px);
+        }
+
         .chart-container {
-            width: 90%;
-            margin-left: 53px;
+            width: 100%;
             margin-top: 20px;
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
         }
-        .filter-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        #plateNumberSelect {
-            padding: 8px 12px;
-            font-size: 14px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            min-width: 150px;
-        }
-        .time-filter {
-            display: flex;
-            gap: 10px;
-        }
-        .time-filter-btn {
-            padding: 8px 15px;
-            border: none;
-            background-color: #ECF0F1;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        .time-filter-btn:hover {
-            background-color: #BDC3C7;
-        }
-        .time-filter-btn.active {
-            background-color: #3498DB;
-            color: white;
-        }
-        .add-consumption-btn {
-            display: flex;
-            align-items: center;
-            margin: 7px -7px;
-            padding: 8px 16px;
-            background-color: #3498DB;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .add-consumption-btn:hover {
-            background-color: #2980B9;
-        }
-        .add-consumption-btn .plus-circle {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-            background-color: white;
-            color: #3498DB;
-            border-radius: 50%;
-            font-size: 14px;
-            font-weight: bold;
-        }
+
         #fuelChart {
             width: 100%;
-            max-height: 1000vh;
-            height: 68vh;
+            height: 400px;
         }
-        
-        /* Improved Table Container */
-        .table-container {
+
+        .add-consumption-btn {
+            background: #1f1a5c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .add-consumption-btn:hover {
+            background: #161245;
+            transform: translateY(-1px);
+        }
+
+        /* Improved Table Styles */
+        .table-scroll-container {
             max-height: 500px;
             overflow-y: auto;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            width: 100%;
+            margin-top: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
         }
-        
-        /* Improved Table Styles */
-        table {
+
+        .fuel-table {
             width: 100%;
-            border-collapse: collapse;
-            table-layout: auto;
+            border-collapse: separate;
+            border-spacing: 0;
         }
-        
-        th, td {
+
+        .fuel-table th {
+            background-color: #1f1a5c;
+            color: #fff;
             padding: 12px 15px;
-            border: 1px solid #eee;
             text-align: left;
-            word-wrap: break-word;
-            vertical-align: middle;
-        }
-        
-        th {
-            background-color: #f8f9fa;
+            font-weight: 500;
             position: sticky;
             top: 0;
-            font-weight: 600;
-            color: #333;
         }
-        
-        /* Column Widths */
-        th:nth-child(1), td:nth-child(1) { min-width: 120px; } /* Date */
-        th:nth-child(2), td:nth-child(2) { min-width: 100px; } /* Plate No */
-        th:nth-child(3), td:nth-child(3) { min-width: 90px; text-align: right; }  /* Total KM */
-        th:nth-child(4), td:nth-child(4) { min-width: 90px; text-align: right; }  /* Avg KM/L */
-        th:nth-child(5), td:nth-child(5) { min-width: 100px; text-align: right; }  /* Total Liters */
-        th:nth-child(6), td:nth-child(6) { min-width: 180px; } /* Actions */
-        
-        /* Improved Actions Cell */
+
+        /* Bagong CSS para sa Actions column */
+        .fuel-table th:last-child {
+            text-align: center;
+        }
+
+        .fuel-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e5e9;
+            vertical-align: middle;
+            color: #495057;
+        }
+
+        /* Bagong CSS para sa Actions buttons container */
+        .fuel-table td:last-child {
+            text-align: center;
+            padding: 8px;
+        }
+
         .actions {
             display: flex;
-            gap: 10px;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            white-space: nowrap;
+            padding: 0;
+            margin: 0;
+            height: 100%;
         }
-        
+
+        .actions button, .actions form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 12px;
+            margin: 0;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
         .actions button {
-            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .actions form {
+            margin: 0;
+            padding: 0;
+            display: inline-flex;
+            height: 100%;
+        }
+
+        .actions .edit-btn {
+            background-color: rgba(0, 74, 173, 0.1);
+            color: #004aad;
+        }
+
+        .actions .edit-btn:hover {
+            background-color: rgba(0, 74, 173, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .actions .archive-btn {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .actions .archive-btn:hover {
+            background-color: rgba(220, 53, 69, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .fuel-table td:last-child {
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .page-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            background-color: #1f1a5c;
+            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
-            min-width: 70px;
-            transition: all 0.2s ease;
+            font-size: 14px;
+            transition: all 0.2s;
         }
-        
-        .actions button.edit {
-            background-color: #4CAF50;
-            color: white;
+
+        .page-btn:hover {
+            background-color: #161245;
         }
-        
-        .actions button.edit:hover {
-            background-color: #3e8e41;
-        }
-        
-        .actions button.archive {
-            background-color: #f44336;
-            color: white;
-        }
-        
-        .actions button.archive:hover {
-            background-color: #d32f2f;
-        }
-        
-        .actions form {
-            margin: 0;
-            display: inline;
-        }
-        
-        /* Row hover effect */
-        tbody tr:hover {
-            background-color: #f9f9f9;
-        }
-        
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #eee;
-        }
-        
-        .pagination button {
-            padding: 6px 12px;
-            margin: 0 5px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            background: #f8f8f8;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        
-        .pagination button:hover {
-            background-color: #e9e9e9;
-        }
-        
-        .pagination button.active {
-            background: #3498DB;
-            color: white;
-            border-color: #3498DB;
-        }
-        
-        .pagination button:disabled {
-            opacity: 0.5;
+
+        .page-btn:disabled {
+            background-color: #e1e5e9;
+            color: #6c757d;
             cursor: not-allowed;
         }
-        
-        .pagination-info {
-            margin: 0 15px;
-            font-size: 14px;
-        }
-        
-        /* No Data Message */
+
         .no-data {
             text-align: center;
             padding: 30px;
+            color: #6c757d;
             font-style: italic;
-            color: #777;
-            background-color: #f9f9f9;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            
+            .content {
+                margin-left: 0;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .date-filter {
+                width: 100%;
+            }
+            
+            .date-btn {
+                flex-grow: 1;
+            }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Sidebar Menu</h2>
         <ul>
-            <x-navbar/>
+            <x-navbar />
         </ul>
     </div>
 
     <div class="content">
-        <h3>Fuel Management</h3>
-
-        <div class="filter-section">
-            <label for="plateNumberSelect">Plate No.:</label>
-            <select id="plateNumberSelect" name="plateNumberSelect" required>
-                <option disabled selected>-- Plate Number --</option>
-                <option value="UVP353">UVP353</option>
-                <option value="TQE262">TQE262</option>
-                <option value="NBB7212">NBB7212</option>
-                <option value="APA3309">APA3309</option>
-                <option value="WIE914">WIE914</option>
-                <option value="all">All Trucks</option>
-            </select>
-
-            <div class="time-filter">
-                <button class="time-filter-btn active" data-filter="weekly">Weekly</button>
-                <button class="time-filter-btn" data-filter="monthly">Monthly</button>
-                <button class="time-filter-btn" data-filter="yearly">Annually</button>
-            </div>
+        <div class="content-header">
+            <h2><i class="fas fa-gas-pump me-2"></i>Fuel Management</h2>
         </div>
-
-        <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-            <span class="plus-circle">+</span> Add Consumption
-        </button>
-
+        
         <div class="table-container">
-            <table id="fuelTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Plate No.</th>
-                        <th>Total KM</th>
-                        <th>Avg KM/L</th>
-                        <th>Total Liters</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="fuelTableBody">
-                    @foreach($fuelData as $data)
-                    <tr>
-                        <td>{{ $data->date }}</td>
-                        <td>{{ $data->plate_no }}</td>
-                        <td>{{ number_format($data->total_km, 2) }}</td>
-                        <td>{{ number_format($data->avg_km_l, 2) }}</td>
-                        <td>{{ number_format($data->total_liters, 2) }}</td>
-                        <td class="actions">
-                            <button class="edit" onclick="editFuel({{ $data->id }})">Edit</button>
-                            <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="archive" onclick="confirmArchive({{ $data->id }})">Archive</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div id="noDataMessage" class="no-data">Please select a plate number to view data</div>
-        </div>
+            <div class="filter-container">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="plateNumberSelect" style="margin-right: 5px;">Plate No.:</label>
+                    <select id="plateNumberSelect" name="plateNumberSelect" class="truck-select" required>
+                        <option disabled selected>-- Plate Number --</option>
+                        <option value="all">All Trucks</option>
+                        @foreach($plateNumbers as $plate)
+                            <option value="{{ $plate }}">{{ $plate }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="pagination" id="paginationControls" style="display: none;">
-            <button id="prevPage">Previous</button>
-            <span id="pageInfo" class="pagination-info">Page 1 of 1</span>
-            <button id="nextPage">Next</button>
-        </div>
+                <div class="date-filter">
+                    <button class="date-btn active time-filter-btn" data-filter="weekly">Weekly</button>
+                    <button class="date-btn time-filter-btn" data-filter="monthly">Monthly</button>
+                    <button class="date-btn time-filter-btn" data-filter="yearly">Annually</button>
+                </div>
+            </div>
 
-        <div class="chart-container">
-            <canvas id="fuelChart"></canvas>
+            <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
+                <i class="fas fa-plus"></i> Add Consumption
+            </button>
+
+            <div class="chart-container">
+                <canvas id="fuelChart"></canvas>
+            </div>
+
+            <div class="table-scroll-container">
+                <table class="fuel-table" id="fuelTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Plate No.</th>
+                            <th>Total KM</th>
+                            <th>Avg KM/L</th>
+                            <th>Total Liters</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fuelTableBody">
+                        @foreach($fuelData as $data)
+                        <tr>
+                            <td>{{ $data->date }}</td>
+                            <td>{{ $data->plate_no }}</td>
+                            <td>{{ number_format($data->total_km, 2) }}</td>
+                            <td>{{ number_format($data->avg_km_l, 2) }}</td>
+                            <td>{{ number_format($data->total_liters, 2) }}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="edit-btn" onclick="editFuel({{ $data->id }})" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </button>
+                                
+                                    <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="archive-btn" onclick="confirmArchive({{ $data->id }})" title="Archive">
+                                            <i class="fas fa-archive"></i> Archive
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-controls" id="paginationControls">
+                <div class="page-info" id="pageInfo">Showing 1-10 of {{ $fuelData->count() }} records</div>
+                <div class="page-buttons">
+                    <button class="page-btn" id="prevPage" disabled>Previous</button>
+                    <button class="page-btn" id="nextPage" disabled>Next</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    @include('Admin.modals.fuelmodal')
-    @include('Admin.modals.edit_fuel')
+    @include('admin.modals.fuelmodal')
+    @include('admin.modals.edit_fuel')
 
     <script>
         let fuelChart = null;
@@ -378,7 +451,7 @@
             allData = rows.map(row => {
                 const cells = row.cells;
                 return {
-                    id: row.querySelector('.edit').getAttribute('onclick').match(/editFuel\((\d+)\)/)[1],
+                    id: row.querySelector('.edit-btn').getAttribute('onclick').match(/editFuel\((\d+)\)/)[1],
                     date: new Date(cells[0].textContent),
                     dateString: cells[0].textContent,
                     plate_no: cells[1].textContent,
@@ -389,25 +462,9 @@
                 };
             });
 
-            // Hide all data initially
-            hideAllData();
+            // Initialize pagination
+            initializePagination();
             
-            // Set up event listeners for pagination
-            document.getElementById('prevPage').addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateTable();
-                }
-            });
-            
-            document.getElementById('nextPage').addEventListener('click', () => {
-                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updateTable();
-                }
-            });
-
             let ctx = document.getElementById('fuelChart').getContext('2d');
             let fuelChartCanvas = document.getElementById('fuelChart'); 
 
@@ -577,12 +634,9 @@
                 filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
                 
                 if (filteredData.length > 0) {
-                    document.getElementById('noDataMessage').style.display = 'none';
                     document.getElementById('paginationControls').style.display = 'flex';
                     updateTable();
                 } else {
-                    document.getElementById('noDataMessage').textContent = 'No data available for the selected filter';
-                    document.getElementById('noDataMessage').style.display = 'block';
                     document.getElementById('paginationControls').style.display = 'none';
                     hideAllData();
                 }
@@ -613,12 +667,9 @@
                     filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
                     
                     if (filteredData.length > 0) {
-                        document.getElementById('noDataMessage').style.display = 'none';
                         document.getElementById('paginationControls').style.display = 'flex';
                         updateTable();
                     } else {
-                        document.getElementById('noDataMessage').textContent = 'No data available for the selected filter';
-                        document.getElementById('noDataMessage').style.display = 'block';
                         document.getElementById('paginationControls').style.display = 'none';
                         hideAllData();
                     }
@@ -629,11 +680,15 @@
             });
         });
 
+        function initializePagination() {
+            filteredData = [...allData];
+            updateTable();
+        }
+
         function hideAllData() {
             allData.forEach(item => {
                 item.element.style.display = 'none';
             });
-            document.getElementById('noDataMessage').style.display = 'block';
             document.getElementById('paginationControls').style.display = 'none';
         }
 
@@ -657,7 +712,10 @@
         
         function updatePagination() {
             const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            const startItem = (currentPage - 1) * rowsPerPage + 1;
+            const endItem = Math.min(currentPage * rowsPerPage, filteredData.length);
+            
+            document.getElementById('pageInfo').textContent = `Showing ${startItem}-${endItem} of ${filteredData.length} records`;
             document.getElementById('prevPage').disabled = currentPage === 1;
             document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
         }
@@ -744,18 +802,6 @@
                 });
         }
 
-        window.onclick = function(event) {
-            let modal = document.getElementById('editFuelModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-            
-            let fuelModal = document.getElementById('fuelModal');
-            if (event.target == fuelModal) {
-                fuelModal.style.display = "none";
-            }
-        };
-
         function confirmArchive(id) {
             Swal.fire({
                 title: 'Are you sure?',
@@ -771,6 +817,40 @@
                 }
             });
         }
+
+        window.onclick = function(event) {
+            let modal = document.getElementById('editFuelModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            
+            let fuelModal = document.getElementById('fuelModal');
+            if (event.target == fuelModal) {
+                fuelModal.style.display = "none";
+            }
+        };
+
+        function archiveFuel(id) {
+        if (confirm('Are you sure you want to archive this fuel consumption record?')) {
+            fetch(`/admin/fuel/archive/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error archiving fuel consumption');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error archiving fuel consumption');
+            });
+        }
+    }
     </script>
 </body>
 </html>

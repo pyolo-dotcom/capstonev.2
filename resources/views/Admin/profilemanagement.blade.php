@@ -5,21 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Profile Management</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #17a2b8;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-        }
-        
         * {
             margin: 0;
             padding: 0;
@@ -29,87 +22,51 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
             min-height: 100vh;
+            background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
+            background: #343a40;
+            color: white;
             padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            height: 100%;
         }
-        
-        .sidebar-brand {
-            padding: 0 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar ul li a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar ul li a:hover, 
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px;
-        }
-        
-        .sidebar ul li a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        
+
         .main-content {
             margin-left: 250px;
-            padding: 30px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
             width: calc(100% - 250px);
-            height: 100vh;
-            overflow-y: auto;
         }
-        
+
         .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        
+
         .profile-header h2 {
-            color: var(--secondary-color);
+            color: #1f1a5c;
+            font-size: 1.5rem;
             font-weight: 600;
             margin: 0;
         }
-        
+
         .profile-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: #fff;
             padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
-        
+
         .profile-section {
             display: flex;
             flex-direction: column;
@@ -156,7 +113,7 @@
             position: absolute;
             bottom: 0;
             right: 0;
-            background: var(--primary-color);
+            background: #3498db;
             color: white;
             width: 40px;
             height: 40px;
@@ -192,7 +149,7 @@
         
         .info-label {
             font-weight: 600;
-            color: var(--secondary-color);
+            color: #343a40;
         }
         
         .info-value {
@@ -200,7 +157,7 @@
         }
         
         .btn-edit-profile {
-            background: var(--primary-color) !important;
+            background: #3498db !important;
             color: white !important;
             border: none !important;
             padding: 12px 25px;
@@ -220,7 +177,7 @@
         }
         
         .btn-change-password {
-            background: var(--warning-color) !important;
+            background: #f39c12 !important;
             color: white !important;
             border: none !important;
             padding: 12px 25px;
@@ -252,7 +209,7 @@
         
         .modal-title {
             font-weight: 600;
-            color: var(--secondary-color);
+            color: #343a40;
         }
         
         .modal-body {
@@ -261,7 +218,7 @@
         
         .form-label {
             font-weight: 500;
-            color: var(--secondary-color);
+            color: #343a40;
             margin-bottom: 8px;
         }
         
@@ -273,7 +230,7 @@
         }
         
         .form-control:focus {
-            border-color: var(--primary-color);
+            border-color: #3498db;
             box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
         }
         
@@ -281,39 +238,15 @@
             filter: brightness(0.5);
         }
         
-        .alert {
-            border-radius: 8px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1100;
-            max-width: 400px;
-        }
-        
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
-            }
-            
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
+                width: 100%;
+                position: relative;
             }
             
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
-                padding: 20px 15px;
-            }
-            
-            .profile-picture-container {
-                width: 120px;
-                height: 120px;
+                margin-left: 0;
+                width: 100%;
             }
             
             .info-item {
@@ -387,11 +320,12 @@
     </div>
 
     <!-- Include Modals -->
-    @include('Admin.modals.edit-profile-modal')
-    @include('Admin.modals.change-password-modal')
+    @include('admin.modals.edit-profile-modal')
+    @include('admin.modals.change-password-modal')
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Function to preview uploaded image
         function previewImage(event, targetId) {
@@ -438,48 +372,72 @@
             
             if (modalRemoveBtn && removeInput) {
                 modalRemoveBtn.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to remove your profile image?')) {
-                        removeInput.value = '1';
-                        const modalPreview = document.getElementById('modalProfilePreview');
-                        if (modalPreview) {
-                            modalPreview.outerHTML = `
-                                <div class="default-profile-picture" id="modalProfilePreview">
-                                    <span class="initials">{{ $user->initials }}</span>
-                                </div>
-                            `;
+                    Swal.fire({
+                        title: 'Remove Profile Picture?',
+                        text: "Are you sure you want to remove your profile picture?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, remove it!',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            removeInput.value = '1';
+                            const modalPreview = document.getElementById('modalProfilePreview');
+                            if (modalPreview) {
+                                modalPreview.outerHTML = `
+                                    <div class="default-profile-picture" id="modalProfilePreview">
+                                        <span class="initials">{{ $user->initials }}</span>
+                                    </div>
+                                `;
+                            }
+                            Swal.fire(
+                                'Removed!',
+                                'Your profile picture has been removed.',
+                                'success'
+                            );
                         }
-                    }
+                    });
                 });
             }
             
             // Show alerts if any
             @if(session('success'))
-                showAlert('{{ session('success') }}', 'success');
+                showSweetAlert('{{ session('success') }}', 'success');
             @endif
             
             @if(session('error'))
-                showAlert('{{ session('error') }}', 'danger');
+                showSweetAlert('{{ session('error') }}', 'error');
+            @endif
+            
+            @if(session('warning'))
+                showSweetAlert('{{ session('warning') }}', 'warning');
+            @endif
+            
+            @if(session('info'))
+                showSweetAlert('{{ session('info') }}', 'info');
             @endif
         });
 
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '1100';
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.classList.remove('show');
-                setTimeout(() => alertDiv.remove(), 150);
-            }, 5000);
+        function showSweetAlert(message, type) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: type,
+                title: message
+            });
         }
     </script>
 </body>

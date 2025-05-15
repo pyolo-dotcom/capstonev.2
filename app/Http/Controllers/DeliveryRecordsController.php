@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; 
 use App\Models\Trip;
+use App\Models\Truck;
+use Illuminate\Support\Facades\DB;
 
 class DeliveryRecordsController extends Controller
 {
@@ -20,9 +22,13 @@ class DeliveryRecordsController extends Controller
                 return $trip;
             });
     
+        // Get all plate numbers from Truck model
+        $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all();
+    
         // Initialize all counts to zero
         return view('admin.deliveryrecords', [
             'trips' => $trips,
+            'plateNumbers' => $plateNumbers,
             'oneWayTrip' => 0,
             'roundTrip' => 0,
             'doorToDoorTrip' => 0
@@ -64,7 +70,7 @@ class DeliveryRecordsController extends Controller
         $cleanPlateNo = strtoupper(str_replace(' ', '', $request->plate_no));
     
         // Find and delete matching trips
-        $deleted = Trip::where(\DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $cleanPlateNo)
+        $deleted = Trip::where(DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $cleanPlateNo)
             ->where('trip_type', $request->trip_type)
             ->delete();
     
@@ -77,21 +83,16 @@ class DeliveryRecordsController extends Controller
 
     public function getTripCounts(Request $request)
     {
-        $plateNo = strtoupper(str_replace(' ', '', $request->input('plate_no')));
+        $plateNo = strtoupper(str_replace(' ', '', $request->input('plate_no', 'all')));
         
-        if (empty($plateNo)) {
-            return response()->json([
-                'oneWayTrip' => 0,
-                'roundTrip' => 0,
-                'doorToDoorTrip' => 0
-            ]);
+        $query = Trip::select('trip_type', DB::raw('SUM(num_trips) as total_trips'));
+        
+        if ($plateNo !== 'ALL') {
+            $query->where(DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $plateNo);
         }
-
-        // Use consistent formatting for comparison
-        $trips = Trip::select('trip_type', \DB::raw('SUM(num_trips) as total_trips'))
-            ->where(\DB::raw("REPLACE(UPPER(plate_no), ' ', '')"), $plateNo)
-            ->groupBy('trip_type')
-            ->get();
+        
+        $trips = $query->groupBy('trip_type')
+                    ->get();
 
         $counts = [
             'oneWayTrip' => 0,
@@ -114,5 +115,21 @@ class DeliveryRecordsController extends Controller
         }
 
         return response()->json($counts);
+    }
+
+    public function resetAll(Request $request)
+    {
+        $request->validate([
+            'trip_type' => 'required'
+        ]);
+
+        // Delete all trips of this type
+        $deleted = Trip::where('trip_type', $request->trip_type)->delete();
+
+        if ($deleted) {
+            return response()->json(['message' => 'All '.$request->trip_type.' trips reset successfully']);
+        } else {
+            return response()->json(['message' => 'No trips found to reset'], 404);
+        }
     }
 }

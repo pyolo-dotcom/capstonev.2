@@ -1,82 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Cargo Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
-    <title>Cargo Management</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
             display: flex;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
 
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: #333;
-            padding: 20px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-        }
-
-        .sidebar h2 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid #444;
-        }
-
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar ul li a:hover {
-            background: #555;
-            padding-left: 10px;
+            height: 100%;
         }
 
         .content {
-            margin-left: 270px;
-            padding: 30px;
+            margin-left: 250px;
+            padding: 25px;
             flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
 
         .content-header {
             background: #fff;
-            padding: 25px;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
         .content-header h2 {
-            color: #2f4156;
-            margin-bottom: 20px;
-            font-size: 24px;
+            color: #1f1a5c;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
         }
 
         .table-container {
@@ -93,7 +75,7 @@
         }
 
         .trip-table th {
-            background-color: #2f4156;
+            background-color: #1f1a5c;
             color: #fff;
             padding: 12px 15px;
             text-align: left;
@@ -104,23 +86,39 @@
 
         .trip-table td {
             padding: 12px 15px;
-            border-bottom: 1px solid #dadada;
+            border-bottom: 1px solid #e1e5e9;
             vertical-align: middle;
-        }
-
-        .trip-table tr:last-child td {
-            border-bottom: none;
+            color: #495057;
         }
 
         .trip-table tr:hover td {
-            background-color: rgba(0, 74, 173, 0.05);
+            background-color: rgba(31, 26, 92, 0.05);
         }
 
+        /* Updated Actions Styles */
         .actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
             align-items: center;
+            white-space: nowrap;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        .actions button, .actions form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 5px;
+            margin: 0;
+        }
+
+        .trip-table td:last-child {
+            padding: 0;
+            vertical-align: middle;
         }
 
         .actions button {
@@ -129,7 +127,17 @@
             cursor: pointer;
             font-size: 16px;
             transition: all 0.2s;
-            padding: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .actions form {
+            margin: 0;
+            padding: 0;
+            display: inline-flex;
+            height: 100%;
         }
 
         .actions .edit-btn {
@@ -160,13 +168,13 @@
         }
 
         .truck-select {
-            padding: 10px 15px;
+            padding: 8px 15px;
+            border: 1px solid #e1e5e9;
             border-radius: 8px;
-            border: 1px solid #dadada;
-            background-color: #2f4156;
-            color: #fff;
             font-size: 16px;
-            cursor: pointer;
+            color: #495057;
+            background-color: #fff;
+            width: 200px;
         }
 
         .date-filter {
@@ -175,31 +183,40 @@
         }
 
         .date-btn {
-            padding: 10px 20px;
-            border: none;
+            padding: 8px 15px;
+            border: 1px solid #e1e5e9;
             border-radius: 8px;
-            background-color: #dadada;
-            color: #333;
-            font-size: 16px;
+            background-color: #fff;
+            color: #495057;
+            font-size: 14px;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .date-btn.active, .date-btn:hover {
-            background-color: #004aad;
+        .date-btn.active, 
+        .date-btn:hover {
+            background-color: #1f1a5c;
             color: #fff;
+            border-color: #1f1a5c;
         }
 
         .export-btn {
+            background: #1f1a5c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #161245;
+            transform: translateY(-1px);
         }
 
         .no-data {
@@ -217,7 +234,6 @@
             font-size: 18px;
         }
 
-        /* Table scroll container */
         .table-scroll-container {
             max-height: 500px;
             overflow-y: auto;
@@ -226,7 +242,6 @@
             border-radius: 8px;
         }
 
-        /* Pagination controls */
         .pagination-controls {
             display: flex;
             justify-content: space-between;
@@ -247,7 +262,7 @@
 
         .page-btn {
             padding: 8px 15px;
-            background-color: #2f4156;
+            background-color: #1f1a5c;
             color: white;
             border: none;
             border-radius: 4px;
@@ -257,16 +272,15 @@
         }
 
         .page-btn:hover {
-            background-color: #004aad;
+            background-color: #161245;
         }
 
         .page-btn:disabled {
-            background-color: #dadada;
+            background-color: #e1e5e9;
             color: #6c757d;
             cursor: not-allowed;
         }
 
-        /* Search bar styles */
         .search-container {
             display: flex;
             justify-content: flex-end;
@@ -289,8 +303,8 @@
 
         .search-bar input:focus {
             outline: none;
-            border-color: #004aad;
-            box-shadow: 0 0 5px rgba(0, 74, 173, 0.3);
+            border-color: #1f1a5c;
+            box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
         }
 
         .search-bar i {
@@ -301,7 +315,6 @@
             color: #6c757d;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -362,7 +375,7 @@
 
         .modal-content h2 {
             margin-bottom: 20px;
-            color: #2f4156;
+            color: #1f1a5c;
             text-align: center;
         }
 
@@ -374,7 +387,7 @@
 
         .modal-content label {
             font-weight: bold;
-            color: #2f4156;
+            color: #1f1a5c;
         }
 
         .modal-content select,
@@ -387,7 +400,7 @@
         }
 
         .modal-content button[type="submit"] {
-            background-color: #004aad;
+            background-color: #1f1a5c;
             color: white;
             border: none;
             padding: 12px;
@@ -396,7 +409,6 @@
             margin-top: 10px;
         }
 
-        /* Custom scrollbar for table and modal */
         .table-scroll-container::-webkit-scrollbar,
         .modal-body::-webkit-scrollbar {
             width: 8px;
@@ -462,16 +474,16 @@
 
     <div class="content">
         <div class="content-header">
-            <h2>View and Update Trip Records</h2>
+            <h2><i class="fas fa-route me-2"></i>View and Update Trip Records</h2>
         </div>
         
         <div class="table-container">
             <form method="GET" action="{{ route('manager.managetrip') }}" id="filterForm">
                 <div class="filter-container">
                     <select name="plate_no" class="truck-select" id="plateSelect">
-                        <option disabled selected>-- Plate Number --</option>
-                        <option value="">All Trucks</option>
-                        @foreach(['UVP 353', 'TQE 262', 'NBB 7212', 'APA 3309', 'WIE 914'] as $plate)
+                        <option value="All Trucks">All Trucks</option>
+                        <option value="" disabled>-- Plate Number --</option>
+                        @foreach($plateNumbers as $plate)
                             <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>{{ $plate }}</option>
                         @endforeach
                     </select>
@@ -530,28 +542,30 @@
                                     <td>{{ $cargo->voyage_no }}</td>
                                     <td>{{ $cargo->pickup_location }}</td>
                                     <td>{{ $cargo->delivery_location }}</td>
-                                    <td class="actions">
-                                        <button class="edit-btn" onclick="openTripModal(
-                                            '{{ $cargo->id }}',
-                                            '{{ $cargo->plate_no }}',
-                                            '{{ $cargo->eir_no }}',
-                                            '{{ $cargo->container_van_no }}',
-                                            '{{ $cargo->size }}',
-                                            '{{ $cargo->shipper_consignee }}',
-                                            '{{ $cargo->voyage_vessel }}',
-                                            '{{ $cargo->voyage_no }}',
-                                            '{{ $cargo->pickup_location }}',
-                                            '{{ $cargo->delivery_location }}'
-                                        )">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </button>
-
-                                        <form action="{{ route('trip.archive', $cargo->id) }}" method="POST" class="action-form">
-                                            @csrf
-                                            <button type="submit" class="archive-btn">
-                                                <i class="fas fa-archive"></i>
+                                    <td>
+                                        <div class="actions">
+                                            <button class="edit-btn" onclick="openTripModal(
+                                                '{{ $cargo->id }}',
+                                                '{{ $cargo->plate_no }}',
+                                                '{{ $cargo->eir_no }}',
+                                                '{{ $cargo->container_van_no }}',
+                                                '{{ $cargo->size }}',
+                                                '{{ $cargo->shipper_consignee }}',
+                                                '{{ $cargo->voyage_vessel }}',
+                                                '{{ $cargo->voyage_no }}',
+                                                '{{ $cargo->pickup_location }}',
+                                                '{{ $cargo->delivery_location }}'
+                                            )">
+                                                <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
-                                        </form>
+                                        
+                                            <form action="{{ route('trip.archive', $cargo->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="archive-btn">
+                                                    <i class="fas fa-archive"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

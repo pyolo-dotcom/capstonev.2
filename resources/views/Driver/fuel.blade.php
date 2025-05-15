@@ -5,17 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Fuel Consumption</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -58,6 +64,13 @@
             color: #495057;
         }
         
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #343a40;
+        }
+
         .time-filter {
             margin-bottom: 30px;
             display: flex;
@@ -87,19 +100,20 @@
             color: white;
             box-shadow: 0 4px 8px rgba(31, 26, 92, 0.2);
         }
-        
-        .chart-container {
-            width: 100%;
-            height: 550px;
-            background: white;
-            padding: 30px;
+
+        .card {
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-            position: relative;
             border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
         }
-        
+
+        .card-body {
+            padding: 30px;
+            position: relative;
+            min-height: 550px;
+        }
+
         .no-data {
             text-align: center;
             padding: 50px;
@@ -111,7 +125,7 @@
             transform: translate(-50%, -50%);
             width: 100%;
         }
-        
+
         .loading-spinner {
             display: none;
             position: absolute;
@@ -119,20 +133,37 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        
+
+        .chart-container {
+            width: 100%;
+            height: 100%;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 position: relative;
                 height: auto;
             }
+            
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
-            .chart-container {
-                height: 400px;
+            
+            .card-body {
                 padding: 20px;
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .time-btn {
+                flex: 1 0 calc(50% - 6px);
+            }
+            
+            .card-body {
+                min-height: 350px;
             }
         }
     </style>
@@ -145,33 +176,52 @@
 
     <!-- Main Content Area -->
     <div class="content">
-        <!-- Truck Display -->
+        <!-- Header Section -->
         <div class="truck-display">
             <i class="fas fa-truck"></i>
             <span id="assignedTruck">{{ Auth::user()->truck_id ?? 'Not assigned' }}</span>
         </div>
 
+        <h2 class="section-title">FUEL CONSUMPTION ANALYTICS</h2>
+
         <!-- Time Period Filters -->
         <div class="time-filter">
-            <button class="time-btn active" data-filter="weekly">Weekly</button>
-            <button class="time-btn" data-filter="monthly">Monthly</button>
-            <button class="time-btn" data-filter="yearly">Yearly</button>
+            <button class="time-btn active" data-filter="weekly">
+                <i class="fas fa-calendar-week me-2"></i>Weekly
+            </button>
+            <button class="time-btn" data-filter="monthly">
+                <i class="fas fa-calendar-alt me-2"></i>Monthly
+            </button>
+            <button class="time-btn" data-filter="yearly">
+                <i class="fas fa-calendar me-2"></i>Yearly
+            </button>
         </div>
 
-        <!-- Chart Container -->
-        <div class="chart-container">
-            <canvas id="fuelChart"></canvas>
-            <div class="no-data" id="noDataMessage">
-                <i class="fas fa-info-circle fa-3x mb-4" style="color: #adb5bd;"></i>
-                <h5 style="color: #6c757d;">No fuel consumption data available</h5>
-            </div>
-            <div class="loading-spinner" id="loadingSpinner">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
+        <!-- Chart Card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="fuelChart"></canvas>
+                </div>
+                <div class="no-data" id="noDataMessage">
+                    <i class="fas fa-info-circle fa-3x mb-4" style="color: #adb5bd;"></i>
+                    <h5 style="color: #6c757d;">No fuel consumption data available</h5>
+                </div>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {

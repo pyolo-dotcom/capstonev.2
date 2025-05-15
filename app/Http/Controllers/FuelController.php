@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FuelConsumption;
 use Illuminate\Support\Facades\Log;
+use App\Models\Truck;
 
 class FuelController extends Controller
 {
     public function showFuel(){
+        $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all();
         $fuelData = FuelConsumption::all();
-        return view('admin.fuel', compact('fuelData'));
+        return view('admin.fuel', compact('fuelData', 'plateNumbers'));
     }
 
     public function store(Request $request)

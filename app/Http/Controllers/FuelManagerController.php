@@ -6,12 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FuelConsumption;
 use Illuminate\Support\Facades\Log;
+use App\Models\Truck;
+
 class FuelManagerController extends Controller
 {
     public function showFuelManager()
     {
-        return view('manager.fuel'); // Make sure this view file exists: resources/views/fuel-manager.blade.php
+        // Get all distinct plate numbers from trucks table
+        $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all();
+        
+        return view('manager.fuel', compact('plateNumbers'));
     }
+
     public function store(Request $request)
     {
         \Log::info('Received data:', $request->all()); // Log request data

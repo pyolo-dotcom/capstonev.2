@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>QR Code Scanner</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -15,44 +22,67 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
-
-        /* Navbar */
+        
         .sidebar {
-            position: absolute;
-            top: 0;
-            left: 0;
+            width: 250px;
+            background: #343a40;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
 
-        /* Main Scanner Container */
+        /* Scanner Container */
         .scanner-container {
             margin-top: 30px;
             width: 100%;
             max-width: 500px;
-        }
-
-        h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         #reader {
-            width: 400px;
+            width: 100%;
+            max-width: 400px;
             height: 400px;
             margin: auto;
             border: 3px solid #2c3e50;
             border-radius: 10px;
         }
 
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            #reader {
+                height: 300px;
+                max-width: 100%;
+            }
+        }
         #result {
             margin-top: 15px;
             font-size: 18px;
@@ -81,25 +111,52 @@
             width: 600px !important;
         }
 
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 
 <body>
-
-    <!-- Navbar -->
-    <div class="sidebar">   
+    <div class="sidebar">
         <ul>
             <x-managernavbar />
         </ul>
     </div>
 
-    <!-- Scanner -->
-    <div class="scanner-container">
-        <h2>Scan Cargo QR Code</h2>
-        <button id="switchCamera">Switch Camera</button>
-        <div id="reader"></div>
-        <div id="result"></div>
-        <button id="sendData">Send Data to Server</button>
+    <div class="content">
+        <div class="content-header">
+            <h2><i class="fas fa-qrcode me-2"></i>QR Code Scanner</h2>
+        </div>
+        
+        <div class="scanner-container">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Scan Cargo QR Code</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <button id="switchCamera" class="btn btn-primary me-2">
+                            <i class="fas fa-camera"></i> Switch Camera
+                        </button>
+                        <button id="sendData" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Send Data
+                        </button>
+                    </div>
+                    <div id="reader" class="mx-auto"></div>
+                    <div id="result" class="mt-3 text-center"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>

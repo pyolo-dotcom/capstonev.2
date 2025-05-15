@@ -15,6 +15,7 @@
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
+            --info-color: #1abc9c;
             --light-color: #ecf0f1;
             --dark-color: #34495e;
         }
@@ -28,66 +29,30 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
+            background: #343a40;
+            color: white;
             padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            height: 100%;
         }
-        
-        .sidebar-brand {
-            padding: 0 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .sidebar-brand h2 {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar ul li a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar ul li a:hover, 
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px;
-        }
-        
-        .sidebar ul li a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
+
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
         
         .main-content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 25px;
             width: calc(100% - 250px);
         }
         
@@ -104,38 +69,22 @@
             color: var(--secondary-color);
             font-weight: 600;
             margin: 0;
-        }
-        
-        .search-container {
             display: flex;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
         }
         
-        .search-input {
-            flex-grow: 1;
-            max-width: 400px;
-            position: relative;
-        }
-        
-        .search-input i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        
-        .search-input input {
-            padding-left: 40px;
-            border-radius: 20px;
-            border: 1px solid #ced4da;
-            height: 40px;
-        }
-        
-        .search-input input:focus {
+        .btn-primary {
+            background-color: var(--primary-color);
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
         }
         
         .card {
@@ -144,6 +93,10 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 30px;
             overflow: hidden;
+        }
+        
+        .card-body {
+            padding: 0;
         }
         
         .card-header {
@@ -160,6 +113,13 @@
             margin: 0;
             font-size: 1.2rem;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert {
+            border-radius: 8px;
         }
         
         .table-responsive {
@@ -168,17 +128,29 @@
         
         .table {
             margin-bottom: 0;
+            width: 100%;
         }
         
         .table thead th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-            color: var(--dark-color);
+            background-color: var(--secondary-color);
+            color: white;
+            border-bottom: none;
+            font-weight: 500;
+            padding: 15px 20px;
+        }
+        
+        .table tbody td {
+            padding: 12px 20px;
+            vertical-align: middle;
         }
         
         .table tbody tr {
             transition: all 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table tbody tr:last-child {
+            border-bottom: none;
         }
         
         .table tbody tr:hover {
@@ -197,12 +169,14 @@
         }
         
         .btn-action {
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            border-radius: 5px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .btn-restore {
@@ -228,39 +202,76 @@
         }
         
         .empty-message {
-            padding: 30px;
+            padding: 40px;
             text-align: center;
             color: #6c757d;
         }
         
         .empty-message i {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
             color: #dee2e6;
+        }
+        
+        .truck-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .image-placeholder {
+            width: 60px;
+            height: 60px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border: 1px dashed #dee2e6;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+        }
+        
+        .search-input i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .search-input input {
+            padding-left: 35px;
+            border-radius: 20px;
         }
         
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                position: relative;
             }
             
-            .sidebar-brand h2 {
-                display: none;
-            }
-            
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
+            .content {
+                margin-left: 0;
             }
             
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
             }
             
             .search-container {
@@ -270,13 +281,34 @@
             .search-input {
                 max-width: 100%;
             }
+            
+            .actions {
+                flex-wrap: wrap;
+                gap: 4px;
+                justify-content: center;
+            }
+            
+            .btn-action {
+                padding: 8px 12px;
+                font-size: 14px;
+                min-height: 36px;
+            }
+            
+            .table thead th, 
+            .table tbody td {
+                padding: 12px 15px;
+            }
+            
+            .table-responsive {
+                margin: 0 -15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-brand">
-            <h2>Archives</h2>
+            <h2>Archives Management</h2>
         </div>
         <ul>
             <x-navbar/>
@@ -285,7 +317,7 @@
 
     <div class="main-content">
         <div class="header">
-            <h2><i class="fas fa-archive me-2"></i>Archives Management</h2>
+            <h2><i class="fas fa-archive"></i>Archives Management</h2>
         </div>
         
         <!-- Search Bar -->
@@ -302,7 +334,7 @@
         <!-- Archived Accounts Card -->
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-users me-2"></i>Archived Accounts</h3>
+                <h3><i class="fas fa-users"></i>Archived Accounts</h3>
             </div>
             <div class="card-body">
                 @if($archivedUsers->count() > 0)
@@ -360,7 +392,7 @@
         <!-- Archived Profits Card -->
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-chart-line me-2"></i>Archived Profits</h3>
+                <h3><i class="fas fa-chart-line"></i>Archived Profits</h3>
             </div>
             <div class="card-body">
                 @if($archivedProfits->count() > 0)
@@ -418,7 +450,7 @@
         <!-- Archived Fuel Consumption Card -->
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-gas-pump me-2"></i>Archived Fuel Consumption</h3>
+                <h3><i class="fas fa-gas-pump"></i>Archived Fuel Consumption</h3>
             </div>
             <div class="card-body">
                 @if($archivedFuel->count() > 0)
@@ -476,7 +508,7 @@
         <!-- Archived Trips Card -->
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-truck me-2"></i>Archived Trips</h3>
+                <h3><i class="fas fa-truck"></i>Archived Trips</h3>
             </div>
             <div class="card-body">
                 @if($archivedTrips->count() > 0)
@@ -534,7 +566,7 @@
         <!-- Archived Trucks Card -->
         <div class="card">
             <div class="card-header">
-                <h3><i class="fas fa-truck-moving me-2"></i>Archived Trucks</h3>
+                <h3><i class="fas fa-truck-moving"></i>Archived Trucks</h3>
             </div>
             <div class="card-body">
                 @if($archivedTrucks->count() > 0)
@@ -548,7 +580,7 @@
                                 <th>Owner Name</th>
                                 <th>Make</th>
                                 <th>Year Model</th>
-                                <th style="width: 220px;">Actions</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -558,9 +590,9 @@
                                     @if($truck->image_path)
                                         <img src="{{ $truck->image_url }}" 
                                             alt="Truck {{ $truck->plate_number }}"
-                                            class="truck-image" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                            class="truck-image">
                                     @else
-                                        <div style="width: 60px; height: 60px; background-color: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #6c757d; border: 1px dashed #dee2e6;">
+                                        <div class="image-placeholder">
                                             <i class="fas fa-truck"></i>
                                         </div>
                                     @endif

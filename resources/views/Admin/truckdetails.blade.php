@@ -28,61 +28,25 @@
         
         body {
             display: flex;
-            background-color: #f5f7fa;
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
-            height: 100vh;
-            background: var(--secondary-color);
+            background: #343a40;
+            color: white;
             padding: 20px 0;
             position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            height: 100%;
         }
-        
-        .sidebar-brand {
-            padding: 0 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .sidebar-brand h2 {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .sidebar ul li a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: block;
-            padding: 12px 20px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar ul li a:hover, 
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px;
-        }
-        
-        .sidebar ul li a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
+
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+            flex-grow: 1;
+            background-color: white;
+            min-height: 100vh;
         }
         
         .main-content {
@@ -287,42 +251,47 @@
         
         @media (max-width: 768px) {
             .sidebar {
-                width: 70px;
-                overflow: hidden;
+                width: 100%;
+                position: relative;
             }
             
-            .sidebar-brand h2 {
-                display: none;
-            }
-            
-            .sidebar ul li a span {
-                display: none;
-            }
-            
-            .sidebar ul li a i {
-                margin-right: 0;
-                font-size: 1.2rem;
+            .content {
+                margin-left: 0;
             }
             
             .main-content {
-                margin-left: 70px;
-                width: calc(100% - 70px);
+                margin-left: 0;
+                width: 100%;
                 padding: 15px;
             }
             
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .date-filter {
+                width: 100%;
+            }
+            
+            .date-btn {
+                flex-grow: 1;
+            }
+        
             .action-btns {
                 flex-wrap: wrap;
                 gap: 4px;
+                justify-content: center;
             }
             
             .btn-action {
-                padding: 5px 8px;
-                font-size: 0.8rem;
+                padding: 8px 12px;
+                font-size: 14px;
+                min-height: 36px;
             }
             
             .table thead th, 
             .table tbody td {
-                padding: 8px 12px;
+                padding: 12px 15px;
             }
             
             .search-container {
@@ -331,6 +300,10 @@
             
             .search-input {
                 max-width: 100%;
+            }
+        
+            .table-responsive {
+                margin: 0 -15px;
             }
         }
     </style>
@@ -443,9 +416,9 @@
         </div>
     </div>
 
-    @include('Admin.modals.add-truck-modal')
-    @include('Admin.modals.view-truck-modal')
-    @include('Admin.modals.edit-truck-modal')
+    @include('admin.modals.add-truck-modal')
+    @include('admin.modals.view-truck-modal')
+    @include('admin.modals.edit-truck-modal')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

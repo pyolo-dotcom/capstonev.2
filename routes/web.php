@@ -32,15 +32,19 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\TruckController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/', [OTPController::class, 'sendOTP'])->name('login.post');
 
+// Logout Route
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // Admin Routes
 Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
 Route::get('admin/deliveryrecords', [DeliveryRecordsController::class, 'showDeliveryRecords'])->name('admin.deliveryrecords');
-Route::get('admin/get-trip-counts', [DeliveryRecordsController::class, 'getTripCounts']);
+Route::get('/admin/get-trip-counts', [DeliveryRecordsController::class, 'getTripCounts'])->name('admin.get-trip-counts');
 Route::put('/trips/update/{id}', [DeliveryRecordsController::class, 'update'])->name('trips.update');
 Route::delete('/trips/reset', [DeliveryRecordsController::class, 'reset'])->name('trips.reset');
 Route::get('admin/managetrip', [ManageTripController::class, 'ShowManageTrip'])->name('admin.managetrip');
@@ -111,9 +115,11 @@ Route::get('manager/profile', [ProfileManagerController::class, 'showProfileMana
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('trip.archivePage');
 Route::get('manager/helpmanager', [HelpManagerController::class, 'showHelpManager'])->name('manager.helpmanager');
 Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts']);
+Route::get('manager/get-trip-counts', [DeliveryManagerController::class, 'getTripCounts'])->name('manager.get-trip-counts');
 Route::post('/trips/store', [DeliveryManagerController::class, 'store'])->name('trips.store');
 Route::put('/trips/update/{id}', [DeliveryManagerController::class, 'update'])->name('trips.update');
 Route::delete('/trips/reset', [DeliveryManagerController::class, 'reset'])->name('trips.reset');
+Route::delete('/trips/reset-all', [DeliveryManagerController::class, 'resetAll'])->name('trips.reset-all');
 Route::post('/manager/archive-trip/{id}', [ManageTripManagerController::class, 'archive'])->name('trip.archive');
 Route::get('/manager/archive', [ManageTripManagerController::class, 'archivePage'])->name('manager.archive');
 Route::put('/cargo/restore/{id}', [ManageTripManagerController::class, 'restore'])->name('cargo.restore');
@@ -163,9 +169,8 @@ Route::middleware(['auth'])->group(function () {
     // Manager Profile
     Route::prefix('manager')->group(function () {
         Route::get('/profile', [ProfileManagerController::class, 'showProfileManager'])->name('manager.profile');
-        Route::put('/profile/update', [ProfileManagerController::class, 'updateProfileManager'])->name('manager.profile.update');
-        Route::post('/profile/change-password', [ProfileManagerController::class, 'changePasswordManager'])->name('manager.profile.change-password');
-        Route::post('/profile/remove-image', [ProfileManagerController::class, 'removeImage'])->name('manager.profile.remove-image');
+        Route::put('/profile/update', [ProfileManagerController::class, 'updateProfile'])->name('manager.profile.update');
+        Route::post('/profile/change-password', [ProfileManagerController::class, 'changePassword'])->name('manager.profile.change-password');
     });
 
     // Driver Profile
@@ -279,7 +284,6 @@ Route::get('/live-tracking', [ManageGPSController::class, 'showLiveTracking'])->
 Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations']);
 
 // Add these routes
-Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations']);
 Route::get('/get-driver-location/{truck_id}', [ManageGPSController::class, 'getDriverLocation']);
 Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
 
