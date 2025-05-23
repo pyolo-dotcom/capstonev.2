@@ -1,252 +1,197 @@
-<div id="editFuelModal" class="modal">
+<div id="updateFuelModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="document.getElementById('editFuelModal').style.display='none'">&times;</span>
-        <h2 class="modal-title">Edit Fuel Consumption</h2>
-        <form id="editFuelForm" method="POST">
+        <span class="close" onclick="closeUpdateFuelModal()">&times;</span>
+        <h2 style="margin-bottom: 20px;">Update Consumption</h2>
+        <form id="updateFuelForm">
             @csrf
             @method('PUT')
-            <input type="hidden" id="editFuelId" name="id">
-
+            <input type="hidden" id="updateId" name="id">
             <div class="form-group">
-                <label for="editDate">Date:</label>
-                <input type="date" id="editDate" name="date" class="form-control" required>
+                <label for="updateDate">Date:</label>
+                <input type="date" id="updateDate" name="date" required>
             </div>
-
             <div class="form-group">
-                <label for="editPlateNo">Plate No:</label>
-                <select id="editPlateNo" name="plate_no" class="form-control" required>
-                    <option value="">Select Plate Number</option>
-                    <option value="UVP353">UVP353</option>
-                    <option value="TQE262">TQE262</option>
-                    <option value="NBB7212">NBB7212</option>
-                    <option value="APA3309">APA3309</option>
-                    <option value="WIE914">WIE914</option>
+                <label for="updatePlateNo">Plate No.:</label>
+                <select id="updatePlateNo" name="plateNo" required>
+                    <option disabled>-- Plate Number --</option>
+                    @foreach($plateNumbers as $plate)
+                        <option value="{{ $plate }}">{{ $plate }}</option>
+                    @endforeach
                 </select>
             </div>
-
             <div class="form-group">
-                <label for="editTotalKm">Total KM:</label>
-                <input type="number" id="editTotalKm" name="total_km" class="form-control" required>
+                <label for="updateTotalKm">Total Kilometers Traveled:</label>
+                <input type="number" id="updateTotalKm" name="totalKm" required>
             </div>
-
             <div class="form-group">
-                <label for="editAvgKmL">Avg KM/L:</label>
-                <input type="number" step="0.1" id="editAvgKmL" name="avg_km_l" class="form-control" required>
+                <label for="updateAvgKmL">Average Km/L:</label>
+                <input type="number" id="updateAvgKmL" name="avgKmL" step="0.01" required>
             </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update</button>
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editFuelModal').style.display='none'">Cancel</button>
+            <div class="form-group">
+                <label for="updateFuelPrice">Fuel Price per Liter:</label>
+                <input type="number" id="updateFuelPrice" name="fuelPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="updateTotalLiters">Total Liters (Auto-calculated):</label>
+                <input type="text" id="updateTotalLiters" name="totalLiters" readonly>
+            </div>
+            <div class="form-group">
+                <label for="updateTotalCost">Total Cost (Auto-calculated):</label>
+                <input type="number" id="updateTotalCost" name="totalCost" readonly step="0.01">
+            </div>
+            <div class="form-row">
+                <button type="button" onclick="updateFuelConsumption()">Update</button>
             </div>
         </form>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners to the relevant input fields
+        document.getElementById('updateTotalKm').addEventListener('input', calculateTotalLitersAndCost);
+        document.getElementById('updateAvgKmL').addEventListener('input', calculateTotalLitersAndCost);
+        document.getElementById('updateFuelPrice').addEventListener('input', calculateTotalCost);
+    });
 
-<style>
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        overflow: auto;
-        animation: fadeIn 0.3s;
-    }
+    function calculateTotalLitersAndCost() {
+        const totalKm = parseFloat(document.getElementById('updateTotalKm').value);
+        const avgKmL = parseFloat(document.getElementById('updateAvgKmL').value);
+        const fuelPrice = parseFloat(document.getElementById('updateFuelPrice').value);
 
-    .modal-content {
-        background-color: #f8f9fa;
-        margin: 10% auto;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        width: 100%;
-        max-width: 500px;
-        position: relative;
-    }
+        if (!isNaN(totalKm) && !isNaN(avgKmL)) {
+            const totalLiters = totalKm / avgKmL;
+            document.getElementById('updateTotalLiters').value = totalLiters.toFixed(2);
 
-    .close {
-        position: absolute;
-        right: 20px;
-        top: 15px;
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: color 0.3s;
-    }
-
-    .close:hover {
-        color: #333;
-    }
-
-    .modal-title {
-        color: #2c3e50;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    /* Form Styles */
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #495057;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 15px;
-        font-size: 16px;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        background-color: #fff;
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    .form-control:focus {
-        border-color: #80bdff;
-        outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-
-    select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 1em;
-    }
-
-    /* Button Styles */
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 25px;
-    }
-
-    .btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .btn-primary {
-        background-color: #3490dc;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #227dc7;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .modal-content {
-            margin: 20% auto;
-            width: 90%;
+            if (!isNaN(fuelPrice)) {
+                const totalCost = totalLiters * fuelPrice;
+                document.getElementById('updateTotalCost').value = totalCost.toFixed(2);
+            }
         }
     }
-</style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle form submission
-    document.getElementById('editFuelForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const id = document.getElementById('editFuelId').value;
-        
-        fetch(`/admin/fuel/update/${id}`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'X-HTTP-Method-Override': 'PUT'
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: data.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                setTimeout(() => window.location.reload(), 2000);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating fuel data.',
-            });
-        });
-    });
-});
+    function calculateTotalCost() {
+        const totalLiters = parseFloat(document.getElementById('updateTotalLiters').value);
+        const fuelPrice = parseFloat(document.getElementById('updateFuelPrice').value);
 
-function editFuel(id) {
-    fetch(`/admin/fuel/edit/${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                document.getElementById('editFuelId').value = data.id;
-                document.getElementById('editDate').value = data.date;
-                document.getElementById('editPlateNo').value = data.plate_no;
-                document.getElementById('editTotalKm').value = data.total_km;
-                document.getElementById('editAvgKmL').value = data.avg_km_l;
+        if (!isNaN(totalLiters) && !isNaN(fuelPrice)) {
+            const totalCost = totalLiters * fuelPrice;
+            document.getElementById('updateTotalCost').value = totalCost.toFixed(2);
+        }
+    }
 
-                let modal = document.getElementById('editFuelModal');
-                modal.style.display = "block";
-            } else {
-                console.error("No data found for ID:", id);
+    function editFuel(id) {
+        fetch(`/admin/fuel/edit/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.data) {
+                    const fuelData = data.data;
+                    const formattedDate = new Date(fuelData.date).toISOString().split('T')[0];
+                    
+                    openUpdateFuelModal({
+                        id: fuelData.id,
+                        date: formattedDate,
+                        plateNo: fuelData.plate_no,
+                        totalKm: fuelData.total_km,
+                        avgKmL: fuelData.avg_km_l,
+                        fuelPrice: fuelData.fuel_price,
+                        totalLiters: fuelData.total_liters,
+                        totalCost: fuelData.total_cost
+                    });
+                } else {
+                    throw new Error('Invalid data format from server');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching fuel data:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'No data found for this record.',
+                    text: 'Failed to fetch fuel data: ' + error.message,
                 });
+            });
+    }
+
+    function openUpdateFuelModal(consumption) {
+        document.getElementById('updateId').value = consumption.id;
+        document.getElementById('updateDate').value = consumption.date;
+        document.getElementById('updatePlateNo').value = consumption.plateNo;
+        document.getElementById('updateTotalKm').value = consumption.totalKm;
+        document.getElementById('updateAvgKmL').value = consumption.avgKmL;
+        document.getElementById('updateFuelPrice').value = consumption.fuelPrice;
+        document.getElementById('updateTotalLiters').value = consumption.totalLiters;
+        document.getElementById('updateTotalCost').value = consumption.totalCost;
+        
+        document.getElementById('updateFuelModal').style.display = 'block';
+    }
+
+    function closeUpdateFuelModal() {
+        document.getElementById('updateFuelModal').style.display = 'none';
+    }
+
+    function updateFuelConsumption() {
+        const id = document.getElementById('updateId').value;
+        const date = document.getElementById('updateDate').value;
+        const plateNo = document.getElementById('updatePlateNo').value;
+        const totalKm = document.getElementById('updateTotalKm').value;
+        const avgKmL = document.getElementById('updateAvgKmL').value;
+        const fuelPrice = document.getElementById('updateFuelPrice').value;
+        const totalLiters = document.getElementById('updateTotalLiters').value;
+        const totalCost = document.getElementById('updateTotalCost').value;
+
+        const data = {
+            id,
+            date,
+            plateNo,
+            totalKm,
+            avgKmL,
+            fuelPrice,
+            totalLiters,
+            totalCost,
+            _method: 'PUT',
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        };
+
+        console.log('Data being sent to server:', data);
+
+        fetch(`/admin/fuel/update/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response from server:', data);
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Fuel consumption updated successfully',
+                });
+                closeUpdateFuelModal();
+                // Optionally, refresh the data on the page
+            } else {
+                throw new Error('Failed to update fuel consumption');
             }
         })
         .catch(error => {
-            console.error('Error fetching fuel data:', error);
+            console.error('Error updating fuel consumption:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Failed to fetch fuel data.',
+                text: 'Failed to update fuel consumption: ' + error.message,
             });
         });
-}
+    }
 </script>

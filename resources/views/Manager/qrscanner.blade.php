@@ -159,10 +159,11 @@
         </div>
     </div>
 
-    <script>
+     <script>
         let scanner;
         let currentCameraId = null;
         let cameras = [];
+        let scannedCodes = new Set(); // Set to store scanned QR codes
 
         function startScanner(cameraId) {
             if (scanner) {
@@ -181,6 +182,12 @@
                 cameraId,
                 { fps: 10, qrbox: { width: 350, height: 350 }, aspectRatio: 1.0, disableFlip: true },
                 (decodedText) => {
+                    if (scannedCodes.has(decodedText)) {
+                        console.warn("QR code already scanned:", decodedText);
+                        Swal.fire({ title: 'Duplicate QR Code', text: 'This QR code has already been scanned.', icon: 'warning' });
+                        return;
+                    }
+
                     try {
                         let scannedData;
                         try {
@@ -196,6 +203,7 @@
                         console.log("Processed scanned data:", scannedData);
                         document.getElementById('result').innerText = "Scanned Data: " + JSON.stringify(scannedData);
                         localStorage.setItem("scannedCargoData", JSON.stringify(scannedData));
+                        scannedCodes.add(decodedText); // Add the scanned QR code to the set
                         sendScannedData(scannedData);
                     } catch (error) {
                         console.error("Error processing scanned data:", error);

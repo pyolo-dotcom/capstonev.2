@@ -235,6 +235,24 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Added styles for Excel export button */
+        .header-section .d-flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header-section .d-flex {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .header-section .d-flex .add-trip-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -257,9 +275,14 @@
                     @endforeach
                 </select>
             </div>
-            <button class="add-trip-btn" id="openModal">
-                <i class="fas fa-plus"></i> Add Trip
-            </button>
+            <div class="d-flex">
+                <button class="add-trip-btn" id="exportToExcel">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+                <button class="add-trip-btn" id="openModal">
+                    <i class="fas fa-plus"></i> Add Trip
+                </button>
+            </div>
         </div>
 
         <!-- Trip Counts Section -->
@@ -331,6 +354,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
 
     <script>
         var tripStoreUrl = @json(route('trips.store'));
@@ -507,6 +531,54 @@
                         });
                     }
                 });
+            });
+            
+            // Excel Export Functionality
+            $("#exportToExcel").click(function() {
+                // Get the selected plate number
+                const plateNo = $("#plateNumberSelect").val();
+                let fileName = "Trip_Data";
+                
+                if (plateNo && plateNo !== 'all') {
+                    fileName = `Trip_Data_${plateNo.replace(/\s+/g, '_')}`;
+                }
+                
+                // Prepare the data for export
+                let data = [];
+                const headers = ["Plate Number", "Trip Type", "Number of Trips"];
+                data.push(headers);
+                
+                // Filter rows based on selection
+                $("#tripTableBody tr").each(function() {
+                    if ($(this).data("id")) { // Skip the "no data" row
+                        const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "").toUpperCase();
+                        const selectedPlate = plateNo === 'all' ? null : plateNo.replace(/\s+/g, "").toUpperCase();
+                        
+                        if (!selectedPlate || rowPlate === selectedPlate) {
+                            const rowData = [
+                                $(this).find("td:eq(0)").text().trim(),
+                                $(this).find("td:eq(1)").text().trim(),
+                                $(this).find("td:eq(2)").text().trim()
+                            ];
+                            data.push(rowData);
+                        }
+                    }
+                });
+                
+                // If no data (only headers), add a message
+                if (data.length === 1) {
+                    data.push(["No data available", "", ""]);
+                }
+                
+                // Create worksheet
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Trip Data");
+                
+                // Export the file
+                XLSX.writeFile(wb, `${fileName}.xlsx`);
             });
             
             // Modal controls

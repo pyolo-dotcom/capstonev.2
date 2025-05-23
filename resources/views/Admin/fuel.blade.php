@@ -14,6 +14,8 @@
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -186,7 +188,6 @@
             top: 0;
         }
 
-        /* Bagong CSS para sa Actions column */
         .fuel-table th:last-child {
             text-align: center;
         }
@@ -198,7 +199,6 @@
             color: #495057;
         }
 
-        /* Bagong CSS para sa Actions buttons container */
         .fuel-table td:last-child {
             text-align: center;
             padding: 8px;
@@ -267,11 +267,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .fuel-table td:last-child {
-            padding: 8px;
-            vertical-align: middle;
-        }
-
         .pagination-controls {
             display: flex;
             justify-content: space-between;
@@ -318,6 +313,12 @@
             font-style: italic;
         }
 
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -338,6 +339,10 @@
             
             .date-btn {
                 flex-grow: 1;
+            }
+
+            .btn-container {
+                flex-direction: column;
             }
         }
     </style>
@@ -374,9 +379,14 @@
                 </div>
             </div>
 
-            <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-                <i class="fas fa-plus"></i> Add Consumption
-            </button>
+            <div class="btn-container">
+                <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
+                    <i class="fas fa-plus"></i> Add Consumption
+                </button>
+                <button class="export-btn" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
 
             <div class="chart-container">
                 <canvas id="fuelChart"></canvas>
@@ -391,6 +401,8 @@
                             <th>Total KM</th>
                             <th>Avg KM/L</th>
                             <th>Total Liters</th>
+                            <th>Fuel Price</th>
+                            <th>Total Cost</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -402,12 +414,14 @@
                             <td>{{ number_format($data->total_km, 2) }}</td>
                             <td>{{ number_format($data->avg_km_l, 2) }}</td>
                             <td>{{ number_format($data->total_liters, 2) }}</td>
+                            <td>{{ number_format($data->fuel_price, 2) }}</td>
+                            <td>{{ number_format($data->total_cost, 2) }}</td>
                             <td>
                                 <div class="actions">
                                     <button class="edit-btn" onclick="editFuel({{ $data->id }})" title="Edit">
                                         <i class="fa-solid fa-pen-to-square"></i> Edit
                                     </button>
-                                
+                                    
                                     <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -427,7 +441,7 @@
                 <div class="page-info" id="pageInfo">Showing 1-10 of {{ $fuelData->count() }} records</div>
                 <div class="page-buttons">
                     <button class="page-btn" id="prevPage" disabled>Previous</button>
-                    <button class="page-btn" id="nextPage" disabled>Next</button>
+                    <button class="page-btn" id="nextPage">Next</button>
                 </div>
             </div>
         </div>
@@ -458,6 +472,8 @@
                     total_km: parseFloat(cells[2].textContent.replace(',', '')),
                     avg_km_l: parseFloat(cells[3].textContent.replace(',', '')),
                     total_liters: parseFloat(cells[4].textContent.replace(',', '')),
+                    fuel_price: parseFloat(cells[5].textContent.replace(',', '')),
+                    total_cost: parseFloat(cells[6].textContent.replace(',', '')),
                     element: row
                 };
             });
@@ -480,11 +496,12 @@
                 // For "All Trucks", we'll aggregate the data from our existing dataset
                 if (plateNumber === "all") {
                     const filtered = filterDataByTimeRange(allData, timeFilter);
-                    const aggregatedData = aggregateDataByDate(filtered);
+                    const { data: aggregatedData, plateNumbers } = aggregateDataByDate(filtered);
                     updateFuelChart(
                         aggregatedData.map(item => item.dateString),
                         aggregatedData.map(item => item.total_km),
-                        aggregatedData.map(item => item.total_liters)
+                        aggregatedData.map(item => item.total_liters),
+                        plateNumbers
                     );
                     fuelChartCanvas.style.display = 'block';
                 } else {
@@ -511,6 +528,7 @@
 
             function aggregateDataByDate(data) {
                 const dateMap = {};
+                const plateNumbersMap = {};
                 
                 data.forEach(item => {
                     const dateStr = item.dateString;
@@ -520,21 +538,34 @@
                             total_km: 0,
                             total_liters: 0
                         };
+                        plateNumbersMap[dateStr] = new Set();
                     }
                     dateMap[dateStr].total_km += item.total_km;
                     dateMap[dateStr].total_liters += item.total_liters;
+                    plateNumbersMap[dateStr].add(item.plate_no);
                 });
                 
-                return Object.values(dateMap).sort((a, b) => new Date(a.dateString) - new Date(b.dateString));
+                // Convert sets to comma-separated strings
+                const plateNumbers = Object.values(dateMap).map((item, index) => {
+                    const dateStr = item.dateString;
+                    return Array.from(plateNumbersMap[dateStr]).join(', ');
+                });
+                
+                return {
+                    data: Object.values(dateMap).sort((a, b) => new Date(a.dateString) - new Date(b.dateString)),
+                    plateNumbers: plateNumbers
+                };
             }
 
-            function updateFuelChart(labels, kilometers, fuelUsed) {
+            function updateFuelChart(labels, kilometers, fuelUsed, plateNumbers = []) {
                 if (fuelChart) {
                     fuelChart.destroy();
                 }
 
+                const isAllTrucks = selectedPlateNumber === "all";
+                
                 fuelChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: labels,
                         datasets: [
@@ -543,27 +574,54 @@
                                 data: kilometers,
                                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                                 borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1,
-                                yAxisID: 'y1'
+                                borderWidth: 2,
+                                tension: 0.3,
+                                yAxisID: 'y1',
+                                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             },
                             {
                                 label: 'Fuel Consumption (L)',
                                 data: fuelUsed,
                                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                 borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 1,
-                                yAxisID: 'y2'
+                                borderWidth: 2,
+                                tension: 0.3,
+                                yAxisID: 'y2',
+                                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    afterLabel: function(context) {
+                                        if (isAllTrucks && plateNumbers[context.dataIndex]) {
+                                            return `Plate: ${plateNumbers[context.dataIndex]}`;
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        },
                         scales: {
                             x: {
                                 title: {
                                     display: true,
                                     text: 'Date'
+                                },
+                                grid: {
+                                    display: false
                                 }
                             },
                             y1: {
@@ -572,6 +630,9 @@
                                 title: {
                                     display: true,
                                     text: 'Kilometers (KM)'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
                                 }
                             },
                             y2: {
@@ -610,6 +671,59 @@
                 
                 // Sort by date (newest first)
                 return filtered.sort((a, b) => b.date - a.date);
+            }
+
+            // Initialize pagination with proper event listeners
+            function initializePagination() {
+                filteredData = [...allData];
+                updateTable();
+                
+                // Add event listeners to pagination buttons
+                document.getElementById('prevPage').addEventListener('click', goToPreviousPage);
+                document.getElementById('nextPage').addEventListener('click', goToNextPage);
+            }
+
+            function goToPreviousPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateTable();
+                }
+            }
+
+            function goToNextPage() {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateTable();
+                }
+            }
+
+            function updateTable() {
+                const startIndex = (currentPage - 1) * rowsPerPage;
+                const endIndex = startIndex + rowsPerPage;
+                const paginatedData = filteredData.slice(startIndex, endIndex);
+                
+                // Hide all rows first
+                document.querySelectorAll('#fuelTableBody tr').forEach(row => {
+                    row.style.display = 'none';
+                });
+                
+                // Show only the rows for the current page
+                paginatedData.forEach(item => {
+                    item.element.style.display = '';
+                });
+                
+                updatePaginationControls();
+            }
+
+            function updatePaginationControls() {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                const startItem = (currentPage - 1) * rowsPerPage + 1;
+                const endItem = Math.min(currentPage * rowsPerPage, filteredData.length);
+                
+                document.getElementById('pageInfo').textContent = `Showing ${startItem}-${endItem} of ${filteredData.length} records`;
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
             }
 
             // Handle plate number selection
@@ -655,6 +769,7 @@
                     selectedTimeFilter = this.getAttribute('data-filter');
                     document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
+                    currentPage = 1;
                     
                     // Re-filter the data with the new time range
                     let filteredByPlate = [];
@@ -680,44 +795,11 @@
             });
         });
 
-        function initializePagination() {
-            filteredData = [...allData];
-            updateTable();
-        }
-
         function hideAllData() {
             allData.forEach(item => {
                 item.element.style.display = 'none';
             });
             document.getElementById('paginationControls').style.display = 'none';
-        }
-
-        function updateTable() {
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = startIndex + rowsPerPage;
-            const paginatedData = filteredData.slice(startIndex, endIndex);
-            
-            // Hide all rows first
-            allData.forEach(item => {
-                item.element.style.display = 'none';
-            });
-            
-            // Show only the rows for the current page
-            paginatedData.forEach(item => {
-                item.element.style.display = '';
-            });
-            
-            updatePagination();
-        }
-        
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-            const startItem = (currentPage - 1) * rowsPerPage + 1;
-            const endItem = Math.min(currentPage * rowsPerPage, filteredData.length);
-            
-            document.getElementById('pageInfo').textContent = `Showing ${startItem}-${endItem} of ${filteredData.length} records`;
-            document.getElementById('prevPage').disabled = currentPage === 1;
-            document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
         }
 
         function openFuelModal() {
@@ -772,24 +854,29 @@
 
         function editFuel(id) {
             fetch(`/admin/fuel/edit/${id}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    if (data) {
-                        document.getElementById('editFuelId').value = data.id;
-                        document.getElementById('editDate').value = data.date;
-                        document.getElementById('editPlateNo').value = data.plate_no;
-                        document.getElementById('editTotalKm').value = data.total_km;
-                        document.getElementById('editAvgKmL').value = data.avg_km_l;
-
-                        let modal = document.getElementById('editFuelModal');
-                        modal.style.display = "block";
-                    } else {
-                        console.error("No data found for ID:", id);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'No data found for this record.',
+                    if (data.success && data.data) {
+                        const fuelData = data.data;
+                        const formattedDate = new Date(fuelData.date).toISOString().split('T')[0];
+                        
+                        openUpdateFuelModal({
+                            id: fuelData.id,
+                            date: formattedDate,
+                            plateNo: fuelData.plate_no,
+                            totalKm: fuelData.total_km,
+                            avgKmL: fuelData.avg_km_l,
+                            fuelPrice: fuelData.fuel_price,
+                            totalLiters: fuelData.total_liters,
+                            totalCost: fuelData.total_cost
                         });
+                    } else {
+                        throw new Error('Invalid data format from server');
                     }
                 })
                 .catch(error => {
@@ -797,9 +884,22 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Failed to fetch fuel data.',
+                        text: 'Failed to fetch fuel data: ' + error.message,
                     });
                 });
+        }
+
+        function openUpdateFuelModal(consumption) {
+            document.getElementById('updateId').value = consumption.id;
+            document.getElementById('updateDate').value = consumption.date;
+            document.getElementById('updatePlateNo').value = consumption.plateNo;
+            document.getElementById('updateTotalKm').value = consumption.totalKm;
+            document.getElementById('updateAvgKmL').value = consumption.avgKmL;
+            document.getElementById('updateFuelPrice').value = consumption.fuelPrice;
+            document.getElementById('updateTotalLiters').value = consumption.totalLiters;
+            document.getElementById('updateTotalCost').value = consumption.totalCost;
+            
+            document.getElementById('updateFuelModal').style.display = 'block';
         }
 
         function confirmArchive(id) {
@@ -813,44 +913,94 @@
                 confirmButtonText: 'Yes, archive it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('archiveForm' + id).submit();
+                    archiveFuel(id);
                 }
             });
         }
 
-        window.onclick = function(event) {
-            let modal = document.getElementById('editFuelModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-            
-            let fuelModal = document.getElementById('fuelModal');
-            if (event.target == fuelModal) {
-                fuelModal.style.display = "none";
-            }
-        };
-
         function archiveFuel(id) {
-        if (confirm('Are you sure you want to archive this fuel consumption record?')) {
             fetch(`/admin/fuel/archive/${id}`, {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.reload();
+                    Swal.fire(
+                        'Archived!',
+                        'The fuel consumption record has been archived.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
                 } else {
-                    alert('Error archiving fuel consumption');
+                    Swal.fire(
+                        'Error!',
+                        'There was an error archiving the fuel consumption record.',
+                        'error'
+                    );
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error archiving fuel consumption');
+                Swal.fire(
+                    'Error!',
+                    'There was an error archiving the fuel consumption record.',
+                    'error'
+                );
             });
         }
-    }
+
+        function exportToExcel() {
+            // Get the table element
+            const table = document.getElementById('fuelTable');
+            
+            // Clone the table to avoid modifying the original
+            const tableClone = table.cloneNode(true);
+            
+            // Remove the Actions column from the clone
+            const actionHeaderIndex = 7; // Actions is the 8th column (0-based index 7)
+            
+            // Remove actions column from header
+            const headerRow = tableClone.querySelector('thead tr');
+            if (headerRow && headerRow.cells.length > actionHeaderIndex) {
+                headerRow.deleteCell(actionHeaderIndex);
+            }
+            
+            // Remove actions column from each data row
+            const dataRows = tableClone.querySelectorAll('tbody tr');
+            dataRows.forEach(row => {
+                if (row.cells.length > actionHeaderIndex) {
+                    row.deleteCell(actionHeaderIndex);
+                }
+            });
+            
+            // Convert the table to a worksheet
+            const worksheet = XLSX.utils.table_to_sheet(tableClone);
+            
+            // Create a new workbook
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Fuel Data");
+            
+            // Generate filename with current date and time
+            const now = new Date();
+            const formattedDate = now.toISOString().slice(0, 10);
+            const formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '-');
+            const filename = `Fuel_Data_${formattedDate}_${formattedTime}.xlsx`;
+            
+            // Export the workbook
+            XLSX.writeFile(workbook, filename);
+            
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Export Successful',
+                text: `Fuel data has been exported to ${filename}`,
+                timer: 3000,
+                showConfirmButton: false
+            });
+        }
     </script>
 </body>
 </html>

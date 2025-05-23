@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary-color: #3498db;
@@ -191,6 +193,18 @@
         
         .btn-archive:hover {
             background-color: #e67e22;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-export {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn-export:hover {
+            background-color: #27ae60;
             color: white;
             transform: translateY(-1px);
         }
@@ -453,9 +467,14 @@
     <div class="content">
         <div class="header">
             <h2><i class="fas fa-chart-line me-2"></i>Profit Reports Management</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profitModal">
-                <i class="fas fa-plus me-2"></i>Add Profit Record
-            </button>
+            <div>
+                <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#profitModal">
+                    <i class="fas fa-plus me-2"></i>Add Profit Record
+                </button>
+                <button class="btn btn-success" onclick="exportProfitToExcel()">
+                    <i class="fas fa-file-excel me-2"></i>Export to Excel
+                </button>
+            </div>
         </div>
         
         <!-- Enhanced Filter Section -->
@@ -490,6 +509,9 @@
         <div class="card">
             <div class="card-header">
                 <h3><i class="fas fa-table me-2"></i>Profit Reports</h3>
+                <button class="btn-action btn-export" onclick="exportProfitToExcel()">
+                    <i class="fas fa-file-excel me-1"></i>Export
+                </button>
             </div>
             <div class="card-body">
                 @if($profits->count() > 0)
@@ -843,6 +865,46 @@
             const income = parseFloat(document.getElementById(`edit_total_income-${id}`).value) || 0;
             const expenses = parseFloat(document.getElementById(`edit_total_expenses-${id}`).value) || 0;
             document.getElementById(`edit_total_profit-${id}`).value = (income - expenses).toFixed(2);
+        }
+
+        // Excel Export Function
+        function exportProfitToExcel() {
+            // Get the filtered data
+            const filteredData = applyFilters();
+            
+            // Prepare the data for export
+            const exportData = filteredData.map(profit => ({
+                'Date': profit.date,
+                'Plate Number': profit.plate_number,
+                'Total Income': profit.total_income,
+                'Total Expenses': profit.total_expenses,
+                'Total Profit': profit.total_profit
+            }));
+            
+            // Create worksheet
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            
+            // Create workbook
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Profit Data");
+            
+            // Generate filename with current date and time
+            const now = new Date();
+            const formattedDate = now.toISOString().slice(0, 10);
+            const formattedTime = now.toTimeString().slice(0, 8).replace(/:/g, '-');
+            const filename = `Profit_Reports_${formattedDate}_${formattedTime}.xlsx`;
+            
+            // Export the workbook
+            XLSX.writeFile(workbook, filename);
+            
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Export Successful',
+                text: `Profit data has been exported to ${filename}`,
+                timer: 3000,
+                showConfirmButton: false
+            });
         }
 
         // Initialize with weekly data

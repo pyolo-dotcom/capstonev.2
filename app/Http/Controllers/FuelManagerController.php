@@ -18,29 +18,51 @@ class FuelManagerController extends Controller
         return view('manager.fuel', compact('plateNumbers'));
     }
 
-    public function store(Request $request)
-    {
-        \Log::info('Received data:', $request->all()); // Log request data
-    
-        $request->validate([
+public function store(Request $request)
+{
+    try {
+        // Validate the request data
+        $validated = $request->validate([
             'date' => 'required|date',
-            'plateNo' => 'required|string',
-            'totalKm' => 'required|integer',
-            'avgKmL' => 'required|numeric',
+            'plateNo' => 'required|string|max:255',
+            'totalKm' => 'required|numeric|min:0',
+            'avgKmL' => 'required|numeric|min:0.1',
+            'totalLiters' => 'required|numeric|min:0',
+            'fuelPrice' => 'required|numeric|min:0',
+            'totalCost' => 'required|numeric|min:0',
         ]);
-    
-        $totalLiters = $request->totalKm / $request->avgKmL;
-    
-        FuelConsumption::create([
-            'date' => $request->date,
-            'plate_no' => $request->plateNo,
-            'total_km' => $request->totalKm,
-            'avg_km_l' => $request->avgKmL,
-            'total_liters' => $totalLiters,
+
+        // Create new record
+        $consumption = FuelConsumption::create([
+            'date' => $validated['date'],
+            'plate_no' => $validated['plateNo'],
+            'total_km' => $validated['totalKm'],
+            'avg_km_l' => $validated['avgKmL'],
+            'total_liters' => $validated['totalLiters'],
+            'fuel_price' => $validated['fuelPrice'],
+            'total_cost' => $validated['totalCost'],
         ]);
-    
-        return response()->json(['success' => true, 'message' => 'Fuel consumption added successfully!'], 200);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fuel consumption added successfully!',
+            'data' => $consumption
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        \Log::error('Fuel consumption save error: '.$e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Server error: '.$e->getMessage()
+        ], 500);
     }
+}
     
     public function getFuelAnalytics(Request $request)
     {

@@ -10,5 +10,14 @@ class FuelConsumption extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['date', 'plate_no', 'total_km', 'avg_km_l', 'total_liters'];
+protected $fillable = [
+    'date',
+    'plate_no',
+    'total_km',
+    'avg_km_l',
+    'total_liters',
+    'fuel_price',
+    'total_cost',
+];
+
 }

@@ -183,13 +183,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Fuel Routes
-Route::get('admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
-Route::put('admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update');
-Route::delete('admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
+Route::post('/fuel-consumption', [FuelController::class, 'store']);
+Route::get('/admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
+Route::put('/admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update'); // Change to PUT
+Route::post('/admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
+// Archive Routes
 Route::put('admin/archive/restore/fuel/{id}', [ArchiveController::class, 'restoreFuel'])->name('admin.archive.restore.fuel');
 Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'destroyFuel'])->name('admin.archive.delete.fuel');
-
-// Trip Archive Routes
 Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTrip'])->name('admin.archive.trip');
 Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
 Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');
