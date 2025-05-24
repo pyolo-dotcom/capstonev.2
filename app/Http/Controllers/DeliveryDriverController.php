@@ -5,13 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Trip;
-use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DeliveryDriverController extends Controller
 {
-    public function index(){
-        return view('driver.deliveryrecords');
+    public function index()
+    {
+        // Get the current authenticated user
+        $user = Auth::user();
+        
+        return view('driver.deliveryrecords', [
+            'plateNumber' => $user->truck_id,
+            'driverName' => $user->fullname
+        ]);
     }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -28,41 +37,41 @@ class DeliveryDriverController extends Controller
     
         return response()->json(['success' => 'Trip added successfully!']);
     }
+
     public function getTripCounts(Request $request)
-{
-    // Remove spaces from plate number to match database format
-    $plateNo = str_replace(' ', '', $request->input('plate_no'));
-
-    Log::info("Received Plate Number (Formatted): " . $plateNo); // Debugging
-
-    // Define separate queries for each trip type
-    $oneWayTripQuery = Trip::query();
-    $roundTripQuery = Trip::query();
-    $doorToDoorTripQuery = Trip::query();
-
-    if ($plateNo !== 'All') {
-        $oneWayTripQuery->where('plate_no', $plateNo);
-        $roundTripQuery->where('plate_no', $plateNo);
-        $doorToDoorTripQuery->where('plate_no', $plateNo);
-    }
-
-    // Sum num_trips for each trip type separately
-    $oneWayTrip = $oneWayTripQuery->where('trip_type', 'One Way Trip')->sum('num_trips');
-    $roundTrip = $roundTripQuery->where('trip_type', 'Round Trip')->sum('num_trips');
-    $doorToDoorTrip = $doorToDoorTripQuery->where('trip_type', 'Door-To-Door Trip')->sum('num_trips');
-
-    // Debugging output
-    Log::info("Trip Counts: ", [
-        'plateNo' => $plateNo,
-        'oneWayTrip' => $oneWayTrip,
-        'roundTrip' => $roundTrip,
-        'doorToDoorTrip' => $doorToDoorTrip
-    ]);
-
-    return response()->json([
-        'oneWayTrip' => $oneWayTrip,
-        'roundTrip' => $roundTrip,
-        'doorToDoorTrip' => $doorToDoorTrip,
-    ]);
-}
+    {
+        // Get the current authenticated user's truck_id (plate number)
+        $plateNo = Auth::user()->truck_id;
+        
+        // Remove spaces from the plate number to match database format
+        $plateNo = str_replace(' ', '', $plateNo);
+    
+        Log::info("Fetching trip counts for plate: " . $plateNo);
+    
+        // Fetch trip data from the database
+        $trips = Trip::whereRaw("REPLACE(plate_no, ' ', '') = ?", [$plateNo])
+            ->groupBy('trip_type')
+            ->selectRaw('trip_type, SUM(num_trips) as total_trips')
+            ->get();
+    
+        // Initialize counts
+        $counts = [
+            'oneWayTrip' => 0,
+            'roundTrip' => 0,
+            'doorToDoorTrip' => 0
+        ];
+    
+        // Map the results
+        foreach ($trips as $trip) {
+            if ($trip->trip_type === 'One Way Trip') {
+                $counts['oneWayTrip'] = $trip->total_trips;
+            } elseif ($trip->trip_type === 'Round Trip') {
+                $counts['roundTrip'] = $trip->total_trips;
+            } elseif ($trip->trip_type === 'Door-To-Door Trip') {
+                $counts['doorToDoorTrip'] = $trip->total_trips;
+            }
+        }
+    
+        return response()->json($counts);
+    }     
 }
