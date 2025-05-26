@@ -52,23 +52,44 @@
             min-height: 100vh;
         }
         
-        /* Tanggalin ang mga lumang sidebar styles */
+        /* Header button container */
+        .header > div {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        /* Filter section layout */
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        /* Plate filter group - align left */
+        .filter-group:first-child {
+            order: 1;
+            margin-right: auto;
+        }
+
+        /* Time filter group - align right */
+        .filter-group:nth-child(2) {
+            order: 2;
+            margin-left: auto;
+        }
+
+        /* Plate filter container */
+        .plate-filter {
+            display: flex;
+            align-items: center;
+        }
+        
         .sidebar-brand {
             display: none;
         }
         
-        /* I-update ang mobile view */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-            }
-            
-            .content {
-                margin-left: 0;
-            }
-        }
-        
+
         .main-content {
             margin-left: 250px;
             padding: 25px;
@@ -197,17 +218,7 @@
             transform: translateY(-1px);
         }
 
-        .btn-export {
-            background-color: var(--success-color);
-            color: white;
-            border: none;
-        }
-        
-        .btn-export:hover {
-            background-color: #27ae60;
-            color: white;
-            transform: translateY(-1px);
-        }
+       
         
         .empty-message {
             padding: 40px;
@@ -228,10 +239,6 @@
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 25px;
         }
         
         .filter-group {
@@ -282,12 +289,6 @@
             transform: translateY(-1px);
         }
         
-        .plate-filter {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
-        
         #plateNumberSelect {
             padding: 10px 15px;
             border-radius: 8px;
@@ -329,7 +330,42 @@
         .modal-footer {
             border-top: 1px solid #eee;
         }
-        
+        /*added*/
+        .profit-btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.btn-export {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-export:hover {
+    background-color: #27ae60;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Optional: prevent stacking on smaller screens */
+@media (max-width: 600px) {
+    .profit-btn-container {
+        flex-wrap: nowrap;
+    }
+
+    .btn-export,
+    .btn-primary {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .filter-section {
@@ -342,7 +378,7 @@
             }
         }
         
-        @media (max-width: 768px) {
+      @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 position: relative;
@@ -352,92 +388,20 @@
                 margin-left: 0;
             }
             
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 15px;
-            }
-            
-            .filter-container {
-                flex-direction: column;
-            }
-            
-            .date-filter {
-                width: 100%;
-            }
-            
-            .date-btn {
-                flex-grow: 1;
-            }
-
-            .action-btns {
-                flex-wrap: wrap;
-                gap: 4px;
-                justify-content: center;
-            }
-            
-            .btn-action {
-                padding: 8px 12px;
-                font-size: 14px;
-                min-height: 36px;
-            }
-            
-            .table thead th, 
-            .table tbody td {
-                padding: 12px 15px;
-            }
-            
-            .search-container {
-                flex-direction: column;
-            }
-            
-            .search-input {
-                max-width: 100%;
-            }
-
-            .table-responsive {
-                margin: 0 -15px;
-            }
-            
             .filter-section {
                 flex-direction: column;
-                align-items: stretch;
                 gap: 15px;
-                padding: 15px;
             }
             
-            .plate-filter {
-                margin-left: 0;
+            .filter-group:first-child,
+            .filter-group:nth-child(2) {
+                order: initial;
+                margin: 0;
+                width: 100%;
             }
             
             .time-filter {
-                flex-wrap: wrap;
-                justify-content: stretch;
-            }
-            
-            .time-filter-btn {
-                flex: 1 1 100px;
-                text-align: center;
-                justify-content: center;
-                padding: 10px;
-            }
-            
-            #plateNumberSelect {
-                width: 100%;
-            }
-            
-            .header h2 {
-                font-size: 1.5rem;
-            }
-            
-            .actions {
-                flex-direction: column;
-                gap: 6px;
-            }
-            
-            .btn-action {
-                width: 100%;
-                justify-content: center;
+                justify-content: flex-start;
             }
         }
 
@@ -465,22 +429,28 @@
     </div>
 
     <div class="content">
-        <div class="header">
+        
             <h2><i class="fas fa-chart-line me-2"></i>Profit Reports Management</h2>
             <div>
-                <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#profitModal">
-                    <i class="fas fa-plus me-2"></i>Add Profit Record
-                </button>
-                <button class="btn btn-success" onclick="exportProfitToExcel()">
-                    <i class="fas fa-file-excel me-2"></i>Export to Excel
-                </button>
-            </div>
-        </div>
+               
+           
+     
         
         <!-- Enhanced Filter Section -->
         <div class="filter-section">
             <div class="filter-group">
-                <span class="filter-label">Time Period:</span>
+                <div class="plate-filter">
+                    <label for="plateNumberSelect" class="filter-label me-2">Truck:</label>
+                    <select id="plateNumberSelect" class="form-select">
+                        <option value="all" selected>All Trucks</option>
+                        @foreach($plateNumbers as $plateNumber)
+                            <option value="{{ $plateNumber }}">{{ $plateNumber }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-group">
                 <div class="time-filter">
                     <button class="time-filter-btn active" id="weeklyFilter">
                         <i class="fas fa-calendar-week me-1"></i> Weekly
@@ -493,25 +463,21 @@
                     </button>
                 </div>
             </div>
-            
-            <div class="plate-filter">
-                <label for="plateNumberSelect" class="filter-label me-2">Truck:</label>
-                <select id="plateNumberSelect" class="form-select">
-                    <option value="all" selected>All Trucks</option>
-                    @foreach($plateNumbers as $plateNumber)
-                        <option value="{{ $plateNumber }}">{{ $plateNumber }}</option>
-                    @endforeach
-                </select>
-            </div>
         </div>
-        
+         <!--changes-->
+         <div class="profit-btn-container">
+    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#profitModal">
+        <i class="fas fa-plus me-2"></i>Add Profit Record
+    </button>
+    <button class="btn btn-success btn-export" onclick="exportProfitToExcel()">
+        <i class="fas fa-file-excel me-2"></i>Export to Excel
+    </button>
+</div>
+ 
         <!-- Profit Reports Card -->
         <div class="card">
             <div class="card-header">
                 <h3><i class="fas fa-table me-2"></i>Profit Reports</h3>
-                <button class="btn-action btn-export" onclick="exportProfitToExcel()">
-                    <i class="fas fa-file-excel me-1"></i>Export
-                </button>
             </div>
             <div class="card-body">
                 @if($profits->count() > 0)

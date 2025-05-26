@@ -73,18 +73,7 @@
             gap: 10px;
         }
         
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
+       
         
         .card {
             border: none;
@@ -224,31 +213,38 @@
             color: #6c757d;
             border: 1px dashed #dee2e6;
         }
-        
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .search-input {
-            flex: 1;
-            max-width: 300px;
-            position: relative;
-        }
-        
-        .search-input i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        
-        .search-input input {
-            padding-left: 35px;
-        }
-        
+       /*changes*/
+       .top-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    position: relative;
+    width: 300px;
+}
+
+.search-input i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-input input {
+    padding-left: 35px;
+}
+/*end*/
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -321,9 +317,7 @@
     <div class="main-content">
         <div class="header">
             <h2><i class="fas fa-truck-moving"></i>Truck Details</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTruckModal">
-                <i class="fas fa-plus"></i> Add Truck
-            </button>
+            
         </div>
         
         <div class="card">
@@ -339,14 +333,21 @@
                     <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
                 </div>
                 @endif
-                
-                <!-- Search Bar -->
-                <div class="search-container m-3">
-                    <div class="search-input">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search by plate number...">
-                    </div>
-                </div>
+                <!--changes-->
+               <!-- Top Row: Add Truck (left) + Search Bar (right) -->
+<div class="top-bar-container">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTruckModal">
+        <i class="fas fa-plus"></i> Add Truck
+    </button>
+
+    <div class="search-container">
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by plate number...">
+        </div>
+    </div>
+</div>
+
                 
                 @if($trucks->count() > 0)
                 <div class="table-responsive">

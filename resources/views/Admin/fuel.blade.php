@@ -111,24 +111,39 @@
             border-color: #1f1a5c;
         }
 
-        .export-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
+       /*changes*/
+      .btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
 
-        .export-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-        }
+.add-consumption-btn,
+.export-btn {
+    background: #1f1a5c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.add-consumption-btn:hover,
+.export-btn:hover {
+    background: #161245;
+    transform: translateY(-1px);
+}
+
+
+/*end*/
 
         .chart-container {
             width: 100%;
@@ -144,24 +159,7 @@
             height: 400px;
         }
 
-        .add-consumption-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .add-consumption-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-        }
+       
 
         /* Improved Table Styles */
         .table-scroll-container {
@@ -317,6 +315,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
+              flex-wrap: nowrap;
         }
 
         @media (max-width: 768px) {
@@ -324,7 +323,9 @@
                 width: 100%;
                 position: relative;
             }
-            
+             .btn-container {
+        flex-wrap: nowrap;
+    }
             .content {
                 margin-left: 0;
             }
@@ -341,10 +342,21 @@
                 flex-grow: 1;
             }
 
-            .btn-container {
-                flex-direction: column;
-            }
+           
         }
+/* Optional: Prevent buttons from shrinking on small screens */
+@media (max-width: 600px) {
+    .btn-container {
+        flex-wrap: nowrap;
+    }
+
+    .add-consumption-btn,
+    .export-btn {
+        flex-shrink: 0;
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -362,7 +374,7 @@
         <div class="table-container">
             <div class="filter-container">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <label for="plateNumberSelect" style="margin-right: 5px;">Plate No.:</label>
+                    <label for="plateNumberSelect"></label>
                     <select id="plateNumberSelect" name="plateNumberSelect" class="truck-select" required>
                         <option disabled selected>-- Plate Number --</option>
                         <option value="all">All Trucks</option>
@@ -380,17 +392,23 @@
             </div>
 
             <div class="btn-container">
-                <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-                    <i class="fas fa-plus"></i> Add Consumption
-                </button>
-                <button class="export-btn" onclick="exportToExcel()">
-                    <i class="fas fa-file-excel"></i> Export to Excel
-                </button>
-            </div>
+    <div class="left-btn">
+        <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
+            <i class="fas fa-plus"></i> Add Consumption
+        </button>
+    </div>
+    <div class="right-btn">
+        <button class="export-btn" onclick="exportToExcel()">
+            <i class="fas fa-file-excel"></i> Export to Excel
+        </button>
+    </div>
+</div>
 
-            <div class="chart-container">
-                <canvas id="fuelChart"></canvas>
-            </div>
+<h4 style="margin-bottom: 10px;">Fuel Consumption</h4>
+<div class="chart-container">
+    <canvas id="fuelChart"></canvas>
+</div>
+
 
             <div class="table-scroll-container">
                 <table class="fuel-table" id="fuelTable">

@@ -37,7 +37,6 @@
             background-color: #f8f9fa;
         }
         
-        /* Updated Sidebar to match help.blade.php */
         .sidebar {
             width: 250px;
             background: #343a40;
@@ -49,73 +48,32 @@
         
         .content {
             margin-left: 250px;
-            padding: 25px;
+            padding: 30px;
             flex-grow: 1;
             background-color: white;
             min-height: 100vh;
         }
         
-        /* Truck display styling from help.blade.php */
-        .truck-display {
-            background: #f1f3f5;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: 600;
-            border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .truck-display i {
-            margin-right: 12px;
-            color: #495057;
-        }
-        
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #343a40;
-        }
-
-        /* Profile card styling */
-        .profile-card {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
-            border: 1px solid #e9ecef;
-        }
-        
+        /* Profile Header Section */
         .profile-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 30px;
             margin-bottom: 30px;
         }
         
-        .profile-header h2 {
-            color: var(--secondary-color);
-            font-weight: 600;
-            margin: 0;
+        .profile-picture-section {
+            flex: 0 0 200px;
         }
         
-        .profile-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
+        .profile-info-section {
+            flex: 1;
         }
         
         .profile-picture-container {
             position: relative;
             width: 150px;
             height: 150px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .profile-picture {
@@ -140,10 +98,6 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-
-        .initials {
-            transform: translateY(5px);
-        }
         
         .edit-overlay {
             position: absolute;
@@ -159,7 +113,6 @@
             justify-content: center;
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            opacity: 1;
             transition: all 0.3s;
         }
         
@@ -168,28 +121,65 @@
             transform: scale(1.05);
         }
         
-        .profile-info {
-            width: 100%;
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .profile-role {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Personal Information Section */
+        .personal-info {
+            margin-bottom: 30px;
         }
         
         .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .info-item:last-child {
-            border-bottom: none;
+            margin-bottom: 8px;
         }
         
         .info-label {
             font-weight: 600;
-            color: var(--secondary-color);
+            color: #7f8c8d;
+            font-size: 0.9rem;
         }
         
         .info-value {
-            color: #555;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        
+        /* License Information Section */
+        .license-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        .license-info {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
         }
         
         .btn-edit-profile {
@@ -200,16 +190,7 @@
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s;
-            width: 100%;
-            margin-top: 20px;
-            display: block;
-        }
-        
-        .btn-edit-profile:hover {
-            background: #2980b9 !important;
-            color: white !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex: 1;
         }
         
         .btn-change-password {
@@ -220,16 +201,7 @@
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s;
-            width: 100%;
-            margin-top: 15px;
-            display: block;
-        }
-        
-        .btn-change-password:hover {
-            background: #e67e22 !important;
-            color: white !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex: 1;
         }
         
         .btn-update-license {
@@ -240,67 +212,19 @@
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .btn-logout {
+            background: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
             width: 100%;
             margin-top: 15px;
-            display: block;
-        }
-        
-        .btn-update-license:hover {
-            background: #148f9c !important;
-            color: white !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .modal-content {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-        
-        .modal-header {
-            border-bottom: none;
-            padding: 20px 25px 10px;
-        }
-        
-        .modal-title {
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-        
-        .modal-body {
-            padding: 20px 25px;
-        }
-        
-        .form-label {
-            font-weight: 500;
-            color: var(--secondary-color);
-            margin-bottom: 8px;
-        }
-        
-        .form-control {
-            border-radius: 8px;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-        
-        .btn-close {
-            filter: brightness(0.5);
-        }
-        
-        .alert {
-            border-radius: 8px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1100;
-            max-width: 400px;
         }
         
         @media (max-width: 768px) {
@@ -315,95 +239,107 @@
                 padding: 15px;
             }
             
-            .profile-picture-container {
-                width: 120px;
-                height: 120px;
+            .profile-header {
+                flex-direction: column;
+                gap: 20px;
             }
             
-            .info-item {
-                flex-direction: column;
-                gap: 5px;
+            .profile-picture-section {
+                flex: 0 0 auto;
+                text-align: center;
             }
-        }
-
-        @media (max-width: 576px) {
-            .btn-edit-profile,
-            .btn-change-password,
-            .btn-update-license {
-                width: 100%;
-                margin-top: 10px;
+            
+            .profile-picture-container {
+                margin: 0 auto 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
             }
         }
     </style>
 </head>
+
 <body>
-    <!-- Sidebar Navigation - Matching help.blade.php -->
+    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <x-drivernavbar />
     </div>
 
     <!-- Main Content Area -->
     <div class="content">
-        <h2 class="section-title"><i class="fas fa-user-circle me-2"></i>Driver Profile Management</h2>
-        
-        <div class="profile-card">
+        <!-- Profile Header Section -->
+        <div class="profile-header">
             <!-- Profile Picture Section -->
-            <div class="profile-picture-container">
-                @if($user->profile_picture)
-                    <img src="{{ $user->profile_picture_url }}" 
-                        class="profile-picture"
-                        id="profileImagePreview"
-                        alt="Profile picture of {{ $user->fullname }}">
-                @else
-                    <div class="default-profile-picture" id="profileImagePreview">
-                        <span class="initials">{{ $user->initials }}</span>
-                    </div>
-                @endif
-                <div class="edit-overlay" data-bs-toggle="modal" data-bs-target="#editProfileModal" aria-label="Edit profile picture">
-                    <i class="fas fa-pencil-alt"></i>
+            <div class="profile-picture-section">
+                <div class="profile-picture-container">
+                    @if($user->profile_picture)
+                        <img src="{{ $user->profile_picture_url }}" 
+                            class="profile-picture"
+                            id="profileImagePreview"
+                            alt="Profile picture of {{ $user->fullname }}">
+                    @else
+                        <div class="default-profile-picture" id="profileImagePreview">
+                            <span class="initials">{{ $user->initials }}</span>
+                        </div>
+                    @endif
+                 <!--   <div class="edit-overlay" data-bs-toggle="modal" data-bs-target="#editProfileModal" aria-label="Edit profile picture">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>-->
                 </div>
             </div>
             
-            <!-- Profile Information Section -->
-            <div class="profile-info">
-                <div class="info-item">
+            <!-- Personal Information Section -->
+            <div class="profile-info-section">
+                <h1 class="profile-name">{{ $user->fullname }}</h1>
+                <div class="profile-role">Driver</div>
+                 <div class="info-item">
                     <span class="info-label">Username:</span>
                     <span class="info-value">{{ $user->username }}</span>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Full Name:</span>
-                    <span class="info-value">{{ $user->fullname }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Email:</span>
-                    <span class="info-value">{{ $user->email }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Date of Birth:</span>
-                    <span class="info-value">{{ $user->dob ? date('F j, Y', strtotime($user->dob)) : 'Not set' }}</span>
-                </div>
-                <!-- Driver Specific Fields -->
-                <div class="info-item">
-                    <span class="info-label">Driver's License:</span>
-                    <span class="info-value">{{ $user->driver_license_number ?: 'Not set' }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">License Expiry:</span>
-                    <span class="info-value">{{ $user->license_expiry_date ? date('F j, Y', strtotime($user->license_expiry_date)) : 'Not set' }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">License Type:</span>
-                    <span class="info-value">{{ $user->license_type ?: 'Not set' }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Plate Number:</span>
-                    <span class="info-value">
-                        {{ $user->truck_id ?? 'Not assigned' }}
-                    </span>
+                
+                <div class="personal-info">
+                    <div class="info-item">
+                        <span class="info-label">Date of Birth</span>
+                        <p class="info-value">{{ $user->dob ? date('F j, Y', strtotime($user->dob)) : 'Not set' }}</p>
+                    </div>
+                                        
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <p class="info-value">{{ $user->email }}</p>
+                    </div>
+          
                 </div>
             </div>
+        </div>
+        
+        <!-- License Information Section -->
+        <div class="license-section">
+            <h2 class="section-title">License Information</h2>
             
-            <!-- ACTION BUTTONS -->
+            <div class="info-item">
+                <span class="info-label">Driver's License Number</span>
+                <p class="info-value license-info">{{ $user->driver_license_number ?: 'Not set' }}</p>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">License Expiry Date</span>
+                <p class="info-value">{{ $user->license_expiry_date ? date('F j, Y', strtotime($user->license_expiry_date)) : 'Not set' }}</p>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">License Type</span>
+                <p class="info-value">{{ $user->license_type ?: 'Not set' }}</p>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Issued By</span>
+                <p class="info-value">{{ $user->license_issued_by ?? 'Not set' }}</p>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
             <button type="button" class="btn btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                 <i class="fas fa-edit me-2"></i>Edit Profile
             </button>
@@ -416,6 +352,14 @@
                 <i class="fas fa-id-card me-2"></i>Update License
             </button>
         </div>
+        
+        <!-- Logout Button -->
+        <button type="button" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </button>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
     </div>
 
     <!-- Include Modals -->

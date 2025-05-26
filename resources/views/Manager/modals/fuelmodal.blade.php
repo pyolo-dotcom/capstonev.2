@@ -107,6 +107,36 @@ h2 {
     padding-bottom: 10px;
     margin-top: 0;
 }
+/*added*/
+/* Container to hold the two columns */
+.form-columns {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* Each column takes about 50% */
+.form-column {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Stretch the button row across both columns */
+.form-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Optional: make it responsive */
+@media (max-width: 768px) {
+    .form-columns {
+        flex-direction: column;
+    }
+}
+
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -121,47 +151,56 @@ h2 {
     <div class="modal-content">
         <span class="close" onclick="closeFuelModal()">&times;</span>
         <h2 style="margin-bottom: 20px;">Add Consumption</h2>
-        <form id="fuelForm">
+       <form id="fuelForm">
     @csrf
-    <div class="form-group">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+    <div class="form-columns">
+        <!-- LEFT COLUMN (4 fields) -->
+        <div class="form-column">
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="plateNo">Plate No.:</label>
+                <select id="plateNo" name="plateNo" required>
+                    <option disabled selected>-- Plate Number --</option>
+                    @foreach($plateNumbers as $plate)
+                        <option value="{{ $plate }}">{{ $plate }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="totalKm">Total Kilometers Traveled:</label>
+                <input type="number" id="totalKm" name="totalKm" required>
+            </div>
+            <div class="form-group">
+                <label for="avgKmL">Average Km/L:</label>
+                <input type="number" id="avgKmL" name="avgKmL" step="0.01" required>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN (3 fields) -->
+        <div class="form-column">
+            <div class="form-group">
+                <label for="fuelPrice">Fuel Price per Liter:</label>
+                <input type="number" id="fuelPrice" name="fuelPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="totalLiters">Total Liters (Auto-calculated):</label>
+                <input type="text" id="totalLiters" name="totalLiters" readonly>
+            </div>
+            <div class="form-group">
+                <label for="totalCost">Total Cost (Auto-calculated):</label>
+                <input type="number" id="totalCost" name="totalCost" readonly step="0.01">
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="plateNo">Plate No.:</label>
-        <select id="plateNo" name="plateNo" required>
-            <option disabled selected>-- Plate Number --</option>
-            @foreach($plateNumbers as $plate)
-                <option value="{{ $plate }}">{{ $plate }}</option>
-            @endforeach
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="totalKm">Total Kilometers Traveled:</label>
-        <input type="number" id="totalKm" name="totalKm" required>
-    </div>
-    <div class="form-group">
-        <label for="avgKmL">Average Km/L:</label>
-        <input type="number" id="avgKmL" name="avgKmL" step="0.01" required>
-    </div>
-    <div class="form-group">
-        <label for="fuelPrice">Fuel Price per Liter:</label>
-        <input type="number" id="fuelPrice" name="fuelPrice" step="0.01" required>
-    </div>
-    <div class="form-group">
-        <label for="totalLiters">Total Liters (Auto-calculated):</label>
-        <input type="text" id="totalLiters" name="totalLiters" readonly>
-    </div>
-    <div class="form-group">
-        <label for="totalCost">Total Cost (Auto-calculated):</label>
-<input type="number" id="totalCost" name="totalCost" readonly step="0.01">
-    </div>
+
+    <!-- BUTTON ROW -->
     <div class="form-row">
         <button type="button" onclick="addFuelConsumption()">Add</button>
     </div>
 </form>
-    </div>
-</div>
 
 <!-- Modal Script -->
 <script>

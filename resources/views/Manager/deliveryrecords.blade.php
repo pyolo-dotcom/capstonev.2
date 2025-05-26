@@ -96,25 +96,28 @@
         }
 
         .add-trip-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    background: #1f1a5c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    width: 10%;
+}
 
-        .add-trip-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
+/* Hover effect */
+.add-trip-btn:hover {
+    background: #161245;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
 
         .header-section {
             display: flex;
@@ -235,6 +238,14 @@
                 font-size: 0.9rem;
             }
         }
+        @media (max-width: 600px) {
+    .add-trip-btn {
+        width: 20%;
+        justify-content: center;
+        font-size: 0.85rem;
+        padding: 12px 15px;
+    }
+}
     </style>
 </head>
 
@@ -257,13 +268,14 @@
                     @endforeach
                 </select>
             </div>
-            <button class="add-trip-btn" id="openModal">
+           
+        </div>
+<button class="add-trip-btn" id="openModal">
                 <i class="fas fa-plus"></i> Add Trip
             </button>
-        </div>
-
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>
+         
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="trip-card">

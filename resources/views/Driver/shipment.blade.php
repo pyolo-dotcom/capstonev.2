@@ -176,12 +176,14 @@
                 <span id="assignedPlateNumber">{{ $driverName ?? 'Not assigned' }}</span>
             </div>
         </div>
+<h2 class="section-title">GENERATE CARGO QR CODE</h2>
 
-        <h2 class="section-title">GENERATE CARGO QR CODE</h2>
-        
-        <!-- Form Container -->
-        <div class="form-container">
-            <form id="cargoForm">
+<!-- Form Container -->
+<div class="form-container">
+    <form id="cargoForm">
+        <div class="row">
+            <!-- Left column -->
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label for="plate_no" class="form-label">Plate Number</label>
                     <select class="form-select" name="plate_no" id="plate_no" required>
@@ -193,57 +195,56 @@
                         @endforeach
                     </select>
                 </div>
-                
                 <div class="mb-3">
                     <label for="eir_no" class="form-label">EIR No</label>
-                    <input type="text" class="form-control" name="eir_no" id="eir_no" placeholder="Enter EIR No" required>
+                    <input type="text" id="eir_no" name="eir_no" class="form-control">
                 </div>
-                
                 <div class="mb-3">
                     <label for="container_van_no" class="form-label">Container Van No</label>
-                    <input type="text" class="form-control" name="container_van_no" id="container_van_no" placeholder="Enter Container Van No" required>
+                    <input type="text" id="container_van_no" name="container_van_no" class="form-control">
                 </div>
-                
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
-                    <input type="text" class="form-control" name="size" id="size" placeholder="Enter Size" required>
+                    <input type="text" id="size" name="size" class="form-control">
                 </div>
-                
                 <div class="mb-3">
                     <label for="shipper_consignee" class="form-label">Shipper/Consignee</label>
-                    <input type="text" class="form-control" name="shipper_consignee" id="shipper_consignee" placeholder="Enter Shipper/Consignee" required>
+                    <input type="text" id="shipper_consignee" name="shipper_consignee" class="form-control">
                 </div>
-                
+            </div>
+
+            <!-- Right column -->
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label for="voyage_vessel" class="form-label">Voyage Vessel</label>
-                    <input type="text" class="form-control" name="voyage_vessel" id="voyage_vessel" placeholder="Enter Voyage Vessel" required>
+                    <input type="text" id="voyage_vessel" name="voyage_vessel" class="form-control">
                 </div>
-                
                 <div class="mb-3">
-                    <label for="voyage_no" class="form-label">Voyage Number</label>
-                    <input type="text" class="form-control" name="voyage_no" id="voyage_no" placeholder="Enter Voyage Number" required>
+                    <label for="voyage_no" class="form-label">Voyage No</label>
+                    <input type="text" id="voyage_no" name="voyage_no" class="form-control">
                 </div>
-                
                 <div class="mb-3">
-                    <label for="pickup_location" class="form-label">Pickup Location</label>
-                    <input type="text" class="form-control" name="pickup_location" id="pickup_location" placeholder="Enter Pickup Location" required>
+                    <label for="pickup_location" class="form-label">Pick-up Location</label>
+                    <input type="text" id="pickup_location" name="pickup_location" class="form-control">
                 </div>
-                
                 <div class="mb-3">
                     <label for="delivery_location" class="form-label">Delivery Location</label>
-                    <input type="text" class="form-control" name="delivery_location" id="delivery_location" placeholder="Enter Delivery Location" required>
+                    <input type="text" id="delivery_location" name="delivery_location" class="form-control">
                 </div>
-                
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="button" class="btn btn-danger me-md-2" onclick="clearSavedFormData()">
-                        <i class="fas fa-trash-alt me-1"></i> Clear Form
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="generateBtn" {{ !Auth::user()->truck_id ? 'disabled' : '' }}>
-                        <i class="fas fa-qrcode me-1"></i> Generate QR Code
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
+
+        <!-- Submit and Clear buttons -->
+        <div class="row mt-4">
+            <div class="col-md-12 d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Generate QR</button>
+                <button type="button" onclick="clearSavedFormData()" class="btn btn-secondary">Clear</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 
         <!-- QR Code Container -->
         <div id="qrCodeContainer" class="qr-container" style="display: none;">

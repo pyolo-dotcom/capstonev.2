@@ -1,4 +1,28 @@
 @foreach($trucks as $truck)
+<style>
+   .modal .card-body {
+  min-height: 220px;
+  max-height: 220px;
+  overflow-y: scroll; /* always show vertical scrollbar */
+  padding-right: 1rem; /* prevent content hiding under scrollbar */
+}
+
+/* Optional: style scrollbar for better visibility in WebKit browsers */
+.modal .card-body::-webkit-scrollbar {
+  width: 10px; /* wider scrollbar */
+}
+
+.modal .card-body::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* darker thumb */
+  border-radius: 5px;
+}
+
+.modal .card-body::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+</style>
 <!-- View Truck Modal -->
 <div class="modal fade" id="viewTruckModal{{ $truck->id }}" tabindex="-1" aria-labelledby="viewTruckModalLabel{{ $truck->id }}" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -30,7 +54,7 @@
                             <div class="card-header bg-primary text-white">
                                 <i class="fas fa-id-card me-2"></i> Registration Details
                             </div>
-                            <div class="card-body">
+                            <div class="card-body card-body-fixed">
                                 <p><strong>CR Number:</strong> {{ $truck->cr_number }}</p>
                                 <p><strong>Date:</strong> {{ $truck->date ? $truck->date->format('m/d/Y') : 'N/A' }}</p>
                                 <p><strong>MV File Number:</strong> {{ $truck->mv_file_number }}</p>
@@ -44,7 +68,7 @@
                             <div class="card-header bg-primary text-white">
                                 <i class="fas fa-weight-hanging me-2"></i> Weight Details
                             </div>
-                            <div class="card-body">
+                            <div class="card-body card-body-fixed">
                                 <p><strong>Gross Weight:</strong> {{ $truck->gross_weight }}</p>
                                 <p><strong>Net Weight:</strong> {{ $truck->net_weight }}</p>
                                 <p><strong>Shipping Weight:</strong> {{ $truck->shipping_weight }}</p>
@@ -58,7 +82,7 @@
                             <div class="card-header bg-primary text-white">
                                 <i class="fas fa-car me-2"></i> Vehicle Specifications
                             </div>
-                            <div class="card-body">
+                            <div class="card-body card-body-fixed">
                                 <p><strong>Make:</strong> {{ $truck->make }}</p>
                                 <p><strong>Series:</strong> {{ $truck->series }}</p>
                                 <p><strong>Year Model:</strong> {{ $truck->year_model }}</p>
@@ -71,7 +95,7 @@
                             <div class="card-header bg-primary text-white">
                                 <i class="fas fa-cogs me-2"></i> Technical Details
                             </div>
-                            <div class="card-body">
+                            <div class="card-body card-body-fixed">
                                 <p><strong>Engine Number:</strong> {{ $truck->engine_number }}</p>
                                 <p><strong>Chassis Number:</strong> {{ $truck->chassis_number }}</p>
                                 <p><strong>Denomination:</strong> {{ $truck->denomination }}</p>
@@ -83,9 +107,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+           
         </div>
     </div>
 </div>

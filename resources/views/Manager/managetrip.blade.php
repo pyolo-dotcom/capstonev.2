@@ -166,58 +166,96 @@
             flex-wrap: wrap;
             gap: 15px;
         }
+        /*changes*/
+.filter-row, .action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
 
-        .truck-select {
-            padding: 8px 15px;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #495057;
-            background-color: #fff;
-            width: 200px;
-        }
+.search-bar {
+    position: relative;
+    width: 300px;
+}
 
-        .date-filter {
-            display: flex;
-            gap: 10px;
-        }
+.search-bar input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
 
-        .date-btn {
-            padding: 8px 15px;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            background-color: #fff;
-            color: #495057;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+.search-bar input:focus {
+    outline: none;
+    border-color: #1f1a5c;
+    box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
+}
 
-        .date-btn.active, 
-        .date-btn:hover {
-            background-color: #1f1a5c;
-            color: #fff;
-            border-color: #1f1a5c;
-        }
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
 
-        .export-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
+.truck-select {
+    padding: 8px 15px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #495057;
+    background-color: #fff;
+    width: 200px;
+}
 
-        .export-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-        }
+.date-filter {
+    display: flex;
+    gap: 10px;
+}
+
+.date-btn {
+    padding: 8px 15px;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #495057;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.date-btn.active, 
+.date-btn:hover {
+    background-color: #1f1a5c;
+    color: #fff;
+    border-color: #1f1a5c;
+}
+
+.export-btn {
+    background: #1f1a5c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.export-btn:hover {
+    background: #161245;
+    transform: translateY(-1px);
+}
+
+/*end*/
 
         .no-data {
             text-align: center;
@@ -279,40 +317,6 @@
             background-color: #e1e5e9;
             color: #6c757d;
             cursor: not-allowed;
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 15px;
-        }
-
-        .search-bar {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: #1f1a5c;
-            box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
         }
 
         .modal {
@@ -462,6 +466,18 @@
                 padding: 20px;
             }
         }
+        /* Responsive layout */
+@media (max-width: 768px) {
+    .filter-row, .action-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+}
+
     </style>
 </head>
 
@@ -477,39 +493,44 @@
             <h2><i class="fas fa-route me-2"></i>View and Update Trip Records</h2>
         </div>
         
-        <div class="table-container">
-            <form method="GET" action="{{ route('manager.managetrip') }}" id="filterForm">
-                <div class="filter-container">
-                    <select name="plate_no" class="truck-select" id="plateSelect">
-                        <option value="All Trucks">All Trucks</option>
-                        <option value="" disabled>-- Plate Number --</option>
-                        @foreach($plateNumbers as $plate)
-                            <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>{{ $plate }}</option>
-                        @endforeach
-                    </select>
+      <div class="table-container">
+    <form method="GET" action="{{ route('manager.managetrip') }}" id="filterForm">
+        
+        <!-- Row 1: Plate & Search -->
+        <div class="filter-row">
+            <select name="plate_no" class="truck-select" id="plateSelect">
+                <option value="All Trucks">All Trucks</option>
+                <option value="" disabled>-- Plate Number --</option>
+                @foreach($plateNumbers as $plate)
+                    <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>
+                        {{ $plate }}
+                    </option>
+                @endforeach
+            </select>
 
-                    <div class="date-filter">
-                        @foreach(['weekly' => 'Weekly', 'monthly' => 'Monthly', 'annually' => 'Annually'] as $value => $label)
-                            <button type="submit" name="filter" value="{{ $value }}" 
-                                    class="date-btn {{ request('filter') == $value ? 'active' : '' }}" id="{{ $value }}Btn">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </form>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search records...">
+            </div>
+        </div>
 
-            <!-- Search Bar -->
-            <div class="search-container">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search records...">
-                </div>
+        <!-- Row 2: Date filters & Export -->
+        <div class="action-row">
+            <div class="date-filter">
+                @foreach(['weekly' => 'Weekly', 'monthly' => 'Monthly', 'annually' => 'Annually'] as $value => $label)
+                    <button type="submit" name="filter" value="{{ $value }}" 
+                            class="date-btn {{ request('filter') == $value ? 'active' : '' }}" id="{{ $value }}Btn">
+                        {{ $label }}
+                    </button>
+                @endforeach
             </div>
 
             <button class="export-btn" onclick="exportToExcel()" id="exportBtn" style="display: none;">
                 <i class="fas fa-file-excel"></i> Export to Excel
             </button>
+        </div>
+    </form>
+</div>
 
             <div class="table-scroll-container" id="tableScrollContainer" style="display: none;">
                 <table class="trip-table" id="cargoTable">

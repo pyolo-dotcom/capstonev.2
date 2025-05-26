@@ -108,7 +108,28 @@
             gap: 8px;
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            
         }
+        .export-trip-btn{
+             background: #1f1a5c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-left:78%;
+        }
+        .export-trip-btn:hover {
+    background: #161245;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
 
         .add-trip-btn:hover {
             background: #161245;
@@ -253,6 +274,39 @@
                 justify-content: center;
             }
         }
+   
+
+
+@media (max-width: 1200px) {
+    .export-trip-btn {
+        margin-left: 70%;
+    }
+}
+
+@media (max-width: 992px) {
+    .export-trip-btn {
+        margin-left: 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    .export-trip-btn {
+        margin-left:60%;
+       
+    }
+    
+    .header-section .d-flex {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .export-trip-btn {
+        margin-left:60%;
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+}
     </style>
 </head>
 
@@ -275,15 +329,16 @@
                     @endforeach
                 </select>
             </div>
-            <div class="d-flex">
-                <button class="add-trip-btn" id="exportToExcel">
-                    <i class="fas fa-file-excel"></i> Export Excel
-                </button>
-                <button class="add-trip-btn" id="openModal">
+        </div>
+          <div class="d-flex">
+                 <button class="add-trip-btn" id="openModal">
                     <i class="fas fa-plus"></i> Add Trip
                 </button>
+                <button class="export-trip-btn" id="exportToExcel">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+               
             </div>
-        </div>
 
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>

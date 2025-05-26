@@ -35,7 +35,7 @@
             height: 100%;
         }
 
-        .main-content {
+       .main-content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
@@ -65,23 +65,23 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            display: flex;              /* make it flex */
+            align-items: center;       /* vertically center the items */
+            gap: 40px;                 /* spacing between picture and info */
         }
-
-        .profile-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
         .profile-picture-container {
-            position: relative;
+            flex-shrink: 0;            /* prevent shrinking */
             width: 150px;
             height: 150px;
-            margin-bottom: 20px;
+            position: relative;
         }
-        
+        .profile-info {
+            flex-grow: 1;              /* take remaining space */
+            display: flex;
+            flex-direction: column;    /* stack children vertically */
+            gap: 15px;                 /* spacing between info fields and buttons */
+        }
+
         .profile-picture {
             width: 100%;
             height: 100%;
@@ -132,70 +132,48 @@
             transform: scale(1.05);
         }
         
-        .profile-info {
-            width: 100%;
-        }
-        
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .info-item:last-child {
-            border-bottom: none;
-        }
-        
         .info-label {
             font-weight: 600;
             color: #343a40;
+            width: 120px; /* fixed width */
+            flex-shrink: 0;
         }
-        
+
         .info-value {
             color: #555;
+            flex-grow: 1; /* take remaining space */
         }
-        
+
+       .btn-edit-profile, .btn-change-password {
+    width: auto;          /* let width shrink to content */
+    max-width: 180px;     /* limit max width */
+    padding-left: 20px;
+    padding-right: 20px;
+    align-self: flex-start; /* align left inside the column */
+}
+
+/*
         .btn-edit-profile {
-            background: #3498db !important;
-            color: white !important;
-            border: none !important;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 20px;
-            display: block;
+            border-radius:1px;
+            corder
         }
-        
+
         .btn-edit-profile:hover {
             background: #2980b9 !important;
-            color: white !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        
+
         .btn-change-password {
             background: #f39c12 !important;
-            color: white !important;
-            border: none !important;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 15px;
-            display: block;
         }
-        
+
         .btn-change-password:hover {
             background: #e67e22 !important;
-            color: white !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        
+*/
         .modal-content {
             border-radius: 12px;
             border: none;
@@ -264,7 +242,6 @@
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="profile-header">
             <h2><i class="fas fa-user-circle me-2"></i>Profile Management</h2>
@@ -283,9 +260,6 @@
                         <span class="initials">{{ $user->initials }}</span>
                     </div>
                 @endif
-                <div class="edit-overlay" data-bs-toggle="modal" data-bs-target="#editProfileModal" aria-label="Edit profile picture">
-                    <i class="fas fa-pencil-alt"></i>
-                </div>
             </div>
             
             <!-- Profile Information Section -->
@@ -306,19 +280,18 @@
                     <span class="info-label">Date of Birth:</span>
                     <span class="info-value">{{ $user->dob ? date('F j, Y', strtotime($user->dob)) : 'Not set' }}</span>
                 </div>
+
+                <!-- ACTION BUTTONS inside profile-info -->
+                <button type="button" class="btn btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="fas fa-edit me-2"></i>Edit Profile
+                </button>
+                
+                <button type="button" class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                    <i class="fas fa-key me-2"></i>Change Password
+                </button>
             </div>
-            
-            <!-- ACTION BUTTONS -->
-            <button type="button" class="btn btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <i class="fas fa-edit me-2"></i>Edit Profile
-            </button>
-            
-            <button type="button" class="btn btn-change-password" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                <i class="fas fa-key me-2"></i>Change Password
-            </button>
         </div>
     </div>
-
     <!-- Include Modals -->
     @include('admin.modals.edit-profile-modal')
     @include('admin.modals.change-password-modal')

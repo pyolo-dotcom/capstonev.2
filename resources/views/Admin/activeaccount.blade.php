@@ -311,9 +311,7 @@
     <div class="main-content">
         <div class="header">
             <h2><i class="fas fa-users"></i> Active Accounts</h2>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-                <i class="fas fa-plus"></i> Create New Account
-            </button>
+            
         </div>
         
         <div class="card">
@@ -332,10 +330,14 @@
                 
                 <!-- Search Bar -->
                 <div class="search-container m-3">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+                <i class="fas fa-plus"></i> Create New Account
+            </button>
                     <div class="search-input">
                         <i class="fas fa-search"></i>
                         <input type="text" id="searchInput" class="form-control" placeholder="Search by username...">
                     </div>
+
                 </div>
                 
                 <div class="table-responsive">
