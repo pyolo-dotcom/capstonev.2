@@ -35,6 +35,7 @@
         </form>
     </div>
 </div>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
     .modal {
@@ -47,6 +48,7 @@
         height: 100%;
         background-color: rgba(0,0,0,0.5);
         overflow: auto;
+        font-family:'Poppins';
     }
 
     .modal-content {

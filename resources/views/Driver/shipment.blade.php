@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Cargo QR Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -19,7 +21,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins';
         }
         
         body {
@@ -246,12 +248,21 @@
 
 
 
-        <!-- QR Code Container -->
-        <div id="qrCodeContainer" class="qr-container" style="display: none;">
-            <h5 class="mb-3">Generated QR Code</h5>
-            <div id="qrCodeImage"></div>
-        </div>
+       <!-- QR Code Modal (uses existing ID) -->
+<div class="modal fade" id="qrCodeContainer" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrCodeModalLabel">Generated QR Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div id="qrCodeImage"></div> <!-- Keep the existing ID -->
+      </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -323,13 +334,12 @@
                 })
                 .then(response => {
                     Swal.close();
-                    document.getElementById('qrCodeImage').innerHTML = response.data;
-                    document.getElementById('qrCodeContainer').style.display = 'block';
-                    
-                    // Scroll to QR code
-                    document.getElementById('qrCodeContainer').scrollIntoView({ 
-                        behavior: 'smooth' 
-                    });
+                   document.getElementById('qrCodeImage').innerHTML = response.data;
+
+// Show Bootstrap modal
+const qrModal = new bootstrap.Modal(document.getElementById('qrCodeContainer'));
+qrModal.show();
+
                 })
                 .catch(error => {
                     console.log(error);
@@ -398,7 +408,11 @@
                 if (result.isConfirmed) {
                     localStorage.removeItem('cargoFormData');
                     document.getElementById('cargoForm').reset();
-                    document.getElementById('qrCodeContainer').style.display = 'none';
+const modalEl = document.getElementById('qrCodeContainer');
+const modalInstance = bootstrap.Modal.getInstance(modalEl);
+if (modalInstance) {
+    modalInstance.hide();
+}
                     
                     // Reset plate number to assigned value
                     const plateNoInput = document.getElementById('plate_no');

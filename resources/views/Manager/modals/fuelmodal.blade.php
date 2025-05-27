@@ -1,4 +1,6 @@
 <!-- Modal Structure -->
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
  <style>
 /* Modal Styles */
 .modal {
@@ -11,6 +13,7 @@
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
+    font-family:'Poppins';
 }
 
 .modal-content {
