@@ -143,22 +143,35 @@
             height: 400px;
         }
 
+        
         .add-consumption-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
+            background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
         }
-
+  .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
         .add-consumption-btn:hover {
-            background: #161245;
+             background: rgba(1, 31, 139, 0.05);
             transform: translateY(-1px);
         }
 
@@ -201,7 +214,7 @@
         <div class="table-container">
             <div class="filter-container">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <label for="plateNumberSelect" style="margin-right: 5px;">Plate No.:</label>
+                    
                     <select id="plateNumberSelect" name="plateNumberSelect" class="truck-select" required>
                         <option disabled selected>-- Plate Number --</option>
                         <option value="all">All Trucks</option>
@@ -219,7 +232,7 @@
             </div>
 
             <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-                <i class="fas fa-plus"></i> Add Consumption
+                <span class="circle-plus">+</span> Add Consumption
             </button>
 
             <div class="chart-container">

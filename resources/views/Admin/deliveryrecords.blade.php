@@ -93,25 +93,42 @@
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.7rem;
             color: #343a40;
+            margin-top:1.5rem;
         }
 
         .add-trip-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            
+            background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+           
         }
+        .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.add-trip-btn:hover{
+    background: rgba(5, 5, 51, 0.32);
+      
+}
         .export-trip-btn{
              background: #1f1a5c;
             color: white;
@@ -133,11 +150,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-        .add-trip-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
+      
 
         .header-section {
             display: flex;
@@ -334,8 +347,9 @@
         </div>
           <div class="d-flex">
                  <button class="add-trip-btn" id="openModal">
-                    <i class="fas fa-plus"></i> Add Trip
-                </button>
+    <span class="circle-plus">+</span> Add Trip
+</button>
+
                 <button class="export-trip-btn" id="exportToExcel">
                     <i class="fas fa-file-excel"></i> Export Excel
                 </button>

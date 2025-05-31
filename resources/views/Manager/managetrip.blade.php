@@ -84,6 +84,7 @@
             font-weight: 500;
             position: sticky;
             top: 0;
+            font-size:13px;
         }
 
         .trip-table td {
@@ -91,6 +92,8 @@
             border-bottom: 1px solid #e1e5e9;
             vertical-align: middle;
             color: #495057;
+            font-size:14px;
+            
         }
 
         .trip-table tr:hover td {

@@ -49,7 +49,7 @@
         }
         
         .sidebar-header h2 {
-            color: white;
+            color: #ffffff;
             font-size: 1.25rem;
             margin-bottom: 5px;
             transition: all 0.3s;
@@ -83,7 +83,7 @@
         }
         
         .menu-item {
-            color: rgba(255,255,255,0.8);
+            color: #ffffff;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -120,7 +120,7 @@
         
         .submenu-item {
             padding: 10px 15px;
-            color: rgba(255,255,255,0.7);
+            color: #ffffff;
             text-decoration: none;
             display: block;
             font-size: 0.9rem;
@@ -222,8 +222,9 @@
     <div class="sidebar" id="sidebar">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
-            <h2><i>SYA</i> Trucking Services</h2>
-            <p><i>Since 2020</i></p>
+            <h2>SYA</h2>
+            <h2>Trucking Services</h2>
+            <p><i>Since 2018</i></p>
         </div>
 
         <!-- Sidebar Menu -->

@@ -168,7 +168,7 @@
 
 <style>
   .modal-content {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins';
     background: #fff;
   }
 
@@ -192,14 +192,23 @@
   }
 
   .btn-primary {
-    background-color: #0d6efd;
+     background: none;
+    color: #1f1a5c;
     border: none;
-    border-radius: 50px;
-    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
   }
 
   .btn-primary:hover {
-    background-color: #0a58ca;
+     background: rgba(1, 31, 139, 0.05);
+     color:#1f1a5c;
   }
 
   .btn-outline-secondary {

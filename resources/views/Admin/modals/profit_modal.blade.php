@@ -102,13 +102,35 @@
     }
     
     .btn-primary {
-        background-color: #3498db;
-        border-color: #3498db;
+          background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
     }
-    
+      .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
     .btn-primary:hover {
-        background-color: #2980b9;
-        border-color: #2980b9;
+         background: rgba(1, 31, 139, 0.05);
+         color:#1f1a5c;
+         width:20%;
         transform: translateY(-1px);
     }
     

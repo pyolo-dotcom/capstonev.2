@@ -58,6 +58,7 @@ body {
     padding: 14px 22px;
     border-radius: 12px;
     margin-bottom: 25px;
+    margin-left:40px;
     display: inline-flex;
     align-items: center;
     font-size: 16px;

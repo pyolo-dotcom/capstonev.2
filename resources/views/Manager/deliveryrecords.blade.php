@@ -93,32 +93,41 @@
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #343a40;
+            
+            color: #1f1a5c;
+            margin-top:20px;
         }
 
         .add-trip-btn {
-    background: #1f1a5c;
-    color: white;
+    background: none;
+    color: #1f1a5c;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 1.2rem;
+    font-weight: 800;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     white-space: nowrap;
-    width: 10%;
+    width: 15%;
 }
-
+  .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
 /* Hover effect */
 .add-trip-btn:hover {
-    background: #161245;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    background: rgba(1, 31, 139, 0.05);
+
 }
 
         .header-section {
@@ -273,7 +282,7 @@
            
         </div>
 <button class="add-trip-btn" id="openModal">
-                <i class="fas fa-plus"></i> Add Trip
+                <span class="circle-plus">+</span> Add Trip
             </button>
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>

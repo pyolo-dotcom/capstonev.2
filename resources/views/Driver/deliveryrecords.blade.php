@@ -49,11 +49,12 @@
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 25px;
+            margin-left:40px;
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
             border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
         }
         
         .truck-display i {

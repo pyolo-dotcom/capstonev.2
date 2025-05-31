@@ -123,7 +123,33 @@
     gap: 10px;
 }
 
-.add-consumption-btn,
+.add-consumption-btn{
+    background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+ 
+  .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
 .export-btn {
     background: #1f1a5c;
     color: white;
@@ -137,8 +163,9 @@
     transition: all 0.3s;
     white-space: nowrap;
 }
-
-.add-consumption-btn:hover,
+.add-consumption-btn:hover{
+    background: rgba(1, 31, 139, 0.05);
+}
 .export-btn:hover {
     background: #161245;
     transform: translateY(-1px);
@@ -396,7 +423,7 @@
             <div class="btn-container">
     <div class="left-btn">
         <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-            <i class="fas fa-plus"></i> Add Consumption
+            <span class="circle-plus">+</span> Add Consumption
         </button>
     </div>
     <div class="right-btn">

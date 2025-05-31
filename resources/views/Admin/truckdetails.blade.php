@@ -246,6 +246,32 @@
 .search-input input {
     padding-left: 35px;
 }
+.btn-primary {
+   background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+.circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
 /*end*/
         @media (max-width: 768px) {
             .sidebar {
@@ -339,7 +365,7 @@
                <!-- Top Row: Add Truck (left) + Search Bar (right) -->
 <div class="top-bar-container">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTruckModal">
-        <i class="fas fa-plus"></i> Add Truck
+        <span class="circle-plus">+</span> Add Truck
     </button>
 
     <div class="search-container">

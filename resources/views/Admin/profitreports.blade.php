@@ -469,7 +469,7 @@
          <!--changes-->
          <div class="profit-btn-container">
     <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#profitModal">
-        <i class="fas fa-plus me-2"></i>Add Profit Record
+        <span class="circle-plus">+</span>Add Profit Record
     </button>
     <button class="btn btn-success btn-export" onclick="exportProfitToExcel()">
         <i class="fas fa-file-excel me-2"></i>Export to Excel

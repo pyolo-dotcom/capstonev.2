@@ -104,12 +104,7 @@ input[readonly] {
     cursor: not-allowed;
 }
 
-h2 {
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-top: 0;
-}
+
 /*added*/
 /* Container to hold the two columns */
 .form-columns {
