@@ -356,9 +356,7 @@
         </div>
         
         <!-- Logout Button -->
-        <button type="button" class="btn btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="fas fa-sign-out-alt me-2"></i>Logout
-        </button>
+       
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>

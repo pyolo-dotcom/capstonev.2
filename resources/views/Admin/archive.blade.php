@@ -182,25 +182,24 @@
         }
         
         .btn-restore {
-            background-color: var(--success-color);
-            color: white;
-            border: none;
+            background-color: rgba(0, 173, 12, 0.09);
+            color:green;
         }
         
         .btn-restore:hover {
-            background-color: #27ae60;
-            color: white;
+            background-color:rgba(22, 160, 132, 0.35);
+            color: green;
         }
         
         .btn-delete {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
+             background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
         }
         
         .btn-delete:hover {
-            background-color: #c0392b;
-            color: white;
+             background-color: rgba(220, 53, 69, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .empty-message {

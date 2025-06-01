@@ -197,27 +197,26 @@
         }
         
         .btn-edit {
-            background-color: var(--primary-color);
-            color: white;
+           background-color: rgba(0, 74, 173, 0.1);
+            color: #004aad;
             border: none;
         }
         
         .btn-edit:hover {
-            background-color: #2980b9;
-            color: white;
+             background-color: rgba(0, 74, 173, 0.2);
             transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .btn-archive {
-            background-color: var(--warning-color);
-            color: white;
-            border: none;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
         }
         
         .btn-archive:hover {
-            background-color: #e67e22;
-            color: white;
+            background-color: rgba(220, 53, 69, 0.2);
             transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
        

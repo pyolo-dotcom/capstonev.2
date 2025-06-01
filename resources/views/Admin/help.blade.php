@@ -85,9 +85,10 @@
         .help-section h2 {
             color: #1f1a5c;
             font-size: 1.5rem;
-            margin-bottom: 15px;
+            margin-bottom: -10px;
             padding-bottom: 8px;
             border-bottom: 2px solid #f1f3f5;
+            border-bottom: none;
         }
 
         .help-section p {

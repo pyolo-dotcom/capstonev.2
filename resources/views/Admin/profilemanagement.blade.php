@@ -82,6 +82,7 @@
             display: flex;
             flex-direction: column;    /* stack children vertically */
             gap: 15px;                 /* spacing between info fields and buttons */
+            font-size: 1.5rem;
         }
 
         .profile-picture {
@@ -148,7 +149,7 @@
 
        .btn-edit-profile, .btn-change-password {
     width: auto;          /* let width shrink to content */
-    max-width: 180px;     /* limit max width */
+    max-width: 280px;     /* limit max width */
     padding-left: 20px;
     padding-right: 20px;
     align-self: flex-start; /* align left inside the column */

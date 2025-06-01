@@ -130,7 +130,7 @@
       
 }
         .export-trip-btn{
-             background: #1f1a5c;
+             background-color:#198754;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -145,7 +145,7 @@
             margin-left:78%;
         }
         .export-trip-btn:hover {
-    background: #161245;
+    background:rgb(37, 81, 16) ;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }

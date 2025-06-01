@@ -12,7 +12,7 @@
     <style>
         :root {
             --primary-color: #3498db;
-            --secondary-color: #2c3e50;
+           
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
@@ -140,36 +140,35 @@
         }
         
         .btn-view {
-            background-color: var(--info-color);
-            color: white;
-            border: none;
+           background-color: rgba(0, 173, 12, 0.09);
+            color:green;
         }
         
         .btn-view:hover {
-            background-color: #16a085;
-            color: white;
+            background-color:rgba(22, 160, 132, 0.35);
+            color: green;
         }
         
         .btn-edit {
-            background-color: var(--warning-color);
-            color: white;
-            border: none;
+            background-color: rgba(0, 74, 173, 0.1);
+            color: #004aad;
         }
         
         .btn-edit:hover {
-            background-color: #d35400;
-            color: white;
+             background-color: rgba(0, 74, 173, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .btn-archive {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
         }
         
         .btn-archive:hover {
-            background-color: #c0392b;
-            color: white;
+             background-color: rgba(220, 53, 69, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .empty-message {

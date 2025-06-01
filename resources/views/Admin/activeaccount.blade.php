@@ -10,17 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #1abc9c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-        }
-        
+      
         * {
             margin: 0;
             padding: 0;
@@ -102,10 +92,44 @@
         }
         
         .btn-success {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+          background: none;
+        color: #1f1a5c;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight:800;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+
+button.btn.btn-success {
+    background: transparent !important;
+    color: #1f1a5c !important;
+    border: none !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+button.btn.btn-success:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+      
+}
+ 
+  .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
         
         .card {
             border: none;
@@ -164,6 +188,7 @@
         .btn-action {
             padding: 6px 10px;
             font-size: 0.85rem;
+            border: none;
             border-radius: 5px;
             display: inline-flex;
             align-items: center;
@@ -172,38 +197,39 @@
             white-space: nowrap;
         }
         
+        
         .btn-view {
-            background-color: var(--info-color);
-            color: white;
-            border: none;
+           background-color: rgba(0, 173, 12, 0.09);
+            color:green;
         }
         
         .btn-view:hover {
-            background-color: #16a085;
-            color: white;
+            background-color:rgba(22, 160, 132, 0.35);
+            color: green;
         }
         
         .btn-edit {
-            background-color: var(--warning-color);
-            color: white;
-            border: none;
+            background-color: rgba(0, 74, 173, 0.1);
+            color: #004aad;
         }
         
         .btn-edit:hover {
-            background-color: #d35400;
-            color: white;
+             background-color: rgba(0, 74, 173, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .btn-archive {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
         }
         
         .btn-archive:hover {
-            background-color: #c0392b;
-            color: white;
+             background-color: rgba(220, 53, 69, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        
         
         .empty-message {
             padding: 40px;
@@ -234,12 +260,15 @@
             margin-bottom: 20px;
             display: flex;
             gap: 10px;
+            justify-content: flex-end;
+            align-items: center;
         }
         
         .search-input {
-            flex: 1;
+            flex: unset;
             max-width: 300px;
             position: relative;
+            margin-left: auto;
         }
         
         .search-input i {
@@ -333,7 +362,7 @@
                 <!-- Search Bar -->
                 <div class="search-container m-3">
                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAccountModal">
-                <i class="fas fa-plus"></i> Create New Account
+                <span class="circle-plus">+</span> Create New Account
             </button>
                     <div class="search-input">
                         <i class="fas fa-search"></i>
