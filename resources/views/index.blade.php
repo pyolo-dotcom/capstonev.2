@@ -97,8 +97,6 @@
         left: 0;
         width: 100%;
         height: 100%;
-        /* IMPORTANT: Replace 'images/trucks-bg.jpg' with your actual truck image path */
-        background-image: url('{{ asset('images/trucks-bg.jpg') }}');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
