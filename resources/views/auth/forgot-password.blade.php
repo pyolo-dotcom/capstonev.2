@@ -57,7 +57,7 @@
             margin-top: 15px;
         }
         .back-to-login a {
-            color: #4da6ff;
+            color: white;
             text-decoration: none;
         }
     </style>

@@ -312,11 +312,11 @@
   }
 
   .forgot-password a {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: var(--transition);
-  }
+  color: white; /* Changed from var(--accent-color) to white */
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
 
   .forgot-password a:hover {
     text-decoration: underline;

@@ -20,6 +20,10 @@ class OTPController extends Controller
             'password' => 'required'
         ]);
 
+        // Store credentials in session for potential resend
+        Session::put('otp_username', $request->username);
+        Session::put('otp_password', $request->password);
+
         // Check credentials first
         $user = User::where('username', $request->username)->first();
 
@@ -33,6 +37,45 @@ class OTPController extends Controller
             return $this->redirectBasedOnRole($user);
         }
 
+        // Generate and send OTP
+        $this->generateAndSendOTP($user);
+
+        // Store user ID and remember me in session for verification
+        Session::put('otp_user_id', $user->id);
+        if ($request->has('remember')) {
+            Session::put('otp_remember', true);
+        }
+
+        return redirect()->route('verify.otp.view');
+    }
+
+    // Resend OTP
+    public function resendOTP(Request $request)
+    {
+        // Get credentials from session
+        $username = Session::get('otp_username');
+        $password = Session::get('otp_password');
+
+        if (!$username || !$password) {
+            return response()->json(['success' => false, 'message' => 'Session expired'], 400);
+        }
+
+        // Verify credentials again
+        $user = User::where('username', $username)->first();
+
+        if (!$user || !\Hash::check($password, $user->password)) {
+            return response()->json(['success' => false, 'message' => 'Invalid credentials'], 400);
+        }
+
+        // Generate and send new OTP
+        $this->generateAndSendOTP($user);
+
+        return response()->json(['success' => true, 'message' => 'New OTP sent']);
+    }
+
+    // Helper method to generate and send OTP
+    protected function generateAndSendOTP($user)
+    {
         // Generate OTP (6 digits)
         $otp = rand(100000, 999999);
         $otp_expires_at = now()->addMinutes(15);
@@ -45,14 +88,6 @@ class OTPController extends Controller
 
         // Send email with OTP
         Mail::to($user->email)->send(new SendOTP($otp));
-
-        // Store user ID and remember me in session for verification
-        Session::put('otp_user_id', $user->id);
-        if ($request->has('remember')) {
-            Session::put('otp_remember', true);
-        }
-
-        return redirect()->route('verify.otp.view');
     }
 
     // Show OTP verification form
@@ -95,7 +130,7 @@ class OTPController extends Controller
         Auth::login($user, $remember);
 
         // Clear session
-        Session::forget(['otp_user_id', 'otp_remember']);
+        Session::forget(['otp_user_id', 'otp_remember', 'otp_username', 'otp_password']);
 
         return $this->redirectBasedOnRole($user);
     }

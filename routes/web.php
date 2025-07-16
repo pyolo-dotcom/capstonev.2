@@ -145,11 +145,15 @@ Route::get('/cargo', [ShipmentDriverController::class, 'index']);
 Route::post('/cargo', [ShipmentDriverController::class, 'store']);
 Route::get('/cargo/qrcode', [ShipmentDriverController::class, 'generateQRCode']);
 Route::get('/cargo/store-via-scan', [ShipmentDriverController::class, 'storeViaScan']);
-Route::post('/update-location', [DriverTrackingController::class, 'updateLocation'])
-    ->middleware('auth');
-Route::get('/tracking', function () {
-    return view('driver.tracking');
+Route::middleware(['auth'])->group(function() {
+    Route::post('/update-location', [DriverTrackingController::class, 'updateLocation']);
+    Route::get('/tracking', function () {
+        return view('driver.tracking');
+    })->name('tracking');
 });
+// Temporary debugging route - remove after testing
+Route::post('/debug-update-location', [DriverTrackingController::class, 'updateLocation'])
+    ->withoutMiddleware('auth');
 
 // Account Management Routes
 Route::post('admin/activeaccount/store', [ActiveController::class, 'store'])->name('admin.activeaccount.store');
@@ -187,9 +191,10 @@ Route::post('/fuel-consumption', [FuelController::class, 'store']);
 Route::get('/admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
 Route::put('/admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update'); // Change to PUT
 Route::post('/admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
-// Archive Routes
 Route::put('admin/archive/restore/fuel/{id}', [ArchiveController::class, 'restoreFuel'])->name('admin.archive.restore.fuel');
 Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'destroyFuel'])->name('admin.archive.delete.fuel');
+
+// Trip Archive Routes
 Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTrip'])->name('admin.archive.trip');
 Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
 Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');
@@ -204,6 +209,7 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name
 Route::get('/verify-otp', [OTPController::class, 'showOTPForm'])->name('verify.otp.view');
 Route::post('/verify-otp', [OTPController::class, 'verifyOTP'])->name('verify.otp');
 Route::post('/send-otp', [OTPController::class, 'sendOTP'])->name('send.otp');
+Route::post('/resend-otp', [OTPController::class, 'resendOTP'])->name('resend.otp');
 
 // Truck Routes
 Route::post('admin/truckdetails/store', [TruckController::class, 'store'])->name('admin.truckdetails.store');

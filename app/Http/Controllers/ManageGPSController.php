@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Tracking;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ManageGPSController extends Controller
 {
@@ -97,4 +99,40 @@ class ManageGPSController extends Controller
                 ];
             });
     }
-}
+
+    public function getPosition()
+    {
+        $token = env('FLESPI_TOKEN');
+        $deviceId = env('FLESPI_DEVICE_ID');
+    
+        try {
+            // First verify device access
+            $deviceResponse = Http::withHeaders([
+                'Authorization' => 'FlespiToken ' . $token
+            ])->get("https://flespi.io/gw/devices/{$deviceId}");
+    
+            if ($deviceResponse->status() === 403) {
+                return response()->json([
+                    'error' => 'Token lacks permissions',
+                    'solution' => '1. Regenerate token 2. Add device access 3. Set devices:read permission'
+                ], 403);
+            }
+    
+            // Then get position data
+            $positionResponse = Http::withHeaders([
+                'Authorization' => 'FlespiToken ' . $token
+            ])->get("https://flespi.io/gw/devices/{$deviceId}/messages?limit=1&fields=position");
+    
+            return response()->json(
+                $positionResponse->json(),
+                $positionResponse->status()
+            );
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'solution' => 'Check server connection and token validity'
+            ], 500);
+        }
+    }
+} 

@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    
+    'flespi' => [
+    'token' => env('FLESPI_TOKEN'),
+    'device_id' => env('FLESPI_DEVICE_ID'),
+],
 
 ];

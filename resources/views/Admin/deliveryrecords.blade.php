@@ -333,9 +333,6 @@
             </div>
         </div>
           <div class="d-flex">
-                 <button class="add-trip-btn" id="openModal">
-                    <i class="fas fa-plus"></i> Add Trip
-                </button>
                 <button class="export-trip-btn" id="exportToExcel">
                     <i class="fas fa-file-excel"></i> Export Excel
                 </button>

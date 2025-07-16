@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Live Truck Tracking</title>
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *{
-            font-family:'Poppins';
-               }
         body { font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px; }
         #status { padding: 10px; margin: 10px 0; background: #f0f0f0; }
         .success { background: #d4edda; }
