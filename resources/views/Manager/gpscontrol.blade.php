@@ -331,51 +331,97 @@
             }
         }
         
-        function resetDistance(truckId) {
+        window.resetDistance = function(truck_id) {
+    // First confirm the reset
+    Swal.fire({
+        title: "Reset Distance?",
+        text: "This will reset the total distance to 0 and record fuel consumption",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, reset it!",
+    }).then((confirmResult) => {
+        if (confirmResult.isConfirmed) {
+            // Now prompt for fuel price
             Swal.fire({
-                title: 'Reset Distance?',
-                text: "This will reset the total distance to 0 for this truck.",
-                icon: 'warning',
+                title: 'Enter Fuel Price',
+                input: 'number',
+                inputLabel: 'Current fuel price per liter',
+                inputPlaceholder: 'Enter price (e.g. 60.50)',
+                inputAttributes: {
+                    step: "0.01",
+                    min: "1"
+                },
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, reset it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/manager/reset-distance/${truckId}`, {
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (price) => {
+                    if (!price || isNaN(price) || price <= 0) {
+                        Swal.showValidationMessage('Please enter a valid fuel price');
+                        return false;
+                    }
+                    return price;
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((priceResult) => {
+                if (priceResult.isConfirmed) {
+                    const fuelPrice = parseFloat(priceResult.value);
+                    
+                    // Send the request with the fuel price
+                    fetch(`/manager/reset-distance/${truck_id}`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ fuel_price: fuelPrice })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.message || 'Reset failed');
+                            });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            Swal.fire(
-                                'Reset!',
-                                'Distance has been reset.',
-                                'success'
-                            );
-                            loadTruckData();
+                            Swal.fire({
+                                title: "Success!",
+                                text: data.message,
+                                icon: "success"
+                            });
+                            
+                            // Update UI
+                            updateTruckDistanceUI(truck_id);
                         } else {
-                            Swal.fire(
-                                'Error!',
-                                'Failed to reset distance.',
-                                'error'
-                            );
+                            Swal.fire("Error", data.message || "Failed to reset distance", "error");
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'Failed to reset distance.',
-                            'error'
-                        );
+                        Swal.fire("Error", error.message || "Failed to reset distance", "error");
                     });
                 }
             });
         }
+    });
+};
+
+function updateTruckDistanceUI(truck_id) {
+    // Update truck list item
+    const items = document.querySelectorAll('.truck-item');
+    items.forEach(item => {
+        if (item.textContent.includes(truck_id)) {
+            const html = item.innerHTML.replace(
+                /Distance: [0-9.]+ km/,
+                'Distance: 0.00 km'
+            );
+            item.innerHTML = html;
+        }
+    });
+}
         
         function updateConnectionStatus(status) {
             const element = document.getElementById('connection-status');

@@ -90,6 +90,7 @@
         .date-filter {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .date-btn {
@@ -162,6 +163,39 @@
             transform: translateY(-1px);
         }
 
+        /* Custom Date Range Styles */
+        .custom-date-range {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .custom-date-range.active {
+            display: flex;
+        }
+
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .apply-date-btn {
+            padding: 8px 16px;
+            background-color: #1f1a5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .apply-date-btn:hover {
+            background-color: #161245;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -178,10 +212,17 @@
             
             .date-filter {
                 width: 100%;
+                flex-wrap: wrap;
             }
             
             .date-btn {
                 flex-grow: 1;
+            }
+
+            .custom-date-range {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     </style>
@@ -215,12 +256,17 @@
                     <button class="date-btn active time-filter-btn" data-filter="weekly">Weekly</button>
                     <button class="date-btn time-filter-btn" data-filter="monthly">Monthly</button>
                     <button class="date-btn time-filter-btn" data-filter="yearly">Annually</button>
+                    <button class="date-btn time-filter-btn" data-filter="custom">Custom</button>
+                    <div class="custom-date-range" id="customDateRange">
+                        <input type="date" id="startDate" class="date-input">
+                        <span>to</span>
+                        <input type="date" id="endDate" class="date-input">
+                        <button class="apply-date-btn" id="applyDateRange">
+                            <i class="fas fa-check me-1"></i>Apply
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-                <i class="fas fa-plus"></i> Add Consumption
-            </button>
 
             <div class="chart-container">
                 <canvas id="fuelChart"></canvas>
@@ -232,6 +278,7 @@
 
 <script>
 let fuelChart = null;
+let customDateRange = null;
 document.addEventListener('DOMContentLoaded', function () {
     let ctx = document.getElementById('fuelChart').getContext('2d');
     let fuelChartCanvas = document.getElementById('fuelChart'); 
@@ -241,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Hide the graph (canvas) initially
     fuelChartCanvas.style.display = 'none';
 
-    function fetchFuelData(plateNumber, timeFilter) {
+    function fetchFuelData(plateNumber, timeFilter, startDate = null, endDate = null) {
         if (!plateNumber || plateNumber === "-- Plate Number --") {
             fuelChartCanvas.style.display = 'none';
             Swal.fire({
@@ -253,7 +300,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
+        let url = `/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`;
+        
+        // Add custom date range to URL if provided
+        if (timeFilter === 'custom' && startDate && endDate) {
+            url += `&start_date=${startDate}&end_date=${endDate}`;
+        }
+
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 if (!Array.isArray(data) || data.length === 0) {
@@ -354,12 +408,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectedPlateNumber === "-- Plate Number --") {
             fuelChartCanvas.style.display = 'none';
         } else {
-            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+            if (selectedTimeFilter === 'custom' && customDateRange) {
+                fetchFuelData(selectedPlateNumber, selectedTimeFilter, customDateRange.start, customDateRange.end);
+            } else {
+                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+            }
         }
     });
 
     // Handle time filter selection
-    document.querySelectorAll('.date-btn').forEach(button => {
+    document.querySelectorAll('.time-filter-btn').forEach(button => {
         button.addEventListener('click', function() {
             if (!selectedPlateNumber || selectedPlateNumber === "-- Plate Number --") {
                 Swal.fire({
@@ -372,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Remove active class from all buttons
-            document.querySelectorAll('.date-btn').forEach(btn => {
+            document.querySelectorAll('.time-filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
 
@@ -381,9 +439,76 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Get the filter value from data-filter attribute
             selectedTimeFilter = this.getAttribute('data-filter');
-            fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+            
+            // Toggle custom date range visibility
+            const customDateRangeEl = document.getElementById('customDateRange');
+            if (selectedTimeFilter === 'custom') {
+                customDateRangeEl.classList.add('active');
+                
+                // Set default dates (last 7 days)
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 7);
+                
+                document.getElementById('startDate').valueAsDate = startDate;
+                document.getElementById('endDate').valueAsDate = endDate;
+                
+                // Set initial custom date range
+                customDateRange = {
+                    start: formatDate(startDate),
+                    end: formatDate(endDate)
+                };
+                
+                // Fetch data with default custom range
+                fetchFuelData(selectedPlateNumber, selectedTimeFilter, customDateRange.start, customDateRange.end);
+            } else {
+                customDateRangeEl.classList.remove('active');
+                customDateRange = null;
+                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+            }
         });
     });
+
+    // Apply custom date range
+    document.getElementById('applyDateRange').addEventListener('click', function() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please select both start and end dates',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+        
+        if (new Date(startDate) > new Date(endDate)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Start date must be before end date',
+                confirmButtonColor: '#d33'
+            });
+            return;
+        }
+        
+        customDateRange = {
+            start: startDate,
+            end: endDate
+        };
+        
+        fetchFuelData(selectedPlateNumber, 'custom', startDate, endDate);
+    });
+
+    // Helper function to format date as YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 });
 
 function openFuelModal() {
@@ -429,7 +554,11 @@ function addFuelConsumption() {
                 const selectedPlate = document.getElementById('plateNumberSelect').value;
                 if (selectedPlate && selectedPlate !== "-- Plate Number --") {
                     const timeFilter = document.querySelector('.time-filter-btn.active').getAttribute('data-filter');
-                    fetchFuelData(selectedPlate, timeFilter);
+                    if (timeFilter === 'custom' && customDateRange) {
+                        fetchFuelData(selectedPlate, timeFilter, customDateRange.start, customDateRange.end);
+                    } else {
+                        fetchFuelData(selectedPlate, timeFilter);
+                    }
                 }
             });
         } else {
