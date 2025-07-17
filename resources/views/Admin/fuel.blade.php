@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,6 +94,7 @@
         .date-filter {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .date-btn {
@@ -113,39 +115,35 @@
             border-color: #1f1a5c;
         }
 
-       /*changes*/
-      .btn-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: nowrap;
-    gap: 10px;
-}
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: nowrap;
+            gap: 10px;
+        }
 
-.add-consumption-btn,
-.export-btn {
-    background: #1f1a5c;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    white-space: nowrap;
-}
+        .add-consumption-btn,
+        .export-btn {
+            background: #1f1a5c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
 
-.add-consumption-btn:hover,
-.export-btn:hover {
-    background: #161245;
-    transform: translateY(-1px);
-}
-
-
-/*end*/
+        .add-consumption-btn:hover,
+        .export-btn:hover {
+            background: #161245;
+            transform: translateY(-1px);
+        }
 
         .chart-container {
             width: 100%;
@@ -160,8 +158,6 @@
             width: 100%;
             height: 400px;
         }
-
-       
 
         /* Improved Table Styles */
         .table-scroll-container {
@@ -313,11 +309,33 @@
             font-style: italic;
         }
 
-        .btn-container {
+        .custom-date-container {
             display: flex;
+            align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
-              flex-wrap: nowrap;
+        }
+
+        .custom-date-input {
+            padding: 8px 12px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .custom-date-btn {
+            padding: 8px 15px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background-color: #1f1a5c;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .custom-date-btn:hover {
+            background-color: #161245;
         }
 
         @media (max-width: 768px) {
@@ -338,27 +356,33 @@
             
             .date-filter {
                 width: 100%;
+                flex-wrap: wrap;
             }
             
             .date-btn {
                 flex-grow: 1;
             }
 
-           
+            .custom-date-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .custom-date-input {
+                width: calc(50% - 5px);
+            }
         }
-/* Optional: Prevent buttons from shrinking on small screens */
-@media (max-width: 600px) {
-    .btn-container {
-        flex-wrap: nowrap;
-    }
 
-    .add-consumption-btn,
-    .export-btn {
-        flex-shrink: 0;
-    }
-}
+        @media (max-width: 600px) {
+            .btn-container {
+                flex-wrap: nowrap;
+            }
 
-
+            .add-consumption-btn,
+            .export-btn {
+                flex-shrink: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -390,27 +414,29 @@
                     <button class="date-btn active time-filter-btn" data-filter="weekly">Weekly</button>
                     <button class="date-btn time-filter-btn" data-filter="monthly">Monthly</button>
                     <button class="date-btn time-filter-btn" data-filter="yearly">Annually</button>
+                    <button class="date-btn time-filter-btn" data-filter="custom">Custom</button>
+                    
+                    <div class="custom-date-container" id="customDateContainer" style="display: none;">
+                        <input type="date" id="startDate" class="custom-date-input">
+                        <span>to</span>
+                        <input type="date" id="endDate" class="custom-date-input">
+                        <button class="custom-date-btn" id="applyCustomDate">Apply</button>
+                    </div>
                 </div>
             </div>
 
             <div class="btn-container">
-    <div class="left-btn">
-        <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
-            <i class="fas fa-plus"></i> Add Consumption
-        </button>
-    </div>
-    <div class="right-btn">
-        <button class="export-btn" onclick="exportToExcel()">
-            <i class="fas fa-file-excel"></i> Export to Excel
-        </button>
-    </div>
-</div>
+                <div class="right-btn">
+                    <button class="export-btn" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
 
-<h4 style="margin-bottom: 10px;">Fuel Consumption</h4>
-<div class="chart-container">
-    <canvas id="fuelChart"></canvas>
-</div>
-
+            <h4 style="margin-bottom: 10px;">Fuel Consumption</h4>
+            <div class="chart-container">
+                <canvas id="fuelChart"></canvas>
+            </div>
 
             <div class="table-scroll-container">
                 <table class="fuel-table" id="fuelTable">
@@ -507,7 +533,15 @@
             // Hide the graph (canvas) initially
             fuelChartCanvas.style.display = 'none';
 
-            function fetchFuelData(plateNumber, timeFilter) {
+            // Set default dates for custom date range
+            const today = new Date();
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(today.getDate() - 7);
+            
+            document.getElementById('startDate').valueAsDate = oneWeekAgo;
+            document.getElementById('endDate').valueAsDate = today;
+
+            function fetchFuelData(plateNumber, timeFilter, startDate = null, endDate = null) {
                 if (!plateNumber || plateNumber === "-- Plate Number --") {
                     fuelChartCanvas.style.display = 'none';
                     return;
@@ -515,7 +549,14 @@
 
                 // For "All Trucks", we'll aggregate the data from our existing dataset
                 if (plateNumber === "all") {
-                    const filtered = filterDataByTimeRange(allData, timeFilter);
+                    let filtered = allData;
+                    
+                    if (timeFilter === 'custom' && startDate && endDate) {
+                        filtered = filterDataByCustomDate(allData, startDate, endDate);
+                    } else {
+                        filtered = filterDataByTimeRange(allData, timeFilter);
+                    }
+                    
                     const { data: aggregatedData, plateNumbers } = aggregateDataByDate(filtered);
                     updateFuelChart(
                         aggregatedData.map(item => item.dateString),
@@ -526,7 +567,13 @@
                     fuelChartCanvas.style.display = 'block';
                 } else {
                     // For individual trucks, fetch from server
-                    fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
+                    let url = `/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`;
+                    
+                    if (timeFilter === 'custom' && startDate && endDate) {
+                        url += `&start_date=${startDate}&end_date=${endDate}`;
+                    }
+                    
+                    fetch(url)
                         .then(response => response.json())
                         .then(data => {
                             if (!Array.isArray(data) || data.length === 0) {
@@ -693,6 +740,19 @@
                 return filtered.sort((a, b) => b.date - a.date);
             }
 
+            function filterDataByCustomDate(data, startDate, endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                // Set end date to end of day
+                end.setHours(23, 59, 59, 999);
+                
+                return data.filter(item => {
+                    const itemDate = new Date(item.date);
+                    return itemDate >= start && itemDate <= end;
+                }).sort((a, b) => b.date - a.date);
+            }
+
             // Initialize pagination with proper event listeners
             function initializePagination() {
                 filteredData = [...allData];
@@ -765,7 +825,18 @@
                 }
                 
                 // Apply time filter
-                filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
+                if (selectedTimeFilter === 'custom') {
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    
+                    if (startDate && endDate) {
+                        filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
+                    } else {
+                        filteredData = filteredByPlate;
+                    }
+                } else {
+                    filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
+                }
                 
                 if (filteredData.length > 0) {
                     document.getElementById('paginationControls').style.display = 'flex';
@@ -776,7 +847,13 @@
                 }
                 
                 // Always fetch/update chart data when plate number changes
-                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+                if (selectedTimeFilter === 'custom') {
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    fetchFuelData(selectedPlateNumber, selectedTimeFilter, startDate, endDate);
+                } else {
+                    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+                }
             });
 
             // Handle time filter selection
@@ -789,6 +866,14 @@
                     selectedTimeFilter = this.getAttribute('data-filter');
                     document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
+                    
+                    // Show/hide custom date inputs
+                    if (selectedTimeFilter === 'custom') {
+                        document.getElementById('customDateContainer').style.display = 'flex';
+                    } else {
+                        document.getElementById('customDateContainer').style.display = 'none';
+                    }
+                    
                     currentPage = 1;
                     
                     // Re-filter the data with the new time range
@@ -799,7 +884,18 @@
                         filteredByPlate = allData.filter(item => item.plate_no === selectedPlateNumber);
                     }
                     
-                    filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
+                    if (selectedTimeFilter === 'custom') {
+                        const startDate = document.getElementById('startDate').value;
+                        const endDate = document.getElementById('endDate').value;
+                        
+                        if (startDate && endDate) {
+                            filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
+                        } else {
+                            filteredData = filteredByPlate;
+                        }
+                    } else {
+                        filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
+                    }
                     
                     if (filteredData.length > 0) {
                         document.getElementById('paginationControls').style.display = 'flex';
@@ -810,8 +906,63 @@
                     }
                     
                     // Update chart with new time filter
-                    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+                    if (selectedTimeFilter === 'custom') {
+                        const startDate = document.getElementById('startDate').value;
+                        const endDate = document.getElementById('endDate').value;
+                        fetchFuelData(selectedPlateNumber, selectedTimeFilter, startDate, endDate);
+                    } else {
+                        fetchFuelData(selectedPlateNumber, selectedTimeFilter);
+                    }
                 });
+            });
+
+            // Handle custom date apply button
+            document.getElementById('applyCustomDate').addEventListener('click', function() {
+                if (!selectedPlateNumber || selectedPlateNumber === "-- Plate Number --") {
+                    return;
+                }
+
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                if (!startDate || !endDate) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Please select both start and end dates',
+                    });
+                    return;
+                }
+                
+                if (new Date(startDate) > new Date(endDate)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Start date cannot be after end date',
+                    });
+                    return;
+                }
+                
+                currentPage = 1;
+                
+                let filteredByPlate = [];
+                if (selectedPlateNumber === "all") {
+                    filteredByPlate = [...allData];
+                } else {
+                    filteredByPlate = allData.filter(item => item.plate_no === selectedPlateNumber);
+                }
+                
+                filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
+                
+                if (filteredData.length > 0) {
+                    document.getElementById('paginationControls').style.display = 'flex';
+                    updateTable();
+                } else {
+                    document.getElementById('paginationControls').style.display = 'none';
+                    hideAllData();
+                }
+                
+                fetchFuelData(selectedPlateNumber, 'custom', startDate, endDate);
             });
         });
 

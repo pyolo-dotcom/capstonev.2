@@ -117,6 +117,21 @@
                                 <input type="text" class="form-control" id="body_type" name="body_type" required>
                             </div>
                         </div>
+                        <div class="form-row">
+    <div class="form-col">
+        <div class="form-group mb-3">
+            <label for="fuel">Fuel</label>
+            <input type="text" class="form-control" id="fuel" name="fuel" required>
+        </div>
+    </div>
+    <div class="form-col">
+        <div class="form-group mb-3">
+            <label for="average_km_l">Average Km/L</label>
+            <input type="number" class="form-control" id="average_km_l" name="average_km_l" step="0.1" min="1" required>
+            <small class="text-muted">Average kilometers per liter for this truck</small>
+        </div>
+    </div>
+</div>
                         <div class="form-col">
                             <div class="form-group mb-3">
                                 <label for="body_number">Body Number</label>

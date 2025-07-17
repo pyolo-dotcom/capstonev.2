@@ -291,7 +291,8 @@ Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations
 
 // Add these routes
 Route::get('/get-driver-location/{truck_id}', [ManageGPSController::class, 'getDriverLocation']);
-Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
+Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance'])
+    ->name('reset.distance');
 
 // Add these new routes for WebSocket authentication
 Route::post('/broadcasting/auth', function () {

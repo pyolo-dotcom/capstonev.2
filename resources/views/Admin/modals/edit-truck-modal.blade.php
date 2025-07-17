@@ -84,51 +84,58 @@
             <input type="text" class="form-control form-control-lg" id="fuel" name="fuel" value="{{ $truck->fuel }}" required>
           </div>
 
+          <!-- Added Average Km/L field here -->
+          <div class="col-md-6">
+            <label for="average_km_l" class="form-label fw-semibold">Average Km/L</label>
+            <input type="number" class="form-control form-control-lg" id="average_km_l" name="average_km_l" 
+                   value="{{ $truck->average_km_l }}" step="0.1" min="1" max="50" required>
+            <small class="text-muted">Average kilometers per liter for this truck</small>
+          </div>
           <div class="col-md-6">
             <label for="make" class="form-label fw-semibold">Make</label>
             <input type="text" class="form-control form-control-lg" id="make" name="make" value="{{ $truck->make }}" required>
           </div>
+
           <div class="col-md-6">
             <label for="series" class="form-label fw-semibold">Series</label>
             <input type="text" class="form-control form-control-lg" id="series" name="series" value="{{ $truck->series }}" required>
           </div>
-
           <div class="col-md-6">
             <label for="body_type" class="form-label fw-semibold">Body Type</label>
             <input type="text" class="form-control form-control-lg" id="body_type" name="body_type" value="{{ $truck->body_type }}" required>
           </div>
+
           <div class="col-md-6">
             <label for="body_number" class="form-label fw-semibold">Body Number</label>
             <input type="text" class="form-control form-control-lg" id="body_number" name="body_number" value="{{ $truck->body_number }}" required>
           </div>
-
           <div class="col-md-6">
             <label for="year_model" class="form-label fw-semibold">Year Model</label>
             <input type="text" class="form-control form-control-lg" id="year_model" name="year_model" value="{{ $truck->year_model }}" required>
           </div>
+
           <div class="col-md-6">
             <label for="gross_weight" class="form-label fw-semibold">Gross Weight</label>
             <input type="text" class="form-control form-control-lg" id="gross_weight" name="gross_weight" value="{{ $truck->gross_weight }}" required>
           </div>
-
           <div class="col-md-6">
             <label for="net_weight" class="form-label fw-semibold">Net Weight</label>
             <input type="text" class="form-control form-control-lg" id="net_weight" name="net_weight" value="{{ $truck->net_weight }}" required>
           </div>
+
           <div class="col-md-6">
             <label for="shipping_weight" class="form-label fw-semibold">Shipping Weight</label>
             <input type="text" class="form-control form-control-lg" id="shipping_weight" name="shipping_weight" value="{{ $truck->shipping_weight }}" required>
           </div>
-
           <div class="col-md-6">
             <label for="net_capacity" class="form-label fw-semibold">Net Capacity</label>
             <input type="text" class="form-control form-control-lg" id="net_capacity" name="net_capacity" value="{{ $truck->net_capacity }}" required>
           </div>
+
           <div class="col-md-6">
             <label for="owner_name" class="form-label fw-semibold">Owner Name</label>
             <input type="text" class="form-control form-control-lg" id="owner_name" name="owner_name" value="{{ $truck->owner_name }}" required>
           </div>
-
           <div class="col-12">
             <label for="address" class="form-label fw-semibold">Address</label>
             <input type="text" class="form-control form-control-lg" id="address" name="address" value="{{ $truck->address }}" required>

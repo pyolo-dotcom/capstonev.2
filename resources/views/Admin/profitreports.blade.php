@@ -355,6 +355,39 @@
     transform: translateY(-1px);
 }
 
+/* Custom Date Range Styles */
+.custom-date-range {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.custom-date-range.active {
+    display: flex;
+}
+
+.date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.apply-date-btn {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.apply-date-btn:hover {
+    background-color: #2980b9;
+}
+
 /* Optional: prevent stacking on smaller screens */
 @media (max-width: 600px) {
     .profit-btn-container {
@@ -463,6 +496,17 @@
                     <button class="time-filter-btn" id="yearlyFilter">
                         <i class="fas fa-calendar me-1"></i> Yearly
                     </button>
+                    <button class="time-filter-btn" id="customFilter">
+                        <i class="fas fa-calendar-day me-1"></i> Custom
+                    </button>
+                </div>
+                <div class="custom-date-range" id="customDateRange">
+                    <input type="date" id="startDate" class="date-input">
+                    <span>to</span>
+                    <input type="date" id="endDate" class="date-input">
+                    <button class="apply-date-btn" id="applyDateRange">
+                        <i class="fas fa-check me-1"></i>Apply
+                    </button>
                 </div>
             </div>
         </div>
@@ -558,6 +602,7 @@
         let profitChart;
         let currentFilter = 'weekly'; // Default to weekly
         let currentPlateFilter = 'all';
+        let customDateRange = null;
 
         // Function to filter data by time period
         function filterByTimePeriod(data, period) {
@@ -566,6 +611,11 @@
             
             return data.filter(profit => {
                 const profitDate = new Date(profit.date);
+                
+                // If custom date range is active, use that
+                if (period === 'custom' && customDateRange) {
+                    return profitDate >= customDateRange.start && profitDate <= customDateRange.end;
+                }
                 
                 switch(period) {
                     case 'weekly':
@@ -634,6 +684,8 @@
                         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     case 'yearly':
                         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                    case 'custom':
+                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
                     default:
                         return profit.date;
                 }
@@ -736,6 +788,44 @@
             setActiveFilter('yearly');
         });
 
+        document.getElementById('customFilter').addEventListener('click', function() {
+            setActiveFilter('custom');
+        });
+
+        // Apply custom date range
+        document.getElementById('applyDateRange').addEventListener('click', function() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please select both start and end dates'
+                });
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Start date must be before end date'
+                });
+                return;
+            }
+            
+            customDateRange = {
+                start: new Date(startDate),
+                end: new Date(endDate)
+            };
+            
+            // Apply filters
+            const filteredData = applyFilters();
+            updateTableDisplay(filteredData);
+            renderChart(filteredData);
+        });
+
         function setActiveFilter(filter) {
             currentFilter = filter;
             
@@ -743,6 +833,29 @@
             document.querySelectorAll('.time-filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
+            
+            // Toggle custom date range visibility
+            const customDateRangeEl = document.getElementById('customDateRange');
+            if (filter === 'custom') {
+                customDateRangeEl.classList.add('active');
+                
+                // Set default dates (last 7 days)
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 7);
+                
+                document.getElementById('startDate').valueAsDate = startDate;
+                document.getElementById('endDate').valueAsDate = endDate;
+                
+                // Set initial custom date range
+                customDateRange = {
+                    start: startDate,
+                    end: endDate
+                };
+            } else {
+                customDateRangeEl.classList.remove('active');
+                customDateRange = null;
+            }
             
             // Add animation to active button
             const activeBtn = document.getElementById(filter + 'Filter');

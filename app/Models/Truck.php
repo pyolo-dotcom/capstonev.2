@@ -17,6 +17,7 @@ class Truck extends Model
         'date',
         'mv_file_number',
         'plate_number',
+        'average_km_l',
         'engine_number',
         'chassis_number',
         'denomination',
@@ -62,5 +63,10 @@ class Truck extends Model
         if ($this->image_path && Storage::exists($this->image_path)) {
             Storage::delete($this->image_path);
         }
+    }
+
+    public function fuelConsumptions()
+    {
+        return $this->hasMany(FuelConsumption::class, 'plate_no', 'plate_number');
     }
 }

@@ -572,61 +572,106 @@
         };
 
         window.resetDistance = function(truck_id) {
+    // First confirm the reset
+    Swal.fire({
+        title: "Reset Distance?",
+        text: "This will reset the total distance to 0 and record fuel consumption",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, reset it!",
+    }).then((confirmResult) => {
+        if (confirmResult.isConfirmed) {
+            // Now prompt for fuel price
             Swal.fire({
-                title: "Reset Distance?",
-                text: "This will reset the total distance to 0 for this truck",
-                icon: "warning",
+                title: 'Enter Fuel Price',
+                input: 'number',
+                inputLabel: 'Current fuel price per liter',
+                inputPlaceholder: 'Enter price (e.g. 60.50)',
+                inputAttributes: {
+                    step: "0.01",
+                    min: "1"
+                },
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, reset it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('/reset-distance/' + truck_id, {
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (price) => {
+                    if (!price || isNaN(price) || price <= 0) {
+                        Swal.showValidationMessage('Please enter a valid fuel price');
+                        return false;
+                    }
+                    return price;
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((priceResult) => {
+                if (priceResult.isConfirmed) {
+                    const fuelPrice = parseFloat(priceResult.value);
+                    
+                    // Send the request with the fuel price
+                    fetch(`/reset-distance/${truck_id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ fuel_price: fuelPrice })
                     })
                     .then(response => {
-                        if (!response.ok) throw new Error('Reset failed');
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.message || 'Reset failed');
+                            });
+                        }
                         return response.json();
                     })
                     .then(data => {
                         if (data.success) {
-                            Swal.fire("Reset!", "Distance has been reset to 0.", "success");
-                            
-                            // Update the specific truck's distance to 0 in the UI
-                            if (markers[truck_id]) {
-                                const content = infoWindows[truck_id].getContent();
-                                const newContent = content.replace(
-                                    /<strong>Distance:<\/strong> [0-9.]+ km/,
-                                    '<strong>Distance:</strong> 0.00 km'
-                                );
-                                infoWindows[truck_id].setContent(newContent);
-                            }
-                            
-                            // Update in the list
-                            const items = document.querySelectorAll('.truck-item');
-                            items.forEach(item => {
-                                if (item.textContent.includes(truck_id)) {
-                                    const html = item.innerHTML.replace(
-                                        /[0-9.]+ km \|/,
-                                        '0.00 km |'
-                                    );
-                                    item.innerHTML = html;
-                                }
+                            Swal.fire({
+                                title: "Success!",
+                                text: data.message,
+                                icon: "success"
                             });
+                            
+                            // Update UI
+                            updateTruckDistanceUI(truck_id);
+                        } else {
+                            Swal.fire("Error", data.message || "Failed to reset distance", "error");
                         }
                     })
                     .catch(error => {
-                        console.error("Error resetting distance:", error);
-                        Swal.fire("Error", "Failed to reset distance.", "error");
+                        Swal.fire("Error", error.message || "Failed to reset distance", "error");
                     });
                 }
             });
-        };
+        }
+    });
+};
+
+function updateTruckDistanceUI(truck_id) {
+    // Update marker info window
+    if (markers[truck_id]) {
+        const content = infoWindows[truck_id].getContent();
+        const newContent = content.replace(
+            /<strong>Distance:<\/strong> [0-9.]+ km/,
+            '<strong>Distance:</strong> 0.00 km'
+        );
+        infoWindows[truck_id].setContent(newContent);
+    }
+    
+    // Update truck list item
+    const items = document.querySelectorAll('.truck-item');
+    items.forEach(item => {
+        if (item.textContent.includes(truck_id)) {
+            const html = item.innerHTML.replace(
+                /[0-9.]+ km \|/,
+                '0.00 km |'
+            );
+            item.innerHTML = html;
+        }
+    });
+}
 
         // Cleanup on page unload
         window.addEventListener('beforeunload', () => {

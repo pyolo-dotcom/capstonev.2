@@ -20,4 +20,9 @@ protected $fillable = [
     'total_cost',
 ];
 
+public function truck()
+{
+    return $this->belongsTo(Truck::class, 'plate_no', 'plate_number');
+}
+
 }
