@@ -7,13 +7,9 @@
     <title>Cargo QR Code</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <style>
@@ -23,13 +19,13 @@
             box-sizing: border-box;
             font-family: 'Poppins';
         }
-        
+
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
             background: #343a40;
@@ -38,7 +34,7 @@
             position: fixed;
             height: 100%;
         }
-        
+
         .content {
             margin-left: 250px;
             padding: 25px;
@@ -46,7 +42,7 @@
             background-color: white;
             min-height: 100vh;
         }
-        
+
         .truck-display {
             background: #f1f3f5;
             padding: 12px 20px;
@@ -59,12 +55,12 @@
             border: 1px solid #e1e5e9;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        
+
         .truck-display i {
             margin-right: 12px;
             color: #495057;
         }
-        
+
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
@@ -144,12 +140,12 @@
                 position: relative;
                 height: auto;
             }
-            
+
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
-            
+
             .form-container {
                 padding: 15px;
             }
@@ -165,14 +161,11 @@
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <x-drivernavbar />
     </div>
 
-    <!-- Main Content Area -->
     <div class="content">
-        <!-- Header Section -->
         <div class="header-section">
             <div class="truck-display">
                 <i class="fas fa-user"></i>
@@ -181,11 +174,9 @@
         </div>
 <h2 class="section-title">GENERATE CARGO QR CODE</h2>
 
-<!-- Form Container -->
 <div class="form-container">
     <form id="cargoForm">
         <div class="row">
-            <!-- Left column -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="plate_no" class="form-label">Plate Number</label>
@@ -198,59 +189,101 @@
                         @endforeach
                     </select>
                 </div>
+
                 <div class="mb-3">
                     <label for="eir_no" class="form-label">EIR No</label>
-                    <input type="text" id="eir_no" name="eir_no" class="form-control">
+                    <select id="eir_no" name="eir_no" class="form-select other-select" data-other-id="eir_no_other">
+                        <option value="">Select EIR No</option>
+                        <option value="EIR001">EIR001</option>
+                        <option value="EIR002">EIR002</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <input type="text" id="eir_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify EIR No">
                 </div>
+
                 <div class="mb-3">
                     <label for="container_van_no" class="form-label">Container Van No</label>
-                    <input type="text" id="container_van_no" name="container_van_no" class="form-control">
+                    <select id="container_van_no" name="container_van_no" class="form-select other-select" data-other-id="container_van_no_other">
+                        <option value="">Select Container Van No</option>
+                        <option value="CV001">CV001</option>
+                        <option value="CV002">CV002</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <input type="text" id="container_van_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Container Van No">
                 </div>
+
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
-                    <input type="text" id="size" name="size" class="form-control">
+                    <select id="size" name="size" class="form-select">
+                        <option value="">Select Size</option>
+                        <option value="20ft">20ft</option>
+                        <option value="40ft">40ft</option>
+                    </select>
                 </div>
+
                 <div class="mb-3">
                     <label for="shipper_consignee" class="form-label">Shipper/Consignee</label>
                     <input type="text" id="shipper_consignee" name="shipper_consignee" class="form-control">
                 </div>
             </div>
 
-            <!-- Right column -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="voyage_vessel" class="form-label">Voyage Vessel</label>
-                    <input type="text" id="voyage_vessel" name="voyage_vessel" class="form-control">
+                    <select id="voyage_vessel" name="voyage_vessel" class="form-select other-select" data-other-id="voyage_vessel_other">
+                        <option value="">Select Vessel</option>
+                        <option value="Vessel A">Vessel A</option>
+                        <option value="Vessel B">Vessel B</option>
+                        <option value="others">Others</option>
+                    </select>
+                     <input type="text" id="voyage_vessel_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Vessel">
                 </div>
+
                 <div class="mb-3">
                     <label for="voyage_no" class="form-label">Voyage No</label>
-                    <input type="text" id="voyage_no" name="voyage_no" class="form-control">
+                    <select id="voyage_no" name="voyage_no" class="form-select other-select" data-other-id="voyage_no_other">
+                        <option value="">Select Voyage No</option>
+                        <option value="V001">V001</option>
+                        <option value="V002">V002</option>
+                        <option value="others">Others</option>
+                    </select>
+                     <input type="text" id="voyage_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Voyage No">
                 </div>
+
                 <div class="mb-3">
                     <label for="pickup_location" class="form-label">Pick-up Location</label>
-                    <input type="text" id="pickup_location" name="pickup_location" class="form-control">
+                    <select id="pickup_location" name="pickup_location" class="form-select other-select" data-other-id="pickup_location_other">
+                        <option value="">Select Pick-up Location</option>
+                        <option value="Depot A">Depot A</option>
+                        <option value="Depot B">Depot B</option>
+                        <option value="others">Others</option>
+                    </select>
+                     <input type="text" id="pickup_location_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Pick-up Location">
                 </div>
+
                 <div class="mb-3">
                     <label for="delivery_location" class="form-label">Delivery Location</label>
-                    <input type="text" id="delivery_location" name="delivery_location" class="form-control">
+                    <select id="delivery_location" name="delivery_location" class="form-select other-select" data-other-id="delivery_location_other">
+                        <option value="">Select Delivery Location</option>
+                        <option value="Warehouse A">Warehouse A</option>
+                        <option value="Warehouse B">Warehouse B</option>
+                        <option value="others">Others</option>
+                    </select>
+                     <input type="text" id="delivery_location_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Delivery Location">
                 </div>
             </div>
         </div>
 
-        <!-- Submit and Clear buttons -->
         <div class="row mt-4">
             <div class="col-md-12 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Generate QR</button>
+                <button type="submit" class="btn btn-primary" id="generateBtn">Generate QR</button>
                 <button type="button" onclick="clearSavedFormData()" class="btn btn-secondary">Clear</button>
             </div>
         </div>
     </form>
 </div>
 
-
-
-       <!-- QR Code Modal (uses existing ID) -->
-<div class="modal fade" id="qrCodeContainer" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+       <div class="modal fade" id="qrCodeContainer" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content p-3">
       <div class="modal-header">
@@ -258,22 +291,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
-        <div id="qrCodeImage"></div> <!-- Keep the existing ID -->
-      </div>
+        <div id="qrCodeImage"></div> </div>
     </div>
   </div>
 </div>
 
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    
+
     <script>
         // Save form data to localStorage whenever any input changes
         document.getElementById('cargoForm').addEventListener('input', function() {
@@ -283,7 +311,7 @@
         // Form submission handler
         document.getElementById("cargoForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            
+
             // Check if plate number is assigned
             const plateNo = document.getElementById('plate_no').value;
             if (!plateNo || plateNo === 'Not assigned') {
@@ -295,23 +323,32 @@
                 });
                 return;
             }
-            
+
             saveFormData();
             generateQRCode();
         });
 
-        // Function to save form data
+        // Function to save form data, now handling 'others' option
         function saveFormData() {
+            const getSelectValue = (selectId) => {
+                const select = document.getElementById(selectId);
+                if (select.value === 'others') {
+                    const otherInput = document.getElementById(select.dataset.otherId);
+                    return otherInput ? otherInput.value.trim() : '';
+                }
+                return select.value;
+            };
+
             const formData = {
                 plate_no: document.getElementById('plate_no').value,
-                eir_no: document.getElementById('eir_no').value,
-                container_van_no: document.getElementById('container_van_no').value,
+                eir_no: getSelectValue('eir_no'),
+                container_van_no: getSelectValue('container_van_no'),
                 size: document.getElementById('size').value,
-                shipper_consignee: document.getElementById('shipper_consignee').value,
-                voyage_vessel: document.getElementById('voyage_vessel').value,
-                voyage_no: document.getElementById('voyage_no').value,
-                pickup_location: document.getElementById('pickup_location').value,
-                delivery_location: document.getElementById('delivery_location').value
+                shipper_consignee: document.getElementById('shipper_consignee').value.trim(),
+                voyage_vessel: getSelectValue('voyage_vessel'),
+                voyage_no: getSelectValue('voyage_no'),
+                pickup_location: getSelectValue('pickup_location'),
+                delivery_location: getSelectValue('delivery_location')
             };
             localStorage.setItem('cargoFormData', JSON.stringify(formData));
         }
@@ -319,7 +356,7 @@
         // Function to generate QR code
         function generateQRCode() {
             const formData = JSON.parse(localStorage.getItem('cargoFormData') || '{}');
-            
+
             // Show loading state
             Swal.fire({
                 title: 'Generating QR Code',
@@ -329,7 +366,7 @@
                     Swal.showLoading();
                 }
             });
-            
+
             axios.get("{{ url('/cargo/qrcode') }}", {
                     params: formData
                 })
@@ -337,9 +374,9 @@
                     Swal.close();
                    document.getElementById('qrCodeImage').innerHTML = response.data;
 
-// Show Bootstrap modal
-const qrModal = new bootstrap.Modal(document.getElementById('qrCodeContainer'));
-qrModal.show();
+                    // Show Bootstrap modal
+                    const qrModal = new bootstrap.Modal(document.getElementById('qrCodeContainer'));
+                    qrModal.show();
 
                 })
                 .catch(error => {
@@ -355,40 +392,80 @@ qrModal.show();
 
         // Restore form data when page loads
         document.addEventListener('DOMContentLoaded', function() {
+
+            // Setup for 'Others' option dropdowns
+            document.querySelectorAll('.other-select').forEach(selectElement => {
+                const otherInput = document.getElementById(selectElement.dataset.otherId);
+                if (!otherInput) return;
+
+                selectElement.addEventListener('change', function() {
+                    if (this.value === 'others') {
+                        otherInput.style.display = 'block';
+                    } else {
+                        otherInput.style.display = 'none';
+                        otherInput.value = '';
+                    }
+                });
+            });
+
             const savedData = localStorage.getItem('cargoFormData');
             if (savedData) {
                 const formData = JSON.parse(savedData);
-                
+
+                // Helper function to restore select/other input state
+                const restoreSelectValue = (selectId, savedValue) => {
+                    if (!savedValue) return;
+                    const select = document.getElementById(selectId);
+                    const otherInput = document.getElementById(select.dataset.otherId);
+                    let isOther = true;
+
+                    for (let option of select.options) {
+                        if (option.value === savedValue) {
+                            select.value = savedValue;
+                            isOther = false;
+                            break;
+                        }
+                    }
+
+                    if (isOther) {
+                        select.value = 'others';
+                        if (otherInput) {
+                            otherInput.value = savedValue;
+                            otherInput.style.display = 'block';
+                        }
+                    }
+                };
+
                 // Restore all fields except plate_no if user has an assigned truck
                 const plateNoInput = document.getElementById('plate_no');
                 const assignedPlateNo = "{{ Auth::user()->truck_id }}";
-                
+
                 if (assignedPlateNo) {
                     plateNoInput.value = assignedPlateNo;
                 } else if (formData.plate_no) {
                     plateNoInput.value = formData.plate_no;
                 }
-                
+
                 // Restore other fields
-                document.getElementById('eir_no').value = formData.eir_no || '';
-                document.getElementById('container_van_no').value = formData.container_van_no || '';
+                restoreSelectValue('eir_no', formData.eir_no);
+                restoreSelectValue('container_van_no', formData.container_van_no);
                 document.getElementById('size').value = formData.size || '';
                 document.getElementById('shipper_consignee').value = formData.shipper_consignee || '';
-                document.getElementById('voyage_vessel').value = formData.voyage_vessel || '';
-                document.getElementById('voyage_no').value = formData.voyage_no || '';
-                document.getElementById('pickup_location').value = formData.pickup_location || '';
-                document.getElementById('delivery_location').value = formData.delivery_location || '';
-                
+                restoreSelectValue('voyage_vessel', formData.voyage_vessel);
+                restoreSelectValue('voyage_no', formData.voyage_no);
+                restoreSelectValue('pickup_location', formData.pickup_location);
+                restoreSelectValue('delivery_location', formData.delivery_location);
+
                 // Regenerate QR code if there was one
-                if (formData.plate_no) {
-                    generateQRCode();
+                if (Object.keys(formData).length > 1 && formData.plate_no) { // Check if form is not empty
+                     generateQRCode();
                 }
             }
-            
+
             // Disable generate button if no plate number is assigned
             const generateBtn = document.getElementById('generateBtn');
-            const plateNo = "{{ Auth::user()->truck_id }}";
-            
+            const plateNo = document.getElementById('plate_no').value;
+
             if (!plateNo) {
                 generateBtn.disabled = true;
                 generateBtn.title = 'You need an assigned plate number to generate QR codes';
@@ -409,19 +486,25 @@ qrModal.show();
                 if (result.isConfirmed) {
                     localStorage.removeItem('cargoFormData');
                     document.getElementById('cargoForm').reset();
-const modalEl = document.getElementById('qrCodeContainer');
-const modalInstance = bootstrap.Modal.getInstance(modalEl);
-if (modalInstance) {
-    modalInstance.hide();
-}
-                    
-                    // Reset plate number to assigned value
+
+                    // Manually hide all 'other' input fields
+                    document.querySelectorAll('.other-input').forEach(input => {
+                        input.style.display = 'none';
+                    });
+
+                    const modalEl = document.getElementById('qrCodeContainer');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+
+                    // Reset plate number to assigned value if it exists
                     const plateNoInput = document.getElementById('plate_no');
                     const assignedPlateNo = "{{ Auth::user()->truck_id }}";
                     if (assignedPlateNo) {
                         plateNoInput.value = assignedPlateNo;
                     }
-                    
+
                     Swal.fire(
                         'Cleared!',
                         'Your form has been cleared.',
