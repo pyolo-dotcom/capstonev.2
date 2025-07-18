@@ -192,33 +192,31 @@
 
                 <div class="mb-3">
                     <label for="eir_no" class="form-label">EIR No</label>
-                    <select id="eir_no" name="eir_no" class="form-select other-select" data-other-id="eir_no_other">
+                    <select id="eir_no" name="eir_no" class="form-select">
                         <option value="">Select EIR No</option>
                         <option value="EIR001">EIR001</option>
                         <option value="EIR002">EIR002</option>
-                        <option value="others">Others</option>
                     </select>
-                    <input type="text" id="eir_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify EIR No">
                 </div>
 
                 <div class="mb-3">
                     <label for="container_van_no" class="form-label">Container Van No</label>
-                    <select id="container_van_no" name="container_van_no" class="form-select other-select" data-other-id="container_van_no_other">
+                    <select id="container_van_no" name="container_van_no" class="form-select">
                         <option value="">Select Container Van No</option>
                         <option value="CV001">CV001</option>
                         <option value="CV002">CV002</option>
-                        <option value="others">Others</option>
                     </select>
-                    <input type="text" id="container_van_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Container Van No">
                 </div>
 
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
-                    <select id="size" name="size" class="form-select">
+                    <select id="size" name="size" class="form-select other-select" data-other-id="size_other">
                         <option value="">Select Size</option>
                         <option value="20ft">20ft</option>
                         <option value="40ft">40ft</option>
+                        <option value="others">Others</option>
                     </select>
+                    <input type="text" id="size_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Size">
                 </div>
 
                 <div class="mb-3">
@@ -241,13 +239,11 @@
 
                 <div class="mb-3">
                     <label for="voyage_no" class="form-label">Voyage No</label>
-                    <select id="voyage_no" name="voyage_no" class="form-select other-select" data-other-id="voyage_no_other">
+                    <select id="voyage_no" name="voyage_no" class="form-select">
                         <option value="">Select Voyage No</option>
                         <option value="V001">V001</option>
                         <option value="V002">V002</option>
-                        <option value="others">Others</option>
                     </select>
-                     <input type="text" id="voyage_no_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Voyage No">
                 </div>
 
                 <div class="mb-3">
@@ -283,7 +279,7 @@
     </form>
 </div>
 
-       <div class="modal fade" id="qrCodeContainer" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+      <div class="modal fade" id="qrCodeContainer" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content p-3">
       <div class="modal-header">
@@ -332,7 +328,8 @@
         function saveFormData() {
             const getSelectValue = (selectId) => {
                 const select = document.getElementById(selectId);
-                if (select.value === 'others') {
+                // Check if the select element has the 'other-select' class
+                if (select.classList.contains('other-select') && select.value === 'others') {
                     const otherInput = document.getElementById(select.dataset.otherId);
                     return otherInput ? otherInput.value.trim() : '';
                 }
@@ -341,12 +338,12 @@
 
             const formData = {
                 plate_no: document.getElementById('plate_no').value,
-                eir_no: getSelectValue('eir_no'),
-                container_van_no: getSelectValue('container_van_no'),
-                size: document.getElementById('size').value,
+                eir_no: document.getElementById('eir_no').value,
+                container_van_no: document.getElementById('container_van_no').value,
+                size: getSelectValue('size'), // Updated to use helper
                 shipper_consignee: document.getElementById('shipper_consignee').value.trim(),
                 voyage_vessel: getSelectValue('voyage_vessel'),
-                voyage_no: getSelectValue('voyage_no'),
+                voyage_no: document.getElementById('voyage_no').value,
                 pickup_location: getSelectValue('pickup_location'),
                 delivery_location: getSelectValue('delivery_location')
             };
@@ -416,23 +413,30 @@
                 const restoreSelectValue = (selectId, savedValue) => {
                     if (!savedValue) return;
                     const select = document.getElementById(selectId);
-                    const otherInput = document.getElementById(select.dataset.otherId);
-                    let isOther = true;
 
-                    for (let option of select.options) {
-                        if (option.value === savedValue) {
-                            select.value = savedValue;
-                            isOther = false;
-                            break;
-                        }
-                    }
+                    // Check if it's a select with an "others" option
+                    if (select.classList.contains('other-select')) {
+                        const otherInput = document.getElementById(select.dataset.otherId);
+                        let isOther = true;
 
-                    if (isOther) {
-                        select.value = 'others';
-                        if (otherInput) {
-                            otherInput.value = savedValue;
-                            otherInput.style.display = 'block';
+                        for (let option of select.options) {
+                            if (option.value === savedValue) {
+                                select.value = savedValue;
+                                isOther = false;
+                                break;
+                            }
                         }
+
+                        if (isOther) {
+                            select.value = 'others';
+                            if (otherInput) {
+                                otherInput.value = savedValue;
+                                otherInput.style.display = 'block';
+                            }
+                        }
+                    } else {
+                        // For standard select elements
+                        select.value = savedValue;
                     }
                 };
 
@@ -449,7 +453,7 @@
                 // Restore other fields
                 restoreSelectValue('eir_no', formData.eir_no);
                 restoreSelectValue('container_van_no', formData.container_van_no);
-                document.getElementById('size').value = formData.size || '';
+                restoreSelectValue('size', formData.size); // Updated to use helper
                 document.getElementById('shipper_consignee').value = formData.shipper_consignee || '';
                 restoreSelectValue('voyage_vessel', formData.voyage_vessel);
                 restoreSelectValue('voyage_no', formData.voyage_no);
