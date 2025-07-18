@@ -140,14 +140,14 @@
         border-radius: 6px;
         cursor: pointer;
         transition: var(--transition);
-        background-color: var(--button-primary-bg); /* Uses updated variable */
+        background-color: var(--button-primary-bg);
         color: var(--text-light);
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         margin-bottom: 1.2rem;
     }
 
     .action-button:hover {
-        background-color: var(--button-primary-hover); /* Uses updated variable */
+        background-color: var(--button-primary-hover);
         box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
 
@@ -199,19 +199,19 @@
     /* Responsive Design for smaller screens (remains unchanged from last edit) */
     @media (max-width: 768px) {
         .forgot-password-container {
-            max-width: 90%; /* Allow container to be wider on small screens */
-            padding: 2.5rem 1.5rem; /* Reduce padding for smaller screens */
-            box-shadow: 0 0 20px rgba(0,0,0,0.15); /* Slightly less intense shadow */
+            max-width: 90%;
+            padding: 2.5rem 1.5rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
         }
 
         .container-logo {
-            position: static; /* Position normally within flow */
-            margin-bottom: 1.5rem; /* Add spacing below it */
-            text-align: center; /* Center the logo text */
+            position: static;
+            margin-bottom: 1.5rem;
+            text-align: center;
             width: 100%;
             top: auto;
             right: auto;
-            font-size: 1.1rem; /* Slightly smaller font */
+            font-size: 1.1rem;
         }
 
         .form-heading {

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYA Trucking Services Login</title>
+         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
@@ -38,7 +40,7 @@
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Poppins';
     }
 
     html, body {
@@ -186,9 +188,9 @@
     }
 
     .welcome-heading {
-        font-size: 2.1rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         color: var(--dark-color);
         text-align: left;
     }
@@ -415,8 +417,7 @@
             <div class="left-panel-background-image"></div>
 
             <div class="left-panel-content">
-                <p class="left-panel-greeting">Hello, SYA Team!</p>
-                <h1 class="left-panel-heading">Less paperwork. <br>More control. <span class="wave-emoji">&#128075;</span></h1>
+                <h1 class="left-panel-heading">SYA  <br>Trucking Services</h1>
                 <p class="left-panel-subtext">
                     Stay organized and efficient with SYA Trucking Services all-in-one system.
                     Simplify records, improve coordination, and keep everything moving.
@@ -428,16 +429,16 @@
         </div>
 
         <div class="right-panel">
-            <span class="right-panel-logo">SYA Trucking Services</span>
-
             <div class="login-form-container">
-                <h2 class="welcome-heading">Welcome Back!</h2>
+                <h2 class="welcome-heading">Let’s get back to work!
+
+</h2>
 
                 <form method="POST" action="{{ route('login.post') }}">
                     @csrf
                     <div class="input-group">
-                        <label for="username" class="input-label">Email address</label>
-                        <input type="text" id="username" name="username" placeholder="yourname@example.com" class="login-input" required>
+                        <label for="username" class="input-label">Usernmae</label>
+                        <input type="text" id="username" name="username" placeholder="username" class="login-input" required>
                     </div>
 
                     <div class="input-group password-input-group">
