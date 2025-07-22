@@ -100,17 +100,17 @@
 
         .add-trip-btn {
             background: none;
-    color: #1f1a5c;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight:800;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    white-space: nowrap;
+            color: #1f1a5c;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight:800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
            
         }
         .circle-plus {
@@ -142,7 +142,9 @@
             gap: 8px;
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-left:78%;
+            margin-left: auto;
+    margin-right: 20px; /* Add some space from the right side */
+    white-space: nowrap; /* Prevents line break */
         }
         .export-trip-btn:hover {
     background:rgb(37, 81, 16) ;
@@ -338,7 +340,7 @@
             <div class="plate-number-section">
                 <select id="plateNumberSelect">
                     <option value="all" selected>All Trucks</option>
-                    <option value="" disabled>-- Plate Number --</option>
+                  <!-- <option value="" disabled>-- Plate Number --</option>-->
                     @foreach($plateNumbers as $plate)
                         <option value="{{ $plate }}">{{ $plate }}</option>
                     @endforeach
