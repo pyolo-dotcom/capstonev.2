@@ -93,7 +93,14 @@
             border-color: #1f1a5c;
             box-shadow: 0 0 0 0.25rem rgba(31, 26, 92, 0.25);
         }
-
+/* Add this to your existing <style> block, preferably near the bottom */
+.form-select[type="text"] {
+    -webkit-appearance: none; /* For Chrome, Safari, Edge */
+    -moz-appearance: none;    /* For Firefox */
+    appearance: none;         /* Standard property */
+    background-image: none;   /* Remove any background image that acts as an icon */
+    padding-right: 12px;      /* Adjust padding if needed after removing the icon */
+}
         .btn-primary {
             background-color: #1f1a5c;
             border: none;
@@ -191,22 +198,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="eir_no" class="form-label">EIR No</label>
-                    <select id="eir_no" name="eir_no" class="form-select">
-                        <option value="">Select EIR No</option>
-                        <option value="EIR001">EIR001</option>
-                        <option value="EIR002">EIR002</option>
-                    </select>
-                </div>
+    <label for="eir_no" class="form-label">EIR No</label>
+    <input type="text" id="eir_no" name="eir_no" class="form-select" placeholder="Enter EIR No">
+</div>
 
                 <div class="mb-3">
-                    <label for="container_van_no" class="form-label">Container Van No</label>
-                    <select id="container_van_no" name="container_van_no" class="form-select">
-                        <option value="">Select Container Van No</option>
-                        <option value="CV001">CV001</option>
-                        <option value="CV002">CV002</option>
-                    </select>
-                </div>
+    <label for="container_van_no" class="form-label">Container Van No</label>
+    <input type="text" id="container_van_no" name="container_van_no" class="form-select" placeholder="Enter Container Van No">
+</div>
 
                 <div class="mb-3">
                     <label for="size" class="form-label">Size</label>
@@ -236,15 +235,10 @@
                     </select>
                      <input type="text" id="voyage_vessel_other" class="form-control mt-2 other-input" style="display: none;" placeholder="Please specify Vessel">
                 </div>
-
-                <div class="mb-3">
-                    <label for="voyage_no" class="form-label">Voyage No</label>
-                    <select id="voyage_no" name="voyage_no" class="form-select">
-                        <option value="">Select Voyage No</option>
-                        <option value="V001">V001</option>
-                        <option value="V002">V002</option>
-                    </select>
-                </div>
+<div class="mb-3">
+    <label for="voyage_no" class="form-label">Voyage No</label>
+    <input type="text" id="voyage_no" name="voyage_no" class="form-select" placeholder="Enter Voyage No">
+</div>
 
                 <div class="mb-3">
                     <label for="pickup_location" class="form-label">Pick-up Location</label>

@@ -53,18 +53,16 @@ body {
 
 /* Header Section */
 .truck-display {
-    background: #e0f2fe;
-    color: #0369a1;
-    padding: 14px 22px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    margin-left:40px;
-    display: inline-flex;
+    display: inline-flex;       /* Make it shrink to fit content */
     align-items: center;
-    font-size: 16px;
-    font-weight: 600;
-    border-left: 6px solid #0284c7;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: #f1f1f1;
+    font-weight: 500;
+    width: fit-content;         /* Key: only take as much space as needed */
+    max-width: 100%;            /* don't stretch full width */
+    margin-bottom: 15px;
 }
 
 .truck-display i {
@@ -130,19 +128,62 @@ body {
     top: 1px;
 }
 
-/* Contact Info Box */
-.contact-info {
-    background: #f1f5f9;
-    padding: 18px 22px;
+.rules-section {
+    padding: 20px 24px;
+    background-color: #fffde5;
+    border-left: 5px solid #facc15;
     border-radius: 12px;
-    border-left: 5px solid #1e40af;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    color: #78350f;
+    font-family: 'Poppins', sans-serif;
 }
 
-.contact-info li {
+.rules-section h5 {
     margin-bottom: 10px;
-    color: #1e293b;
+    font-size: 18px;
+    color: #b45309;
+}
+
+.rules-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 10px 0 0 0;
+}
+
+.rules-section li {
+    margin-bottom: 8px;
     font-size: 15px;
 }
+
+
+/* Contact Info Box */
+.contact-support {
+    padding: 20px 24px;
+    background-color: #eef6ff;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    color: #1e3a8a;
+    font-family: 'Poppins', sans-serif;
+}
+
+.contact-support h5 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #1d4ed8;
+}
+
+.contact-support ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 10px 0 0 0;
+}
+
+.contact-support li {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -182,111 +223,114 @@ body {
 
     <!-- Content -->
     <div class="content">
-        <!-- Header -->
-        <div class="truck-display">
-            <i class="fas fa-user"></i>
-            <span>{{ Auth::user()->fullname ?? 'Not assigned' }}</span>
-            <input type="hidden" id="plateNumber" value="{{ Auth::user()->truck_id ?? '' }}">
+    <h1 class="section-title">Help & Support</h1>
+
+    <!-- Header -->
+    <div class="truck-display">
+        <i class="fas fa-user"></i>
+        <span>{{ Auth::user()->fullname ?? 'Not assigned' }}</span>
+    </div>
+
+    <!-- Help Cards -->
+    <div class="row">
+        <!-- Card 1: Trip Records -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Trip Records</h5>
+                    <p class="card-text">
+                        Learn how to log your trips correctly and export reports.
+                    </p>
+                    <div class="read-more-content d-none">
+                        <p>Drivers should scan the QR code at the delivery point and record details such as truck plate, time, location, and distance. Managers and Admins can export the trip logs as Excel files for reporting.</p>
+                    </div>
+                    <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
+                </div>
+            </div>
         </div>
 
-        <h1 class="section-title">Help & Support</h1>
-
-        <!-- Accordion Sections -->
-        <div class="accordion" id="helpAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingIntro">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIntro">
-                        <i class="fas fa-book me-2"></i> System User Manual
-                    </button>
-                </h2>
-                <div id="collapseIntro" class="accordion-collapse collapse show" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        This guide provides step-by-step instructions for managing delivery records, fuel, and shipments.
+        <!-- Card 2: Fuel Management -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Fuel Management</h5>
+                    <p class="card-text">Track your fuel usage and upload receipts properly.</p>
+                    <div class="read-more-content d-none">
+                        <p>Drivers are required to enter liters filled, attach a photo of the fuel receipt, and specify the destination or trip purpose. Admins use this to monitor consumption per truck and calculate expenses.</p>
                     </div>
+                    <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
                 </div>
             </div>
+        </div>
 
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingDelivery">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDelivery">
-                        <i class="fas fa-truck me-2"></i> Delivery Records
-                    </button>
-                </h2>
-                <div id="collapseDelivery" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        To add a delivery record, fill in the required details such as date, plate number, trip (one way, two way, or door to door), and number of trips.
+        <!-- Card 3: GPS Tracker -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">GPS Tracker</h5>
+                    <p class="card-text">View your truck's real-time location and status.</p>
+                    <div class="read-more-content d-none">
+                        <p>The map shows all active trucks with their current speed and distance. Use the 'Focus' button to zoom in on one truck and 'Reset' to start distance tracking again.</p>
                     </div>
+                    <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
                 </div>
             </div>
+        </div>
 
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFuel">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFuel">
-                        <i class="fas fa-gas-pump me-2"></i> Fuel Management
-                    </button>
-                </h2>
-                <div id="collapseFuel" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        Log fuel usage by entering the fuel amount and vehicle ID under the Fuel Management section, then save the entry.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingShipment">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShipment">
-                        <i class="fas fa-shipping-fast me-2"></i> Shipment Progress
-                    </button>
-                </h2>
-                <div id="collapseShipment" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        Track shipments in real-time by entering the shipment ID to check the status and updates.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingSupport">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupport">
-                        <i class="fas fa-headset me-2"></i> Support & Contact
-                    </button>
-                </h2>
-                <div id="collapseSupport" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        <p>If you need assistance, contact our support team:</p>
-                        <div class="contact-info">
-                            <ul class="mb-0">
-                                <li><i class="fas fa-envelope me-2"></i>Email: support@syaservices.com</li>
-                                <li><i class="fas fa-phone me-2"></i>Phone: 09123456789</li>
-                                <li><i class="fas fa-clock me-2"></i>Support Hours: 8:00 AM - 5:00 PM, Mon–Fri</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingRules">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRules">
-                        <i class="fas fa-gavel me-2"></i> Rules & Regulations
-                    </button>
-                </h2>
-                <div id="collapseRules" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
-                    <div class="accordion-body">
-                        <ul>
-                            <li>Complete daily vehicle inspection reports</li>
-                            <li>Follow all traffic laws and regulations</li>
-                            <li>Report any accidents or incidents immediately</li>
-                            <li>Maintain proper documentation for all shipments</li>
-                            <li>Submit fuel receipts and delivery reports on time</li>
+        <!-- Card 4: User Roles -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">User Roles</h5>
+                    <p class="card-text">Understand what each user can and cannot do.</p>
+                    <div class="read-more-content d-none">
+                        <ul class="mb-1">
+                            <li><strong>Admin:</strong> Full access to trucks, reports, users, settings</li>
+                            <li><strong>Operations Manager:</strong> Manage trip logs and QR scans</li>
+                            <li><strong>Driver:</strong> View/update trips, fuel logs, and profile</li>
                         </ul>
                     </div>
+                    <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Contact Info -->
+    <div class="contact-support mb-4">
+        <h5>Contact Support</h5>
+        <p>If you need assistance, contact our support team:</p>
+        <ul>
+            <li><strong>Email:</strong> support@syaservices.com</li>
+            <li><strong>Phone:</strong> 09123456789</li>
+            <li><strong>Support Hours:</strong> 8:00 AM - 5:00 PM, Monday to Friday</li>
+        </ul>
+    </div>
+
+    <!-- Rules -->
+    <!-- Rules and Regulations -->
+    <div class="rules-section">
+    <h5>Rules and Regulations</h5>
+    <ul>
+        <li>Complete daily vehicle inspection reports</li>
+        <li>Follow all traffic laws and regulations</li>
+        <li>Report any accidents or incidents immediately</li>
+        <li>Maintain proper documentation for all shipments</li>
+        <li>Submit fuel receipts and delivery reports on time</li>
+    </ul>
+    </div>
+
+</div>
+
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleReadMore(button) {
+        const content = button.previousElementSibling;
+        content.classList.toggle("d-none");
+        button.innerText = content.classList.contains("d-none") ? "Read More" : "Show Less";
+    }
+
+</script>
 </body>
 </html>

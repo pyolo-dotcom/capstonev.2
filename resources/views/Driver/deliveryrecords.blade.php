@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <link rel="icon" href="{{ asset('public/images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
@@ -49,12 +49,11 @@
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 25px;
-            margin-left:40px;
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
             border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .truck-display i {
@@ -98,26 +97,29 @@
         }
 
         .add-trip-btn {
-            background: #1f1a5c;
+            background-color: #1f1a5c;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
             font-weight: 500;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+            gap: 6px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            height: 42px;
+            width: auto; /* <--- ensures it's only as wide as content */
+            max-width: fit-content; /* optional fallback for safety */
+            white-space: nowrap; /* keeps text in one line */
+}
 
         .add-trip-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background-color: #151042;
+            border-color: #151042;
+            cursor: pointer;
         }
-
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -183,10 +185,11 @@
                 <i class="fas fa-user"></i>
                 <span id="assignedPlateNumber" data-plate="{{ $plateNumber }}">{{ $driverName }}</span>
             </div>
-            <button class="add-trip-btn" id="openModal">
+            
+        </div>
+        <button class="add-trip-btn" id="openModal">
                 <i class="fas fa-plus"></i> Add Trip
             </button>
-        </div>
 
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>

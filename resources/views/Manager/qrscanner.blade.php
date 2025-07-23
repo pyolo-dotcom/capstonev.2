@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>QR Code Scanner</title>
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -16,6 +15,7 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
@@ -25,13 +25,13 @@
             box-sizing: border-box;
             font-family: 'Poppins';
         }
-        
+
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
         }
-        
+
         .sidebar {
             width: 250px;
             background: #343a40;
@@ -40,7 +40,7 @@
             position: fixed;
             height: 100%;
         }
-        
+
         .content {
             margin-left: 250px;
             padding: 25px;
@@ -49,7 +49,6 @@
             min-height: 100vh;
         }
 
-        /* Scanner Container */
         .scanner-container {
             margin-top: 30px;
             width: 100%;
@@ -67,23 +66,6 @@
             border-radius: 10px;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-            
-            .content {
-                margin-left: 0;
-                padding: 15px;
-            }
-
-            #reader {
-                height: 300px;
-                max-width: 100%;
-            }
-        }
         #result {
             margin-top: 15px;
             font-size: 18px;
@@ -91,7 +73,6 @@
             color: green;
         }
 
-        /* Buttons */
         #sendData, #switchCamera {
             margin-top: 15px;
             padding: 12px;
@@ -112,19 +93,68 @@
             width: 600px !important;
         }
 
+        /* Styled alert guide */
+        .alert.alert-info {
+            margin-top: 30px;
+            background-color: #e9f5ff;
+            border: 1px solid #b6e0fe;
+            border-left: 5px solid #0d6efd;
+            border-radius: 6px;
+            padding: 20px;
+            color: #084298;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert.alert-info h5 {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .alert.alert-info ul {
+            padding-left: 20px;
+        }
+
+        .alert.alert-info ul li {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 position: relative;
                 height: auto;
             }
-            
+
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
+
+            #reader {
+                height: 300px;
+                max-width: 100%;
+            }
+
+            .alert.alert-info {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .alert.alert-info h5 {
+                font-size: 16px;
+            }
+
+            .alert.alert-info ul li {
+                font-size: 14px;
+            }
         }
     </style>
+    
+
 </head>
 
 <body>
@@ -140,24 +170,36 @@
         </div>
         
         <div class="scanner-container">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Scan Cargo QR Code</h2>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-center mb-3">
-                        <button id="switchCamera" class="btn btn-primary me-2">
-                            <i class="fas fa-camera"></i> Switch Camera
-                        </button>
-                        <button id="sendData" class="btn btn-success">
-                            <i class="fas fa-paper-plane"></i> Send Data
-                        </button>
-                    </div>
-                    <div id="reader" class="mx-auto"></div>
-                    <div id="result" class="mt-3 text-center"></div>
-                </div>
-            </div>
+            
+
+    <!-- Scanner Card -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Scan Cargo QR Code</h2>
         </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-center mb-3">
+                <button id="switchCamera" class="btn btn-primary me-2">
+                    <i class="fas fa-camera"></i> Switch Camera
+                </button>
+                <button id="sendData" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Send Data
+                </button>
+            </div>
+            <div id="reader" class="mx-auto"></div>
+            <div id="result" class="mt-3 text-center"></div>
+        </div>
+    </div>
+    </div>
+
+    <div class="alert alert-info text-start" role="alert" style="font-size: 15px; /* Consider moving this to CSS */">
+        <h5 class="mb-2"><i class="fas fa-info-circle me-2"></i>About This Scanner</h5>
+        <ul class="mb-0 ps-3">
+            <li>This QR scanner is used to scan cargo information encoded in the QR codes.</li>
+            <li>Make sure the QR code is clearly visible and fits inside the box.</li>
+            <li>After scanning, the cargo details will be shown and submitted to the system.</li>
+            <li>Only valid QR codes generated by the system will work.</li>
+        </ul>
     </div>
 
      <script>
