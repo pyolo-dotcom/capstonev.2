@@ -130,7 +130,7 @@ body {
 
 .rules-section {
     padding: 20px 24px;
-    background-color: #fffde5;
+    background-color: #fdfbea;
     border-left: 5px solid #facc15;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
@@ -159,7 +159,7 @@ body {
 /* Contact Info Box */
 .contact-support {
     padding: 20px 24px;
-    background-color: #eef6ff;
+    background-color: #ecf5ff;
     border-left: 5px solid #3b82f6;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.05);
@@ -237,45 +237,67 @@ body {
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Trip Records</h5>
+                    <h5 class="card-title">Trip Countings</h5>
                     <p class="card-text">
-                        Learn how to log your trips correctly and export reports.
+                        Keep track of your total trips, including one-way, round-trip, and door-to-door deliveries.
                     </p>
                     <div class="read-more-content d-none">
-                        <p>Drivers should scan the QR code at the delivery point and record details such as truck plate, time, location, and distance. Managers and Admins can export the trip logs as Excel files for reporting.</p>
+                        <p>
+                            You can easily add your trips whenever you complete a delivery. The total count updates in real-time and is visible to the Admin and Operations Manager, who use this data to calculate your pay.
+                        </p>
+                        <p><strong>How to:</strong></p>
+                        <ol>
+                            <li>Click the "Add Trip" button on your dashboard.</li>
+                            <li>Select the trip type (one-way, round-trip, or door-to-door).</li>
+                            <li>Enter the number of trips completed.</li>
+                            <li>Submit to update your total trip counts.</li>
+                        </ol>
                     </div>
                     <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
                 </div>
             </div>
         </div>
+
 
         <!-- Card 2: Fuel Management -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Fuel Management</h5>
-                    <p class="card-text">Track your fuel usage and upload receipts properly.</p>
+                    <p class="card-text">Track your fuel usage and see simple visual analytics of your fuel consumption patterns.</p>
                     <div class="read-more-content d-none">
-                        <p>Drivers are required to enter liters filled, attach a photo of the fuel receipt, and specify the destination or trip purpose. Admins use this to monitor consumption per truck and calculate expenses.</p>
+                        <p>Access reports on your truck’s fuel consumption over time with the visual chart showing how much fuel is used on different trips and periods, helping you monitor efficiency and identify any unusual fuel usage patterns that might need attention.</p>
                     </div>
                     <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3: GPS Tracker -->
+        <!-- Card 3: SHipment progress -->
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">GPS Tracker</h5>
-                    <p class="card-text">View your truck's real-time location and status.</p>
-                    <div class="read-more-content d-none">
-                        <p>The map shows all active trucks with their current speed and distance. Use the 'Focus' button to zoom in on one truck and 'Reset' to start distance tracking again.</p>
-                    </div>
-                    <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
-                </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Shipment Progress</h5>
+            <p class="card-text">
+                This feature lets you fill out shipment details like cargo description, destination, and delivery date, then generate a unique QR code for that shipment.
+            </p>
+            <div class="read-more-content d-none">
+                <p>
+                    To start a shipment, fill in the form with all necessary cargo details. When you submit, the system generates a QR code linked to this shipment. Share this QR with the Operations Manager so they can scan and update delivery statuses efficiently.
+                </p>
+                <p><strong>How to:</strong></p>
+                <ol>
+                    <li>Go to the Shipment Progress page.</li>
+                    <li>Fill out the shipment form with cargo information and delivery details.</li>
+                    <li>Submit the form to generate a QR code.</li>
+                    <li>Provide the QR code to the Operations Manager for scanning and tracking.</li>
+                </ol>
             </div>
+            <button class="btn btn-sm btn-link p-0" onclick="toggleReadMore(this)">Read More</button>
         </div>
+    </div>
+</div>
+
 
         <!-- Card 4: User Roles -->
         <div class="col-md-6 mb-4">
@@ -285,8 +307,8 @@ body {
                     <p class="card-text">Understand what each user can and cannot do.</p>
                     <div class="read-more-content d-none">
                         <ul class="mb-1">
-                            <li><strong>Admin:</strong> Full access to trucks, reports, users, settings</li>
-                            <li><strong>Operations Manager:</strong> Manage trip logs and QR scans</li>
+                            <li><strong>Admin:</strong> Full access to trucks location, reports, users, settings</li>
+                            <li><strong>Operations Manager:</strong> Full access to trucks location, manage trip logs and QR scans</li>
                             <li><strong>Driver:</strong> View/update trips, fuel logs, and profile</li>
                         </ul>
                     </div>
@@ -301,9 +323,9 @@ body {
         <h5>Contact Support</h5>
         <p>If you need assistance, contact our support team:</p>
         <ul>
-            <li><strong>Email:</strong> support@syaservices.com</li>
-            <li><strong>Phone:</strong> 09123456789</li>
-            <li><strong>Support Hours:</strong> 8:00 AM - 5:00 PM, Monday to Friday</li>
+            <li>📧<strong>Email:</strong> support@syaservices.com</li>
+            <li>📱<strong>Phone:</strong> 09123456789</li>
+            <li>🕗<strong>Support Hours:</strong> 8:00 AM - 5:00 PM, Monday to Friday</li>
         </ul>
     </div>
 
