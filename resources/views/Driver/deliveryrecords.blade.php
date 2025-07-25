@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trip Countings</title>
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -20,65 +20,110 @@
             box-sizing: border-box;
             font-family: 'Poppins';
         }
-        
+
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
+            color: #333;
         }
-        
+
         .sidebar {
             width: 250px;
-            background: #343a40;
+            background: linear-gradient(145deg, #2c3e50, #34495e);
             color: white;
             padding: 20px 0;
             position: fixed;
             height: 100%;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
-            background-color: white;
+            background-color: #fff;
             min-height: 100vh;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
         }
-        
+
         .truck-display {
             background: #f1f3f5;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
-            border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
         }
-        
+
+        .truck-display:hover {
+            transform: translateY(-2px);
+        }
+
         .truck-display i {
             margin-right: 12px;
             color: #495057;
+            transition: color 0.2s ease;
         }
-        
+
+        .truck-display:hover i {
+            color: #1f1a5c;
+        }
+
         .trip-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+            backdrop-filter: blur(5px);
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             text-align: center;
             height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid #e9ecef;
+            border: 1px solid rgba(204, 206, 206, 0.8);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(31, 26, 92, 0.1) 0%, transparent 70%);
+            z-index: 0;
+            transition: transform 0.6s ease;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(31, 26, 92, 0.3);
+        }
+
+        .trip-card:hover::before {
+            transform: translate(20%, 20%);
         }
 
         .trip-card h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
         }
 
         .trip-card p {
@@ -87,46 +132,60 @@
             line-height: 1;
             margin: 0;
             color: #1f1a5c;
+            position: relative;
+            z-index: 1;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.05);
+            }
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 1.5rem;
-            color: #343a40;
         }
 
         .add-trip-btn {
-            background-color: #1f1a5c;
+            background: linear-gradient(90deg, #1f1a5c 0%, #2a236f 100%); /* Added subtle gradient */
             color: white;
-            border: 1px solid transparent;
-            padding: 8px 16px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            font-size: 0.95rem;
+            border: 1px solid #1f1a5c;
+            padding: 8px 16px; /* Slightly increased padding for better proportions */
+            border-radius: 10px; /* Softer, more rounded corners */
+            font-size: 14px;
             font-weight: 500;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-            height: 42px;
-            width: auto; /* <--- ensures it's only as wide as content */
-            max-width: fit-content; /* optional fallback for safety */
-            white-space: nowrap; /* keeps text in one line */
-}
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+            max-width: fit-content;
+            white-space: nowrap;
+            margin-bottom: 20px;
+        }
 
         .add-trip-btn:hover {
-            background-color: #151042;
-            border-color: #151042;
-            cursor: pointer;
+            background: linear-gradient(90deg, #2a236f 0%, #352b8a 100%); /* Brighter gradient on hover */
+            color: white;
+            border-color: #2a236f; /* Matches gradient start */
+            transform: translateY(-2px) scale(1.03); /* Added subtle scale for pop */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
         }
+
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
         }
 
         @media (max-width: 768px) {
@@ -135,37 +194,62 @@
                 position: relative;
                 height: auto;
             }
-            
+
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
-            
+
             .trip-card {
-                height: 150px;
+                height: 160px;
+                padding: 20px 15px;
             }
-            
+
             .trip-card p {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
-            
+
+            .trip-card h3 {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+
             .header-section {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 10px;
             }
         }
 
         @media (max-width: 576px) {
             .trip-card {
-                height: 130px;
+                height: 140px;
+                padding: 15px 10px;
             }
-            
+
             .trip-card p {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
-            
+
             .trip-card h3 {
                 font-size: 0.9rem;
+                margin-bottom: 8px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .trip-card {
+                height: 130px;
+                padding: 12px 8px;
+            }
+
+            .trip-card p {
+                font-size: 1.6rem;
+            }
+
+            .trip-card h3 {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
             }
         }
     </style>
@@ -185,11 +269,10 @@
                 <i class="fas fa-user"></i>
                 <span id="assignedPlateNumber" data-plate="{{ $plateNumber }}">{{ $driverName }}</span>
             </div>
-            
         </div>
         <button class="add-trip-btn" id="openModal">
-                <i class="fas fa-plus"></i> Add Trip
-            </button>
+            <i class="fas fa-plus"></i> Add Trip
+        </button>
 
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>

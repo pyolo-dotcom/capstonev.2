@@ -45,15 +45,18 @@
 
         .truck-display {
             background: #f1f3f5;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            margin-left:40px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
-            border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+        .truck-display:hover {
+            transform: translateY(-2px);
         }
 
         .truck-display i {

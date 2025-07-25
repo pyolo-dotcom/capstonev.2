@@ -132,7 +132,6 @@
             line-height: 1;
             margin: 0;
             color: #1f1a5c;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2), 0 0 5px rgba(31, 26, 92, 0.3);
             position: relative;
             z-index: 1;
             animation: pulse 1.5s infinite alternate;
