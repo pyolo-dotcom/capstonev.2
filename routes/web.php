@@ -33,6 +33,7 @@ use App\Http\Controllers\OTPController;
 use App\Http\Controllers\TruckController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\FlespiData; // If using the model
 
 // Login Routes
 Route::get('/', [LoginController::class, 'showLogin'])->name('login');
@@ -306,3 +307,72 @@ Route::post('/pusher/webhook', function (Request $request) {
 });
 
 Route::get('/admin/activeaccount/{id}/edit-form', [ActiveController::class, 'editForm']);
+
+// Flespi webhook endpoint
+Route::post('/flespi-webhook', function (Request $request) {
+    // Validate the request has data
+    if (!$request->has('data')) {
+        return response()->json(['error' => 'No data provided'], 400);
+    }
+
+    $data = $request->input('data');
+    
+
+    // Option 2: If not using model, use DB facade directly
+    DB::table('flespi_data')->insert([
+        'payload' => json_encode($data),
+        'device_id' => $data['device_id'] ?? null,
+        'latitude' => $data['position']['latitude'] ?? null,
+        'longitude' => $data['position']['longitude'] ?? null,
+        'timestamp' => isset($data['timestamp']) ? date('Y-m-d H:i:s', $data['timestamp']) : null,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Log the received data for debugging
+    \Log::info('Flespi data received and stored:', $data);
+
+    return response()->json(['success' => true, 'message' => 'Data stored successfully']);
+});
+
+// Route to view stored data (for testing)
+Route::get('/flespi-data', function () {
+    $data = FlespiData::latest()->take(10)->get();
+    return view('flespi-data', ['data' => $data]);
+});
+
+
+// Flespi data routes
+Route::get('/flespi-data', function() {
+    $data = \App\Models\FlespiData::where('device_id', env('FLESPI_DEVICE_ID'))
+                                ->orderBy('timestamp', 'desc')
+                                ->take(20)
+                                ->get();
+    return view('flespi-data', compact('data'));
+});
+
+Route::get('/get-flespi-location', function() {
+    $data = \App\Models\FlespiData::where('device_id', env('FLESPI_DEVICE_ID'))
+                                ->orderBy('timestamp', 'desc')
+                                ->first();
+    
+    if (!$data) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No location data available'
+        ]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'latitude' => $data->latitude,
+            'longitude' => $data->longitude,
+            'speed' => $data->speed,
+            'altitude' => $data->altitude,
+            'battery' => $data->battery,
+            'timestamp' => $data->timestamp,
+            'device_id' => $data->device_id
+        ]
+    ]);
+});
