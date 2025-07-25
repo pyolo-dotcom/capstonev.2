@@ -15,171 +15,245 @@
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins';
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins';
+    }
+    
+    body {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .sidebar {
+        width: 250px;
+        background: linear-gradient(145deg, #343a40, #2c3333);
+        color: white;
+        padding: 20px 0;
+        position: fixed;
+        height: 100%;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .content {
+        margin-left: 250px;
+        padding: 25px;
+        flex-grow: 1;
+        background-color: #ffffff;
+        min-height: 100vh;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: -6px 0 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .content-header {
+        background: linear-gradient(90deg, #ffffff, #f8f9fa);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+    }
+
+    .content-header h2 {
+        color: #1f1a5c;
+        font-size: 1.7rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-header h2 i {
+        color: #1d4ed8;
+    }
+
+    .table-container {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-bar {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .search-bar input {
+        padding: 12px 15px;
+        border: 2px solid transparent;
+        border-radius: 25px;
+        width: 250px;
+        outline: none;
+        font-size: 14px;
+        background: linear-gradient(white, #f8f9fa);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .search-bar input:focus {
+        border-color: #1f1a5c;
+        box-shadow: 0 0 8px rgba(31, 26, 92, 0.2);
+    }
+
+    .search-bar input::placeholder {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .archive-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .archive-table th,
+    .archive-table td {
+        border: 1px solid #e0e0e0;
+        padding: 15px;
+        text-align: left;
+        transition: background-color 0.3s ease;
+    }
+
+    .archive-table th {
+        background-color: #1f1a5c;
+        color: #fff;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .archive-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .archive-table tbody tr:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .restore-btn {
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .restore-btn:hover {
+        background: linear-gradient(90deg, #27ae60, #219653);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .delete-btn {
+        background: linear-gradient(90deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .delete-btn:hover {
+        background: linear-gradient(90deg, #c0392b, #a93226);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            position: relative;
         }
         
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #343a40;
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            height: 100%;
-        }
-
         .content {
-            margin-left: 250px;
-            padding: 25px;
-            flex-grow: 1;
-            background-color: white;
-            min-height: 100vh;
+            margin-left: 0;
+            padding: 15px;
         }
-
+        
         .content-header {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
             margin-bottom: 20px;
         }
 
         .content-header h2 {
-            color: #1f1a5c;
             font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .table-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .filter-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-direction: column;
         }
-
+        
         .search-bar {
-            flex-grow: 1;
-            display: flex;
-            justify-content: flex-end;
+            width: 100%;
         }
-
+        
         .search-bar input {
-            padding: 10px 15px;
-            border: 1px solid #e1e5e9;
-            border-radius: 25px;
-            width: 250px;
-            outline: none;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .search-bar input:focus {
-            border-color: #1f1a5c;
+            width: 100%;
         }
 
         .archive-table {
-            width: 100%;
-            border-collapse: collapse;
+            display: block;
+            overflow-x: auto;
         }
 
         .archive-table th,
         .archive-table td {
-            border: 1px solid #e0e0e0;
-            padding: 12px 15px;
-            text-align: left;
+            min-width: 120px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .content-header h2 {
+            font-size: 1.3rem;
         }
 
-        .archive-table th {
-            background-color: #1f1a5c;
-            color: #fff;
-            font-weight: 600;
+        .search-bar input {
+            padding: 10px 12px;
+            font-size: 13px;
         }
 
-        .archive-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .archive-table th,
+        .archive-table td {
+            padding: 10px;
+            font-size: 13px;
         }
 
-        .archive-table tbody tr:hover {
-            background-color: #f1f1f1;
+        .restore-btn, .delete-btn {
+            padding: 8px 12px;
+            font-size: 12px;
         }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .restore-btn {
-            background: #2ecc71;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .restore-btn:hover {
-            background: #27ae60;
-            transform: translateY(-1px);
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #c0392b;
-            transform: translateY(-1px);
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-            }
-            
-            .content {
-                margin-left: 0;
-            }
-            
-            .filter-container {
-                flex-direction: column;
-            }
-            
-            .search-bar {
-                width: 100%;
-            }
-            
-            .search-bar input {
-                width: 100%;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="sidebar">

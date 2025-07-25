@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,10 +50,10 @@
         }
 
         .content-header {
-            background: none!important;
+            background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: none!important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
 
@@ -66,24 +65,19 @@
         }
 
         .table-container {
-            background: none!important;
+            background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow:none!important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .filter-container {
-              display: flex
-;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: #FFFFFF;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .truck-select {
@@ -98,90 +92,87 @@
 
         .date-filter {
             display: flex;
-            gap: 8px;
-            background: #ffffff; /* Match filter-container background */
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-            align-items: center; /* Vertically center buttons */
-            flex-wrap: nowrap; /* Keep buttons in one line */
-            position: relative; /* Positioning context for custom-date-container */
-            justify-content: flex-start; /* Align buttons to the left */
+            gap: 10px;
         }
 
         .date-btn {
             padding: 8px 15px;
-            border: none;
-            background: #e9ecef; /* Light gray for inactive state */
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background-color: #fff;
             color: #495057;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border-radius: 8px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .date-btn.active,
-        .date-btn:hover {
-            background: #007bff;
-            color: #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-            transform: translateY(-1px); /* Slight lift effect */
-        }
-        
-
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: nowrap;
-            gap: 10px;
-        }
-/* Style for the export button */
-.export-btn {
-    /* Inherit some styles from toggle-btn for consistency or define new ones */
-    background-color: #28a745; /* Green for export */
-    color: white;
-    border: 1px solid #28a745;
-    padding: 10px 15px; /* Slightly different padding */
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s, border-color 0.3s;
-    display: flex; /* Allows icon and text to be side-by-side */
-    align-items: center;
-    gap: 5px; /* Space between icon and text */
-}
-
-.export-btn:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-}
-        .add-consumption-btn,
-        .export-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
             font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
             transition: all 0.3s;
-            white-space: nowrap;
         }
 
-        .add-consumption-btn:hover,
-        .export-btn:hover {
-            background: #161245;
-            transform: translateY(-1px);
+        .date-btn.active, 
+        .date-btn:hover {
+            background-color: #1f1a5c;
+            color: #fff;
+            border-color: #1f1a5c;
         }
+
+       /*changes*/
+      .btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.add-consumption-btn{
+    background: none;
+    color: #1f1a5c;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight:800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+ 
+  .circle-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border:2px solid #2f4156;
+    color: #2f4156;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.export-btn {
+     background-color:#198754;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+.add-consumption-btn:hover{
+    background: rgba(1, 31, 139, 0.05);
+}
+.export-btn:hover {
+    background:rgb(37, 81, 16) ;
+    transform: translateY(-1px);
+}
+
+
+/*end*/
 
         .chart-container {
             width: 100%;
@@ -196,6 +187,8 @@
             width: 100%;
             height: 400px;
         }
+
+       
 
         /* Improved Table Styles */
         .table-scroll-container {
@@ -347,101 +340,13 @@
             font-style: italic;
         }
 
-        .custom-date-container {
-            display: none; /* Hidden by default, controlled by JS */
-            position: absolute; /* Position below date-filter */
-            top: 100%; /* Start just below the date-filter */
-            left: 0;
-            background: #ffffff; /* Match date-filter background */
-            padding: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+        .btn-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0; /* For fade-in effect */
-            transform: translateY(-10px); /* Start slightly above for slide-down */
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 10; /* Ensure it appears above other elements */
+            gap: 10px;
+            margin-bottom: 15px;
+              flex-wrap: nowrap;
         }
 
-        .custom-date-container[style*="display: flex"] {
-            opacity: 1; /* Visible when JS sets display: flex */
-            transform: translateY(0); /* Slide to final position */
-        }
-
-        .custom-date-input {
-            padding: 6px 8px;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #495057;
-            background-color: #fff;
-            width: 110px; /* Compact width to save space */
-            transition: border-color 0.3s ease;
-        }
-
-        .custom-date-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-        }
-
-        .custom-date-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 8px;
-            background-color: #007bff; /* Match active date-btn */
-            color: white;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .custom-date-btn:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-        }
-.toggle-btn {
-    background-color: #e9ecef; /* Light gray for inactive buttons */
-    border: 1px solid #dee2e6; /* Border for buttons */
-    border-bottom: none; /* Remove bottom border for tab effect */
-    outline: none; /* Remove outline on focus for cleaner look */
-    cursor: pointer;
-    padding: 14px 20px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    font-size: 1rem;
-    margin-left: 2px; /* Small gap between buttons */
-    border-radius: 8px 8px 0 0; /* Rounded top corners */
-    flex-shrink: 0; /* Prevent buttons from shrinking */
-    text-align: center;
-    color: #495057;
-    white-space: nowrap; /* Keep button text on one line */
-}
-
-.toggle-btn:hover {
-    background-color: #d0d0d0;
-}
-
-.toggle-btn.active {
-    background-color: #007bff; /* Active button background */
-    color: white;
-    border-color: #007bff;
-}
-.button-row-container {
-    display: flex;
-    justify-content: space-between; /* Pushes items to ends */
-    align-items: flex-end; /* Aligns items at the bottom */
-    margin-bottom: 20px;
-    /* Optional: Add a max-width if your content has one, to ensure alignment */
-    /* max-width: 1200px; */ 
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    /* padding: 0 10px; */ /* Add some padding if your main content has it */
-}
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -459,68 +364,28 @@
             }
             
             .date-filter {
-                flex-wrap: wrap; /* Allow buttons to wrap */
-                justify-content: center;
+                width: 100%;
             }
             
             .date-btn {
                 flex-grow: 1;
-                flex-wrap: wrap; /* Allow buttons to wrap */
-                justify-content: center;
             }
 
-            .custom-date-container {
-                display: none; /* Hidden by default, controlled by JS */
-                position: absolute; /* Position below date-filter */
-                top: 100%; /* Start just below the date-filter */
-                left: 300px; /* Approximate position under Custom button */
-                background: #ffffff; /* Match date-filter background */
-                padding: 8px;
-                border-radius: 8px;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* Subtle shadow */
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                opacity: 0; /* For fade-in effect */
-                transform: translateY(-10px); /* Start slightly above for slide-down */
-                transition: opacity 0.3s ease, transform 0.3s ease;
-                z-index: 10;
-            }
-
-            .custom-date-input {
-                width: calc(50% - 5px);
-            }
-            .custom-date-btn {
-                width: 100%;
-                margin-top: 8px;
-            }
+           
         }
-
-        @media (max-width: 600px) {
-            .btn-container {
-                flex-wrap: nowrap;
-            }
-
-            .add-consumption-btn,
-            .export-btn {
-                flex-shrink: 0;
-            }
-
-            .date-btn {
-        font-size: 13px;
-        padding: 6px 8px;
+/* Optional: Prevent buttons from shrinking on small screens */
+@media (max-width: 600px) {
+    .btn-container {
+        flex-wrap: nowrap;
     }
 
-    .custom-date-input {
-        width: 100%; /* Full width on very small screens */
-        margin-bottom: 8px;
+    .add-consumption-btn,
+    .export-btn {
+        flex-shrink: 0;
     }
+}
 
-    .custom-date-container {
-        flex-direction: column; /* Stack vertically */
-        align-items: stretch;
-    }
-        }
+
     </style>
 </head>
 <body>
@@ -552,125 +417,87 @@
                     <button class="date-btn active time-filter-btn" data-filter="weekly">Weekly</button>
                     <button class="date-btn time-filter-btn" data-filter="monthly">Monthly</button>
                     <button class="date-btn time-filter-btn" data-filter="yearly">Annually</button>
-                    <button class="date-btn time-filter-btn" data-filter="custom"> <i class="fas fa-cog"></i>Custom</button>
-                    
-                    <div class="custom-date-container" id="customDateContainer" style="display: none;">
-                        <input type="date" id="startDate" class="custom-date-input">
-                        <span>to</span>
-                        <input type="date" id="endDate" class="custom-date-input">
-                        <button class="custom-date-btn" id="applyCustomDate">Apply</button>
-                    </div>
                 </div>
             </div>
 
-           
-<h4 style="margin-bottom: 10px;">Fuel Consumption</h4>
-
-<div class="button-row-container">
-    <div class="toggle-buttons">
-        <button id="showChartBtn" class="toggle-btn active">Show Chart</button>
-        <button id="showTableBtn" class="toggle-btn">Show Table</button>
+            <div class="btn-container">
+    <div class="left-btn">
+        <button class="add-consumption-btn" onclick="openFuelModal()" id="addConsumptionBtn">
+            <span class="circle-plus">+</span> Add Consumption
+        </button>
     </div>
-    <div class="export-button">
+    <div class="right-btn">
         <button class="export-btn" onclick="exportToExcel()">
             <i class="fas fa-file-excel"></i> Export to Excel
         </button>
     </div>
 </div>
-<div class="chart-container" id="fuelChartContainer">
+
+<h4 style="margin-bottom: 10px;">Fuel Consumption</h4>
+<div class="chart-container">
     <canvas id="fuelChart"></canvas>
 </div>
 
 
-<div class="table-scroll-container" id="fuelTableContainer" style="display: none;">
-    <table class="fuel-table" id="fuelTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Plate No.</th>
-                <th>Total KM</th>
-                <th>Avg KM/L</th>
-                <th>Total Liters</th>
-                <th>Fuel Price</th>
-                <th>Total Cost</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="fuelTableBody">
-            @foreach($fuelData as $data)
-            <tr>
-                <td>{{ $data->date }}</td>
-                <td>{{ $data->plate_no }}</td>
-                <td>{{ number_format($data->total_km, 2) }}</td>
-                <td>{{ number_format($data->avg_km_l, 2) }}</td>
-                <td>{{ number_format($data->total_liters, 2) }}</td>
-                <td>{{ number_format($data->fuel_price, 2) }}</td>
-                <td>{{ number_format($data->total_cost, 2) }}</td>
-                <td>
-                    <div class="actions">
-                        <button class="edit-btn" onclick="editFuel({{ $data->id }})" title="Edit">
-                            <i class="fa-solid fa-pen-to-square"></i> Edit
-                        </button>
-                        
-                        <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="archive-btn" onclick="confirmArchive({{ $data->id }})" title="Archive">
-                                <i class="fas fa-archive"></i> Archive
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+            <div class="table-scroll-container">
+                <table class="fuel-table" id="fuelTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Plate No.</th>
+                            <th>Total KM</th>
+                            <th>Avg KM/L</th>
+                            <th>Total Liters</th>
+                            <th>Fuel Price</th>
+                            <th>Total Cost</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fuelTableBody">
+                        @foreach($fuelData as $data)
+                        <tr>
+                            <td>{{ $data->date }}</td>
+                            <td>{{ $data->plate_no }}</td>
+                            <td>{{ number_format($data->total_km, 2) }}</td>
+                            <td>{{ number_format($data->avg_km_l, 2) }}</td>
+                            <td>{{ number_format($data->total_liters, 2) }}</td>
+                            <td>{{ number_format($data->fuel_price, 2) }}</td>
+                            <td>{{ number_format($data->total_cost, 2) }}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="edit-btn" onclick="editFuel({{ $data->id }})" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </button>
+                                    
+                                    <form id="archiveForm{{ $data->id }}" action="{{ route('admin.fuel.archive', $data->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="archive-btn" onclick="confirmArchive({{ $data->id }})" title="Archive">
+                                            <i class="fas fa-archive"></i> Archive
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-<div class="pagination-controls" id="paginationControls">
-    <div class="page-info" id="pageInfo">Showing 1-10 of {{ $fuelData->count() }} records</div>
-    <div class="page-buttons">
-        <button class="page-btn" id="prevPage" disabled>Previous</button>
-        <button class="page-btn" id="nextPage">Next</button>
+            <div class="pagination-controls" id="paginationControls">
+                <div class="page-info" id="pageInfo">Showing 1-10 of {{ $fuelData->count() }} records</div>
+                <div class="page-buttons">
+                    <button class="page-btn" id="prevPage" disabled>Previous</button>
+                    <button class="page-btn" id="nextPage">Next</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
     @include('admin.modals.fuelmodal')
     @include('admin.modals.edit_fuel')
 
     <script>
-        //added code
-         document.addEventListener('DOMContentLoaded', function () {
-        const showChartBtn = document.getElementById('showChartBtn');
-        const showTableBtn = document.getElementById('showTableBtn');
-        const fuelChartContainer = document.getElementById('fuelChartContainer');
-        const fuelTableContainer = document.getElementById('fuelTableContainer');
-
-        // Function to show the chart and hide the table
-        function showChart() {
-            fuelChartContainer.style.display = 'block';
-            fuelTableContainer.style.display = 'none';
-            showChartBtn.classList.add('active');
-            showTableBtn.classList.remove('active');
-        }
-
-        // Function to show the table and hide the chart
-        function showTable() {
-            fuelTableContainer.style.display = 'block';
-            fuelChartContainer.style.display = 'none';
-            showTableBtn.classList.add('active');
-            showChartBtn.classList.remove('active');
-        }
-
-        // Event listeners for the buttons
-        showChartBtn.addEventListener('click', showChart);
-        showTableBtn.addEventListener('click', showTable);
-
-        // Initially show the chart (or table, uncomment the line below)
-        showChart(); // This will make the chart visible by default
-        // showTable(); // Uncomment this line if you want the table to be visible by default
-    });
-    
-    
         let fuelChart = null;
         let currentPage = 1;
         const rowsPerPage = 10;
@@ -707,15 +534,7 @@
             // Hide the graph (canvas) initially
             fuelChartCanvas.style.display = 'none';
 
-            // Set default dates for custom date range
-            const today = new Date();
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(today.getDate() - 7);
-            
-            document.getElementById('startDate').valueAsDate = oneWeekAgo;
-            document.getElementById('endDate').valueAsDate = today;
-
-            function fetchFuelData(plateNumber, timeFilter, startDate = null, endDate = null) {
+            function fetchFuelData(plateNumber, timeFilter) {
                 if (!plateNumber || plateNumber === "-- Plate Number --") {
                     fuelChartCanvas.style.display = 'none';
                     return;
@@ -723,14 +542,7 @@
 
                 // For "All Trucks", we'll aggregate the data from our existing dataset
                 if (plateNumber === "all") {
-                    let filtered = allData;
-                    
-                    if (timeFilter === 'custom' && startDate && endDate) {
-                        filtered = filterDataByCustomDate(allData, startDate, endDate);
-                    } else {
-                        filtered = filterDataByTimeRange(allData, timeFilter);
-                    }
-                    
+                    const filtered = filterDataByTimeRange(allData, timeFilter);
                     const { data: aggregatedData, plateNumbers } = aggregateDataByDate(filtered);
                     updateFuelChart(
                         aggregatedData.map(item => item.dateString),
@@ -741,13 +553,7 @@
                     fuelChartCanvas.style.display = 'block';
                 } else {
                     // For individual trucks, fetch from server
-                    let url = `/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`;
-                    
-                    if (timeFilter === 'custom' && startDate && endDate) {
-                        url += `&start_date=${startDate}&end_date=${endDate}`;
-                    }
-                    
-                    fetch(url)
+                    fetch(`/fuel-analytics?plate_number=${encodeURIComponent(plateNumber)}&time_filter=${timeFilter}`)
                         .then(response => response.json())
                         .then(data => {
                             if (!Array.isArray(data) || data.length === 0) {
@@ -914,19 +720,6 @@
                 return filtered.sort((a, b) => b.date - a.date);
             }
 
-            function filterDataByCustomDate(data, startDate, endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                
-                // Set end date to end of day
-                end.setHours(23, 59, 59, 999);
-                
-                return data.filter(item => {
-                    const itemDate = new Date(item.date);
-                    return itemDate >= start && itemDate <= end;
-                }).sort((a, b) => b.date - a.date);
-            }
-
             // Initialize pagination with proper event listeners
             function initializePagination() {
                 filteredData = [...allData];
@@ -999,18 +792,7 @@
                 }
                 
                 // Apply time filter
-                if (selectedTimeFilter === 'custom') {
-                    const startDate = document.getElementById('startDate').value;
-                    const endDate = document.getElementById('endDate').value;
-                    
-                    if (startDate && endDate) {
-                        filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
-                    } else {
-                        filteredData = filteredByPlate;
-                    }
-                } else {
-                    filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
-                }
+                filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
                 
                 if (filteredData.length > 0) {
                     document.getElementById('paginationControls').style.display = 'flex';
@@ -1021,13 +803,7 @@
                 }
                 
                 // Always fetch/update chart data when plate number changes
-                if (selectedTimeFilter === 'custom') {
-                    const startDate = document.getElementById('startDate').value;
-                    const endDate = document.getElementById('endDate').value;
-                    fetchFuelData(selectedPlateNumber, selectedTimeFilter, startDate, endDate);
-                } else {
-                    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-                }
+                fetchFuelData(selectedPlateNumber, selectedTimeFilter);
             });
 
             // Handle time filter selection
@@ -1040,14 +816,6 @@
                     selectedTimeFilter = this.getAttribute('data-filter');
                     document.querySelectorAll('.time-filter-btn').forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
-                    
-                    // Show/hide custom date inputs
-                    if (selectedTimeFilter === 'custom') {
-                        document.getElementById('customDateContainer').style.display = 'flex';
-                    } else {
-                        document.getElementById('customDateContainer').style.display = 'none';
-                    }
-                    
                     currentPage = 1;
                     
                     // Re-filter the data with the new time range
@@ -1058,18 +826,7 @@
                         filteredByPlate = allData.filter(item => item.plate_no === selectedPlateNumber);
                     }
                     
-                    if (selectedTimeFilter === 'custom') {
-                        const startDate = document.getElementById('startDate').value;
-                        const endDate = document.getElementById('endDate').value;
-                        
-                        if (startDate && endDate) {
-                            filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
-                        } else {
-                            filteredData = filteredByPlate;
-                        }
-                    } else {
-                        filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
-                    }
+                    filteredData = filterDataByTimeRange(filteredByPlate, selectedTimeFilter);
                     
                     if (filteredData.length > 0) {
                         document.getElementById('paginationControls').style.display = 'flex';
@@ -1080,63 +837,8 @@
                     }
                     
                     // Update chart with new time filter
-                    if (selectedTimeFilter === 'custom') {
-                        const startDate = document.getElementById('startDate').value;
-                        const endDate = document.getElementById('endDate').value;
-                        fetchFuelData(selectedPlateNumber, selectedTimeFilter, startDate, endDate);
-                    } else {
-                        fetchFuelData(selectedPlateNumber, selectedTimeFilter);
-                    }
+                    fetchFuelData(selectedPlateNumber, selectedTimeFilter);
                 });
-            });
-
-            // Handle custom date apply button
-            document.getElementById('applyCustomDate').addEventListener('click', function() {
-                if (!selectedPlateNumber || selectedPlateNumber === "-- Plate Number --") {
-                    return;
-                }
-
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-                
-                if (!startDate || !endDate) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Please select both start and end dates',
-                    });
-                    return;
-                }
-                
-                if (new Date(startDate) > new Date(endDate)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Start date cannot be after end date',
-                    });
-                    return;
-                }
-                
-                currentPage = 1;
-                
-                let filteredByPlate = [];
-                if (selectedPlateNumber === "all") {
-                    filteredByPlate = [...allData];
-                } else {
-                    filteredByPlate = allData.filter(item => item.plate_no === selectedPlateNumber);
-                }
-                
-                filteredData = filterDataByCustomDate(filteredByPlate, startDate, endDate);
-                
-                if (filteredData.length > 0) {
-                    document.getElementById('paginationControls').style.display = 'flex';
-                    updateTable();
-                } else {
-                    document.getElementById('paginationControls').style.display = 'none';
-                    hideAllData();
-                }
-                
-                fetchFuelData(selectedPlateNumber, 'custom', startDate, endDate);
             });
         });
 

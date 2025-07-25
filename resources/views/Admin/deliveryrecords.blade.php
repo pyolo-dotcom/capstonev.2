@@ -6,7 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trip Countings</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -21,65 +20,110 @@
             box-sizing: border-box;
             font-family: 'Poppins';
         }
-        
+
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
+            color: #333;
         }
-        
+
         .sidebar {
             width: 250px;
-            background: #343a40;
+            background: linear-gradient(145deg, #2c3e50, #34495e);
             color: white;
             padding: 20px 0;
             position: fixed;
             height: 100%;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
-            background-color: white;
+            background-color: #fff;
             min-height: 100vh;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
         }
-        
+
         .truck-display {
             background: #f1f3f5;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
             display: inline-block;
             font-size: 16px;
             font-weight: 600;
-            border: 1px solid #e1e5e9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
         }
-        
+
+        .truck-display:hover {
+            transform: translateY(-2px);
+        }
+
         .truck-display i {
             margin-right: 12px;
             color: #495057;
+            transition: color 0.2s ease;
         }
-        
+
+        .truck-display:hover i {
+            color: #1f1a5c;
+        }
+
         .trip-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+            backdrop-filter: blur(5px);
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             text-align: center;
             height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid #e9ecef;
+            border: 2px solid rgba(233, 236, 239, 10);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(31, 26, 92, 0.1) 0%, transparent 70%);
+            z-index: 0;
+            transition: transform 0.6s ease;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(31, 26, 92, 0.3);
+        }
+
+        .trip-card:hover::before {
+            transform: translate(20%, 20%);
         }
 
         .trip-card h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
         }
 
         .trip-card p {
@@ -88,111 +132,141 @@
             line-height: 1;
             margin: 0;
             color: #1f1a5c;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2), 0 0 5px rgba(31, 26, 92, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        .trip-card .reset-btn {
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 10px;
+        }
+
+        .trip-card .reset-btn:hover {
+            background: linear-gradient(90deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.7rem;
-            color: #343a40;
-            margin-top:1.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
         }
 
         .add-trip-btn {
-            background: none;
-            color: #1f1a5c;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight:800;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            white-space: nowrap;
-           
-        }
-        .circle-plus {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border:2px solid #2f4156;
-    color: #2f4156;
-    font-weight: bold;
-    font-size: 1rem;
-}
-.add-trip-btn:hover{
-    background: rgba(5, 5, 51, 0.32);
-      
-}
-        .export-trip-btn{
-             background-color:#198754;
+            background-color: #1f1a5c;
             color: white;
-            border: none;
-            padding: 10px 20px;
+            border: 1px solid #1f1a5c;
+            padding: 7px 15px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 14px;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-left: auto;
-    margin-right: 20px; /* Add some space from the right side */
-    white-space: nowrap; /* Prevents line break */
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
-        .export-trip-btn:hover {
-    background:rgb(37, 81, 16) ;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
 
-      
+        .add-trip-btn i {
+            color: white;
+            font-size: 15px;
+        }
+
+        .add-trip-btn:hover {
+            background-color: #161245;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+        }
+
+        .header-section .d-flex {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
         }
 
         .plate-number-section select {
-            padding: 8px 15px;
-            border: 1px solid #e1e5e9;
-            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
             font-size: 16px;
             color: #495057;
             background-color: #fff;
-            width: 200px;
+            width: 220px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .plate-number-section select:focus {
+            border-color: #1f1a5c;
+            box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
+            outline: none;
         }
 
         .trip-table {
             width: 100%;
-            margin-top: 30px;
+            margin-top: 35px;
             border-collapse: collapse;
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
             overflow: hidden;
         }
 
-        .trip-table th, .trip-table td {
-            padding: 12px 15px;
+        .trip-table th,
+        .trip-table td {
+            padding: 15px 20px;
             text-align: left;
             border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s ease;
         }
 
         .trip-table th {
             background-color: #f8f9fa;
             font-weight: 600;
-            color: #495057;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trip-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .trip-table tr:hover {
+            background-color: #e9ecef;
         }
 
         .trip-table tr:last-child td {
@@ -200,34 +274,102 @@
         }
 
         .update-btn {
-            background: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .update-btn:hover {
-            background: #161245;
-        }
-
-        .reset-btn {
-            background: #dc3545;
+            background: linear-gradient(90deg, #1f1a5c, #2c3e50);
             color: white;
             border: none;
             padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-btn:hover {
+            background: linear-gradient(90deg, #161245, #233140);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .reset-btn {
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .reset-btn:hover {
-            background: #c82333;
+            background: linear-gradient(90deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .export-trip-btn {
+            background-color: #f2f4f8;
+            color: #495057;
+            border: 1px solid #e1e5e9;
+            padding: 7px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            margin-left: auto;
+        }
+
+        .export-trip-btn i {
+            color: #28a745;
+            font-size: 15px;
+        }
+
+        .export-trip-btn:hover {
+            background-color: #e6e9ee;
+            color: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 1200px) {
+            .header-section .d-flex {
+                gap: 15px;
+                flex-wrap: nowrap;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 7px 14px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-section .d-flex {
+                justify-content: space-between;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+                flex: 1;
+                text-align: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -236,23 +378,51 @@
                 position: relative;
                 height: auto;
             }
-            
+
             .content {
                 margin-left: 0;
                 padding: 15px;
             }
-            
+
             .trip-card {
-                height: 150px;
+                height: 160px;
+                padding: 20px 15px;
             }
-            
+
             .trip-card p {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
-            
+
+            .trip-card .reset-btn {
+                margin-bottom: 8px;
+                padding: 7px 12px;
+                font-size: 0.85rem;
+            }
+
             .header-section {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .header-section .d-flex {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                flex: 1;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 220px;
+                width: 100%;
             }
 
             .plate-number-section select {
@@ -262,68 +432,104 @@
 
         @media (max-width: 576px) {
             .trip-card {
-                height: 130px;
+                height: 140px;
+                padding: 15px 10px;
             }
-            
+
             .trip-card p {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
-            
+
             .trip-card h3 {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+
+            .trip-card .reset-btn {
+                margin-bottom: 6px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .trip-table th,
+            .trip-table td {
+                padding: 10px 15px;
                 font-size: 0.9rem;
             }
-        }
 
-        /* Added styles for Excel export button */
-        .header-section .d-flex {
-            display: flex;
-            gap: 10px;
-        }
+            .update-btn,
+            .reset-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
 
-        @media (max-width: 768px) {
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+                width: 45%;
+            }
+
             .header-section .d-flex {
-                flex-direction: column;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 220px;
                 width: 100%;
             }
-            
-            .header-section .d-flex .add-trip-btn {
+
+            .plate-number-section select {
                 width: 100%;
-                justify-content: center;
             }
         }
-   
 
+        @media (max-width: 400px) {
+            .trip-card {
+                height: 130px;
+                padding: 12px 8px;
+            }
 
-@media (max-width: 1200px) {
-    .export-trip-btn {
-        margin-left: 70%;
-    }
-}
+            .trip-card p {
+                font-size: 1.6rem;
+            }
 
-@media (max-width: 992px) {
-    .export-trip-btn {
-        margin-left: 60%;
-    }
-}
+            .trip-card h3 {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+            }
 
-@media (max-width: 768px) {
-    .export-trip-btn {
-        margin-left:60%;
-       
-    }
-    
-    .header-section .d-flex {
-        width: 100%;
-    }
-}
+            .trip-card .reset-btn {
+                margin-bottom: 5px;
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
 
-@media (max-width: 576px) {
-    .export-trip-btn {
-        margin-left:60%;
-        padding: 8px 10px;
-        font-size: 0.85rem;
-    }
-}
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 7px 8px;
+                font-size: 11px;
+                width: 45%;
+            }
+
+            .header-section .d-flex {
+                gap: 8px;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 180px;
+                width: 100%;
+            }
+
+            .plate-number-section select {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -340,23 +546,20 @@
             <div class="plate-number-section">
                 <select id="plateNumberSelect">
                     <option value="all" selected>All Trucks</option>
-                  <!-- <option value="" disabled>-- Plate Number --</option>-->
                     @foreach($plateNumbers as $plate)
                         <option value="{{ $plate }}">{{ $plate }}</option>
                     @endforeach
                 </select>
             </div>
-        </div>
-          <div class="d-flex">
-                 <button class="add-trip-btn" id="openModal">
-    <span class="circle-plus">+</span> Add Trip
-</button>
-
+            <div class="d-flex">
+                <button class="add-trip-btn" id="openModal">
+                    <i class="fas fa-plus"></i> Add Trip
+                </button>
                 <button class="export-trip-btn" id="exportToExcel">
                     <i class="fas fa-file-excel"></i> Export Excel
                 </button>
-               
             </div>
+        </div>
 
         <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>

@@ -15,375 +15,413 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins';
-    }
-    
-    body {
-        display: flex;
-        min-height: 100vh;
-        background-color: #f8f9fa;
-        color: #333;
-    }
-    
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins';
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.sidebar {
+    width: 250px;
+    background: linear-gradient(145deg, #2c3e50, #34495e);
+    color: white;
+    padding: 20px 0;
+    position: fixed;
+    height: 100%;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    margin-left: 250px;
+    padding: 25px;
+    flex-grow: 1;
+    background-color: #fff;
+    min-height: 100vh;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.truck-display {
+    background: #f1f3f5;
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.truck-display:hover {
+    transform: translateY(-2px);
+}
+
+.truck-display i {
+    margin-right: 12px;
+    color: #495057;
+    transition: color 0.2s ease;
+}
+
+.truck-display:hover i {
+    color: #1f1a5c;
+}
+
+.trip-card {
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
+    backdrop-filter: blur(5px);
+    padding: 25px 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 2px solid rgba(233, 236, 239, 10);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.trip-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(31, 26, 92, 0.1) 0%, transparent 70%);
+    z-index: 0;
+    transition: transform 0.6s ease;
+}
+
+.trip-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(31, 26, 92, 0.3);
+}
+
+.trip-card:hover::before {
+    transform: translate(20%, 20%);
+}
+
+.trip-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.trip-card p {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+    color: #1f1a5c;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2), 0 0 5px rgba(31, 26, 92, 0.3);
+    position: relative;
+    z-index: 1;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+.trip-card .reset-btn {
+    background: linear-gradient(90deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+}
+
+.trip-card .reset-btn:hover {
+    background: linear-gradient(90deg, #c82333, #bd2130);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.add-trip-btn {
+    background: linear-gradient(45deg, #1f1a5c, #2c3e50, #34495e);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.add-trip-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+    z-index: 0;
+}
+
+.add-trip-btn:hover {
+    background: linear-gradient(45deg, #161245, #233140, #2c3e50);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(31, 26, 92, 0.4), 0 0 12px rgba(31, 26, 92, 0.3);
+}
+
+.add-trip-btn:hover::before {
+    width: 300%;
+    height: 300%;
+}
+
+.add-trip-btn i {
+    transition: transform 0.3s ease;
+}
+
+.add-trip-btn:hover i {
+    transform: translateX(5px);
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.plate-number-section select {
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #495057;
+    background-color: #fff;
+    width: 220px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.plate-number-section select:focus {
+    border-color: #1f1a5c;
+    box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
+    outline: none;
+}
+
+.trip-table {
+    width: 100%;
+    margin-top: 35px;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.trip-table th, .trip-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s ease;
+}
+
+.trip-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.trip-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.trip-table tr:hover {
+    background-color: #e9ecef;
+}
+
+.trip-table tr:last-child td {
+    border-bottom: none;
+}
+
+.update-btn {
+    background: linear-gradient(90deg, #1f1a5c, #2c3e50);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.update-btn:hover {
+    background: linear-gradient(90deg, #161245, #233140);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.reset-btn {
+    background: linear-gradient(90deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.reset-btn:hover {
+    background: linear-gradient(90deg, #c82333, #bd2130);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
     .sidebar {
-        width: 250px;
-        background: linear-gradient(145deg, #2c3e50, #34495e);
-        color: white;
-        padding: 20px 0;
-        position: fixed;
-        height: 100%;
-        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        position: relative;
+        height: auto;
     }
     
     .content {
-        margin-left: 250px;
-        padding: 25px;
-        flex-grow: 1;
-        background-color: #fff;
-        min-height: 100vh;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .truck-display {
-        background: #f1f3f5;
-        padding: 15px 25px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-        display: inline-block;
-        font-size: 16px;
-        font-weight: 600;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease;
-    }
-    
-    .truck-display:hover {
-        transform: translateY(-2px);
-    }
-    
-    .truck-display i {
-        margin-right: 12px;
-        color: #495057;
-        transition: color 0.2s ease;
-    }
-    
-    .truck-display:hover i {
-        color: #1f1a5c;
+        margin-left: 0;
+        padding: 15px;
     }
     
     .trip-card {
-        background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
-        backdrop-filter: blur(5px);
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        height: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        border: 2px solid rgba(233, 236, 239, 10);
-        transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
-        position: relative;
-        overflow: hidden;
+        height: 160px;
+        padding: 20px 15px;
     }
-
-    .trip-card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(31, 26, 92, 0.1) 0%, transparent 70%);
-        z-index: 0;
-        transition: transform 0.6s ease;
-    }
-
-    .trip-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(31, 26, 92, 0.3);
-    }
-
-    .trip-card:hover::before {
-        transform: translate(20%, 20%);
-    }
-
-    .trip-card h3 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        position: relative;
-        z-index: 1;
-    }
-
+    
     .trip-card p {
-        font-size: 3rem;
-        font-weight: 700;
-        line-height: 1;
-        margin: 0;
-        color: #1f1a5c;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2), 0 0 5px rgba(31, 26, 92, 0.3);
-        position: relative;
-        z-index: 1;
-        animation: pulse 1.5s infinite alternate;
+        font-size: 2.2rem;
     }
-
-    @keyframes pulse {
-        from { transform: scale(1); }
-        to { transform: scale(1.05); }
-    }
-
+    
     .trip-card .reset-btn {
-        background: linear-gradient(90deg, #dc3545, #c82333);
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        position: relative;
-        z-index: 1;
+        margin-bottom: 8px;
+        padding: 7px 12px;
+        font-size: 0.85rem;
     }
-
-    .trip-card .reset-btn:hover {
-        background: linear-gradient(90deg, #c82333, #bd2130);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1.75rem;
-        color: #2c3e50;
-        border-bottom: 2px solid #e9ecef;
-        padding-bottom: 8px;
-    }
-
-    .add-trip-btn {
-        background: linear-gradient(45deg, #1f1a5c, #2c3e50, #34495e);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transition: all 0.4s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .add-trip-btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
-        z-index: 0;
-    }
-
-    .add-trip-btn:hover {
-        background: linear-gradient(45deg, #161245, #233140, #2c3e50);
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 20px rgba(31, 26, 92, 0.4), 0 0 12px rgba(31, 26, 92, 0.3);
-    }
-
-    .add-trip-btn:hover::before {
-        width: 300%;
-        height: 300%;
-    }
-
-    .add-trip-btn i {
-        transition: transform 0.3s ease;
-    }
-
-    .add-trip-btn:hover i {
-        transform: translateX(5px);
-    }
-
+    
     .header-section {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        flex-wrap: wrap;
-        gap: 20px;
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .plate-number-section select {
-        padding: 10px 15px;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        font-size: 16px;
-        color: #495057;
-        background-color: #fff;
-        width: 220px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .plate-number-section select:focus {
-        border-color: #1f1a5c;
-        box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
-        outline: none;
-    }
-
-    .trip-table {
         width: 100%;
-        margin-top: 35px;
-        border-collapse: collapse;
-        background: white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-radius: 10px;
-        overflow: hidden;
     }
 
+    .add-trip-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .trip-card {
+        height: 140px;
+        padding: 15px 10px;
+    }
+    
+    .trip-card p {
+        font-size: 1.8rem;
+    }
+    
+    .trip-card h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+    
+    .trip-card .reset-btn {
+        margin-bottom: 6px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
     .trip-table th, .trip-table td {
-        padding: 15px 20px;
-        text-align: left;
-        border-bottom: 1px solid #e9ecef;
-        transition: background-color 0.2s ease;
-    }
-
-    .trip-table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        color: #2c3e50;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .trip-table tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-
-    .trip-table tr:hover {
-        background-color: #e9ecef;
-    }
-
-    .trip-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .update-btn {
-        background: linear-gradient(90deg, #1f1a5c, #2c3e50);
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 6px;
+        padding: 10px 15px;
         font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .update-btn, .reset-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
     }
 
-    .update-btn:hover {
-        background: linear-gradient(90deg, #161245, #233140);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    .add-trip-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
     }
+}
 
-    .reset-btn {
-        background: linear-gradient(90deg, #dc3545, #c82333);
-        color: white;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 6px;
+@media (max-width: 400px) {
+    .trip-card {
+        height: 130px;
+        padding: 12px 8px;
+    }
+    
+    .trip-card p {
+        font-size: 1.6rem;
+    }
+    
+    .trip-card h3 {
         font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 6px;
     }
-
-    .reset-btn:hover {
-        background: linear-gradient(90deg, #c82333, #bd2130);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    
+    .trip-card .reset-btn {
+        margin-bottom: 5px;
+        padding: 5px 8px;
+        font-size: 0.75rem;
     }
-
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 100%;
-            position: relative;
-            height: auto;
-        }
-        
-        .content {
-            margin-left: 0;
-            padding: 15px;
-        }
-        
-        .trip-card {
-            height: 150px;
-        }
-        
-        .trip-card p {
-            font-size: 2.2rem;
-        }
-        
-        .header-section {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .plate-number-section select {
-            width: 100%;
-        }
-
-        .add-trip-btn {
-            padding: 12px 25px;
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .trip-card {
-            height: 130px;
-        }
-        
-        .trip-card p {
-            font-size: 1.8rem;
-        }
-        
-        .trip-card h3 {
-            font-size: 0.95rem;
-        }
-        
-        .trip-table th, .trip-table td {
-            padding: 10px 15px;
-            font-size: 0.9rem;
-        }
-        
-        .update-btn, .reset-btn {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-        }
-
-        .add-trip-btn {
-            padding: 10px 20px;
-            font-size: 0.95rem;
-        }
-    }
-</style>
+}
+    </style>
 </head>
 
 <body>

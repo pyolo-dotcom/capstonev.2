@@ -10,150 +10,279 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        * {
-            font-family: 'Poppins';
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        font-family: 'Poppins';
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #f4f6f8;
-        }
+    body {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f4f6f8, #e9ecef);
+    }
 
+    .sidebar {
+        width: 250px;
+        background: linear-gradient(145deg, #2c3e50, #34495e);
+        color: white;
+        padding: 20px 0;
+        position: fixed;
+        height: 100%;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .content {
+        margin-left: 250px;
+        padding: 30px;
+        flex-grow: 1;
+        background-color: #ffffff;
+        min-height: 100vh;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: -6px 0 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 2.5rem;
+        color: #2c3e50;
+        border-bottom: 3px solid #e0e7ff;
+        padding-bottom: 10px;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: #1d4ed8;
+        transition: width 0.3s ease;
+    }
+
+    .help-container {
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    .help-section {
+        margin-bottom: 50px;
+    }
+
+    .help-section h2 {
+        color: #1d4ed8;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e7ff;
+        font-weight: 600;
+        position: relative;
+    }
+
+    .help-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 30px;
+        height: 2px;
+        background: #1d4ed8;
+    }
+
+    .help-section p,
+    .help-section ul li,
+    .help-section ol li {
+        color: #334155;
+        line-height: 1.8;
+        font-size: 16px;
+    }
+
+    .help-section ul,
+    .help-section ol {
+        padding-left: 25px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+    }
+
+    .card-text {
+        color: #495057;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .read-more-content {
+        margin-top: 15px;
+    }
+
+    .btn-link {
+        color: #1d4ed8;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s ease;
+    }
+
+    .btn-link:hover {
+        color: #1e40af;
+        text-decoration: underline;
+    }
+
+    .contact-support {
+        padding: 25px 30px;
+        background: linear-gradient(135deg, #edf4fc, #e4ecfe);
+        border-left: 6px solid #3b82f6;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: #1e3a8a;
+        font-family: 'Poppins', sans-serif;
+        margin-top: 40px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-support:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .contact-support h5 {
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+
+    .contact-support ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 15px 0 0 0;
+    }
+
+    .contact-support li {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    .rules-section {
+        padding: 25px 30px;
+        background: linear-gradient(135deg, #fdfbea, #fef3c7);
+        border-left: 6px solid #facc15;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: #78350f;
+        font-family: 'Poppins', sans-serif;
+        margin-top: 40px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .rules-section:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .rules-section h5 {
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        color: #b45309;
+        font-weight: 600;
+    }
+
+    .rules-section ul {
+        list-style-type: disc;
+        padding-left: 25px;
+        margin: 15px 0 0 0;
+    }
+
+    .rules-section li {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
         .sidebar {
-            width: 250px;
-            background: #2f4156;
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            height: 100%;
+            width: 100%;
+            position: relative;
+            height: auto;
         }
 
         .content {
-            margin-left: 250px;
-            padding: 30px;
-            flex-grow: 1;
-            background-color: #ffffff;
-            min-height: 100vh;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.05);
+            margin-left: 0;
+            padding: 20px;
         }
 
         .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-size: 1.5rem;
             margin-bottom: 2rem;
-            color: #0f172a;
         }
 
         .help-container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 15px;
         }
 
-        .help-section {
-            margin-bottom: 40px; /* Added to space out help sections */
+        .card {
+            margin-bottom: 15px;
+        }
+
+        .contact-support, .rules-section {
+            margin-top: 30px;
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .content {
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
         }
 
         .help-section h2 {
-            color: #1d4ed8;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e0e7ff;
-            font-weight: 600;
+            font-size: 1.3rem;
         }
 
-        .help-section p,
-        .help-section ul li,
-        .help-section ol li {
-            color: #334155;
-            line-height: 1.7;
-            font-size: 15px;
+        .card-title {
+            font-size: 1rem;
         }
 
-        .help-section ul,
-        .help-section ol {
-            padding-left: 20px;
-            margin-bottom: 15px;
+        .card-text, .contact-support li, .rules-section li {
+            font-size: 14px;
         }
 
-        .contact-support {
-            padding: 20px 24px;
-            background-color: #ecf5ff;
-            border-left: 5px solid #3b82f6;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            color: #1e3a8a;
-            font-family: 'Poppins', sans-serif;
-            margin-top: 30px; /* Added to space from previous content */
+        .contact-support h5, .rules-section h5 {
+            font-size: 1.1rem;
         }
-
-        .contact-support h5 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #1d4ed8;
-        }
-
-        .contact-support ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 10px 0 0 0;
-        }
-
-        .contact-support li {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .rules-section {
-            padding: 20px 24px;
-            background-color: #fdfbea;
-            border-left: 5px solid #facc15;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            color: #78350f;
-            font-family: 'Poppins', sans-serif;
-            margin-top: 30px; /* Added to space from contact-support */
-        }
-
-        .rules-section h5 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #b45309;
-        }
-
-        .rules-section ul {
-            list-style-type: disc;
-            padding-left: 20px;
-            margin: 10px 0 0 0;
-        }
-
-        .rules-section li {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-
-            .content {
-                margin-left: 0;
-                padding: 20px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="sidebar">
