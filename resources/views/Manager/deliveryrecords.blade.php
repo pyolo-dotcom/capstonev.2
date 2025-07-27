@@ -131,6 +131,7 @@ body {
     font-weight: 700;
     line-height: 1;
     margin: 0;
+    margin-bottom: 10px;
     color: #1f1a5c;
     position: relative;
     z-index: 1;

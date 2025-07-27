@@ -14,24 +14,25 @@ class ManageTripManagerController extends Controller
      */
     public function index(Request $request)
     {
-        $plateNo = $request->input('plate_no');
+        $plateNo = $request->input('plate_no', 'All Trucks'); // Default to "All Trucks"
         $filter = $request->input('filter');
-    
-        // Get all distinct plate numbers from trucks table
+
+        // Get all distinct plate numbers from the trucks table
         $plateNumbers = Truck::pluck('plate_number')->unique()->sort()->values()->all();
-    
-        $query = Cargo::where('is_archived', 0); // Exclude archived cargos
-    
-        // Filter by Plate Number if selected
+
+        // Start the query to fetch active (non-archived) cargos
+        $query = Cargo::where('is_archived', 0);
+
+        // Handle the "All Trucks" case
         if (!empty($plateNo) && $plateNo !== "All Trucks") {
             $query->where('plate_no', $plateNo);
         }
-    
+
         // Filter by Date Range
         if (!empty($filter)) {
             $startDate = null;
             $endDate = null;
-    
+
             if ($filter === 'weekly') {
                 $startDate = Carbon::now()->startOfWeek();
                 $endDate = Carbon::now()->endOfWeek();
@@ -42,14 +43,16 @@ class ManageTripManagerController extends Controller
                 $startDate = Carbon::now()->startOfYear();
                 $endDate = Carbon::now()->endOfYear();
             }
-    
+
             if ($startDate && $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             }
         }
-    
-        $cargos = $query->get();
-    
+
+        // Fetch the records
+        $cargos = $query->orderBy('created_at', 'desc')->get();
+
+        // Pass the data to the view
         return view('manager.managetrip', compact('cargos', 'plateNo', 'filter', 'plateNumbers'));
     }
 

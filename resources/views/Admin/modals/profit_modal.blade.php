@@ -53,114 +53,280 @@
 </div>
 
 <style>
-    .modal-content {
+    /* Force consistent box-sizing for modal */
+    #profitModal * {
+        box-sizing: border-box;
+    }
+    
+    /* Modal Structure - More specific selectors to override conflicts */
+    #profitModal .modal-content {
         border-radius: 12px;
         box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         border: none;
+        min-width: 0; /* Prevent shrinking */
     }
     
-    .modal-header {
+    #profitModal .modal-header {
         border-radius: 12px 12px 0 0;
         padding: 1.25rem 1.5rem;
         border-bottom: none;
+        flex-shrink: 0;
     }
     
-    .modal-body {
+    #profitModal .modal-body {
         padding: 1.5rem;
+        min-height: 200px; /* Prevent collapsing */
     }
     
-    .modal-title {
+    #profitModal .modal-title {
         font-size: 1.3rem;
         font-weight: 500;
+        margin: 0;
+        line-height: 1.4;
     }
     
-    .form-label {
+    /* Form Elements - Force consistent sizing regardless of Bootstrap version */
+    #profitModal .form-label {
         color: #2c3e50;
         margin-bottom: 0.5rem;
-    }
-    
-    .form-control, .form-select {
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6;
-        transition: all 0.3s ease;
-    }
-    
-    .form-control:focus, .form-select:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-    }
-    
-    .form-control-lg {
+        display: block;
+        font-weight: 600;
         font-size: 1rem;
     }
     
-    .btn {
+    /* Override ALL form inputs with specific sizing */
+    #profitModal input[type="date"],
+    #profitModal input[type="number"],
+    #profitModal select,
+    #profitModal .form-control, 
+    #profitModal .form-select {
         border-radius: 8px;
+        padding: 1rem 1.25rem !important;
+        border: 2px solid #dee2e6 !important;
+        transition: all 0.3s ease;
+        width: 100% !important;
+        font-size: 1.1rem !important;
+        line-height: 1.5 !important;
+        background-color: #fff !important;
+        background-clip: padding-box;
+        appearance: none;
+        min-height: 60px !important;
+        height: 60px !important;
+        box-sizing: border-box !important;
+        display: block !important;
+    }
+    
+    #profitModal input[type="date"]:focus,
+    #profitModal input[type="number"]:focus,
+    #profitModal select:focus,
+    #profitModal .form-control:focus, 
+    #profitModal .form-select:focus {
+        border-color: #3498db !important;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25) !important;
+        outline: 0 !important;
+    }
+    
+    /* Force dropdown arrow for select */
+    #profitModal select,
+    #profitModal .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 1rem center !important;
+        background-size: 16px 12px !important;
+        padding-right: 3rem !important;
+    }
+    
+    /* Ignore Bootstrap lg classes and force our sizing */
+    #profitModal .form-control-lg,
+    #profitModal .form-select-lg {
+        font-size: 1.1rem !important;
+        padding: 1rem 1.25rem !important;
+        min-height: 60px !important;
+        height: 60px !important;
+    }
+    
+    /* Ensure proper column behavior */
+    #profitModal .row {
+        margin-right: -0.75rem;
+        margin-left: -0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    #profitModal .col-md-4,
+    #profitModal .col-md-6 {
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+        flex-basis: 0;
+        flex-grow: 1;
+        max-width: 100%;
+        position: relative;
+        width: 100%;
+        min-height: 1px;
+    }
+    
+    /* Responsive column widths */
+    @media (min-width: 768px) {
+        #profitModal .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+        
+        #profitModal .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+    
+    /* Button Styling - Force consistent appearance */
+    #profitModal .btn {
+        border-radius: 8px !important;
         font-weight: 500;
         transition: all 0.3s ease;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        border: 1px solid transparent;
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+        line-height: 1.5;
+        text-decoration: none;
+        cursor: pointer;
+        min-height: 48px !important;
+        box-sizing: border-box !important;
     }
     
-    .btn-primary {
-          background: none;
-    color: #1f1a5c;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight:800;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    white-space: nowrap;
+    #profitModal .btn-primary {
+        background: none !important;
+        color: #1f1a5c !important;
+        border: 2px solid #1f1a5c !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 8px !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        gap: 8px;
+        white-space: nowrap;
     }
-      .circle-plus {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border:2px solid #2f4156;
-    color: #2f4156;
-    font-weight: bold;
-    font-size: 1rem;
-}
-    .btn-primary:hover {
-         background: rgba(1, 31, 139, 0.05);
-         color:#1f1a5c;
-         width:20%;
+    
+    #profitModal .circle-plus {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #2f4156;
+        color: #2f4156;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    
+    #profitModal .btn-primary:hover,
+    #profitModal .btn-primary:focus {
+        background-color: rgba(31, 26, 92, 0.1) !important;
+        color: #1f1a5c !important;
+        transform: translateY(-1px);
+        border: 2px solid #1f1a5c !important;
+    }
+    
+    #profitModal .btn-secondary {
+        background-color: #95a5a6 !important;
+        border: 2px solid #95a5a6 !important;
+        color: #fff !important;
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+    }
+    
+    #profitModal .btn-secondary:hover,
+    #profitModal .btn-secondary:focus {
+        background-color: #7f8c8d !important;
+        border: 2px solid #7f8c8d !important;
+        color: #fff !important;
         transform: translateY(-1px);
     }
     
-    .btn-secondary {
-        background-color: #95a5a6;
-        border-color: #95a5a6;
+    /* Modal Footer */
+    #profitModal .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
     
-    .btn-secondary:hover {
-        background-color: #7f8c8d;
-        border-color: #7f8c8d;
-        transform: translateY(-1px);
-    }
-    
+    /* Responsive Design - Force proper spacing */
     @media (max-width: 768px) {
-        .modal-dialog {
-            margin: 1rem auto;
+        #profitModal .modal-dialog {
+            margin: 1rem auto !important;
+            max-width: calc(100vw - 2rem) !important;
         }
         
-        .modal-body {
-            padding: 1.25rem;
+        #profitModal .modal-body {
+            padding: 1.5rem !important;
         }
         
-        .row > div {
-            margin-bottom: 1rem;
+        #profitModal .col-md-4,
+        #profitModal .col-md-6 {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 1.5rem !important;
+            padding: 0 0.75rem !important;
         }
         
-        .row > div:last-child {
-            margin-bottom: 0;
+        #profitModal .row > div:last-child {
+            margin-bottom: 0 !important;
         }
+        
+        #profitModal .modal-footer {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+        }
+        
+        #profitModal .btn {
+            width: 100% !important;
+            margin: 0 !important;
+        }
+    }
+    
+    /* Force Bootstrap utility classes */
+    #profitModal .px-4 {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+    
+    #profitModal .py-2 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    
+    #profitModal .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    #profitModal .fw-semibold {
+        font-weight: 600 !important;
+    }
+    
+    #profitModal .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    #profitModal .text-white {
+        color: #fff !important;
+    }
+    
+    #profitModal .me-2 {
+        margin-right: 0.5rem !important;
+    }
+    
+    #profitModal .border-top-0 {
+        border-top: 0 !important;
     }
 </style>
 

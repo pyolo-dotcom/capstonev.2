@@ -385,93 +385,90 @@
         }
 
         // Restore form data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+    // Setup for 'Others' option dropdowns
+    document.querySelectorAll('.other-select').forEach(selectElement => {
+        const otherInput = document.getElementById(selectElement.dataset.otherId);
+        if (!otherInput) return;
 
-            // Setup for 'Others' option dropdowns
-            document.querySelectorAll('.other-select').forEach(selectElement => {
-                const otherInput = document.getElementById(selectElement.dataset.otherId);
-                if (!otherInput) return;
-
-                selectElement.addEventListener('change', function() {
-                    if (this.value === 'others') {
-                        otherInput.style.display = 'block';
-                    } else {
-                        otherInput.style.display = 'none';
-                        otherInput.value = '';
-                    }
-                });
-            });
-
-            const savedData = localStorage.getItem('cargoFormData');
-            if (savedData) {
-                const formData = JSON.parse(savedData);
-
-                // Helper function to restore select/other input state
-                const restoreSelectValue = (selectId, savedValue) => {
-                    if (!savedValue) return;
-                    const select = document.getElementById(selectId);
-
-                    // Check if it's a select with an "others" option
-                    if (select.classList.contains('other-select')) {
-                        const otherInput = document.getElementById(select.dataset.otherId);
-                        let isOther = true;
-
-                        for (let option of select.options) {
-                            if (option.value === savedValue) {
-                                select.value = savedValue;
-                                isOther = false;
-                                break;
-                            }
-                        }
-
-                        if (isOther) {
-                            select.value = 'others';
-                            if (otherInput) {
-                                otherInput.value = savedValue;
-                                otherInput.style.display = 'block';
-                            }
-                        }
-                    } else {
-                        // For standard select elements
-                        select.value = savedValue;
-                    }
-                };
-
-                // Restore all fields except plate_no if user has an assigned truck
-                const plateNoInput = document.getElementById('plate_no');
-                const assignedPlateNo = "{{ Auth::user()->truck_id }}";
-
-                if (assignedPlateNo) {
-                    plateNoInput.value = assignedPlateNo;
-                } else if (formData.plate_no) {
-                    plateNoInput.value = formData.plate_no;
-                }
-
-                // Restore other fields
-                restoreSelectValue('eir_no', formData.eir_no);
-                restoreSelectValue('container_van_no', formData.container_van_no);
-                restoreSelectValue('size', formData.size); // Updated to use helper
-                document.getElementById('shipper_consignee').value = formData.shipper_consignee || '';
-                restoreSelectValue('voyage_vessel', formData.voyage_vessel);
-                restoreSelectValue('voyage_no', formData.voyage_no);
-                restoreSelectValue('pickup_location', formData.pickup_location);
-                restoreSelectValue('delivery_location', formData.delivery_location);
-
-                // Regenerate QR code if there was one
-                if (Object.keys(formData).length > 1 && formData.plate_no) { // Check if form is not empty
-                     generateQRCode();
-                }
-            }
-
-            // Disable generate button if no plate number is assigned
-            const generateBtn = document.getElementById('generateBtn');
-            const plateNo = document.getElementById('plate_no').value;
-
-            if (!plateNo) {
-                generateBtn.disabled = true;
-                generateBtn.title = 'You need an assigned plate number to generate QR codes';
+        selectElement.addEventListener('change', function () {
+            if (this.value === 'others') {
+                otherInput.style.display = 'block';
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.value = '';
             }
         });
+    });
+
+    const savedData = localStorage.getItem('cargoFormData');
+    if (savedData) {
+        const formData = JSON.parse(savedData);
+
+        // Helper function to restore select/other input state
+        const restoreSelectValue = (selectId, savedValue) => {
+            if (!savedValue) return;
+            const select = document.getElementById(selectId);
+
+            // Check if it's a select with an "others" option
+            if (select.classList.contains('other-select')) {
+                const otherInput = document.getElementById(select.dataset.otherId);
+                let isOther = true;
+
+                for (let option of select.options) {
+                    if (option.value === savedValue) {
+                        select.value = savedValue;
+                        isOther = false;
+                        break;
+                    }
+                }
+
+                if (isOther) {
+                    select.value = 'others';
+                    if (otherInput) {
+                        otherInput.value = savedValue;
+                        otherInput.style.display = 'block';
+                    }
+                }
+            } else {
+                // For standard select elements
+                select.value = savedValue;
+            }
+        };
+
+        // Restore all fields except plate_no if user has an assigned truck
+        const plateNoInput = document.getElementById('plate_no');
+        const assignedPlateNo = "{{ Auth::user()->truck_id }}";
+
+        if (assignedPlateNo) {
+            plateNoInput.value = assignedPlateNo;
+        } else if (formData.plate_no) {
+            plateNoInput.value = formData.plate_no;
+        }
+
+        // Restore other fields
+        restoreSelectValue('eir_no', formData.eir_no);
+        restoreSelectValue('container_van_no', formData.container_van_no);
+        restoreSelectValue('size', formData.size); // Updated to use helper
+        document.getElementById('shipper_consignee').value = formData.shipper_consignee || '';
+        restoreSelectValue('voyage_vessel', formData.voyage_vessel);
+        restoreSelectValue('voyage_no', formData.voyage_no);
+        restoreSelectValue('pickup_location', formData.pickup_location);
+        restoreSelectValue('delivery_location', formData.delivery_location);
+
+        // Do NOT automatically generate the QR code
+        // The user must explicitly click the "Generate QR" button
+    }
+
+    // Disable generate button if no plate number is assigned
+    const generateBtn = document.getElementById('generateBtn');
+    const plateNo = document.getElementById('plate_no').value;
+
+    if (!plateNo) {
+        generateBtn.disabled = true;
+        generateBtn.title = 'You need an assigned plate number to generate QR codes';
+    }
+});
 
         // Clear form data
         function clearSavedFormData() {

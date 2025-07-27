@@ -48,8 +48,10 @@ class ManageTripController extends Controller
             }
         }
     
+        // Fetch the records
         $cargos = $query->orderBy('created_at', 'desc')->get();
     
+        // Pass the data to the view
         return view('admin.managetrip', compact('cargos', 'plateNo', 'filter', 'plateNumbers'));
     }
 

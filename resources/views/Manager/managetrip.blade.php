@@ -705,6 +705,16 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const plateSelect = document.getElementById('plateSelect');
+    const filterForm = document.getElementById('filterForm');
+
+    // Submit the form if "All Trucks" is selected and no filter is applied
+    if (plateSelect && plateSelect.value === 'All Trucks' && !window.location.search.includes('plate_no=')) {
+        filterForm.submit();
+    }
+});
+
         document.addEventListener('DOMContentLoaded', function() {
             const filterForm = document.getElementById('filterForm');
             const plateSelect = document.getElementById('plateSelect');
