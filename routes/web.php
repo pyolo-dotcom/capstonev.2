@@ -24,6 +24,7 @@ use App\Http\Controllers\FuelDriverController;
 use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
+use App\Http\Controllers\FlespiFetchController;
 use App\Http\Controllers\AuthController;
 use App\Models\Tracking;
 use App\Models\User;
@@ -376,3 +377,6 @@ Route::get('/get-flespi-location', function() {
         ]
     ]);
 });
+
+Route::get('/flespi/fetch', [FlespiFetchController::class, 'fetchAndStore'])
+    ->name('flespi.fetch');
