@@ -494,99 +494,790 @@
         }
 
        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
+        /* ENHANCED MODAL STYLING */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent background */    
+        justify-content: center;
+        align-items: center;
+        animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            backdrop-filter: blur(0px);
+        }
+        to {
+            opacity: 1;
+            backdrop-filter: blur(8px);
+        }
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        padding: 0;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 580px;
+        box-shadow: 
+            0 25px 50px rgba(31, 26, 92, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        position: relative;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.9);
+        animation: modalSlideIn 0.3s ease-out forwards;
+        overflow: hidden;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            transform: scale(0.9) translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 20px 20px 0 0;
+        margin: 0;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+        pointer-events: none;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 1;
+        position: relative;
+    }
+
+    .modal-header h2::before {
+        content: '\f044';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        color: #64b5f6;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .modal-body {
+        overflow-y: auto;
+        flex-grow: 1;
+        padding: 30px;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    }
+
+    .modal-footer {
+        padding: 20px 30px 30px;
+        border: none;
+        margin: 0;
+        background: linear-gradient(to top, #f8f9fa, #ffffff);
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 28px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 2;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .close:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+    }
+
+    .modal-content form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .modal-content form > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-content label {
+        font-weight: 600;
+        color: #1f1a5c;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal-content label::before {
+        content: '';
+        width: 3px;
+        height: 16px;
+        background: linear-gradient(to bottom, #1f1a5c, #1f1a5c);
+        border-radius: 2px;
+    }
+
+    .modal-content select,
+    .modal-content input {
+        padding: 14px 18px;
+        border: 2px solid #e8ecf0;
+        border-radius: 12px;
+        font-size: 15px;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .modal-content select:focus,
+    .modal-content input:focus {
+        border-color: #1f1a5c;
+        outline: none;
+        box-shadow: 
+            0 0 0 3px rgba(31, 26, 92, 0.1),
+            0 4px 12px rgba(31, 26, 92, 0.15);
+        background: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .modal-content select:hover,
+    .modal-content input:hover {
+        border-color: #64b5f6;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
+    }
+
+    /* Full width fields for specific inputs */
+    .modal-content form > div:nth-child(6),  /* Shipper */
+    .modal-content form > div:nth-child(7),  /* Consignee */ 
+    .modal-content form > div:nth-child(10), /* Pickup Location */
+    .modal-content form > div:nth-child(11)  /* Delivery Location */ {
+        grid-column: 1 / -1;
+    }
+
+    .modal-content button[type="submit"] {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 4px 15px rgba(31, 26, 92, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .modal-content button[type="submit"]::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-content button[type="submit"]:hover::before {
+        opacity: 1;
+    }
+
+    .modal-content button[type="submit"]:hover {
+        background: linear-gradient(135deg, #161245, #233140);
+        transform: translateY(-2px);
+        box-shadow: 
+            0 8px 25px rgba(31, 26, 92, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-content button[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: 
+            0 4px 15px rgba(31, 26, 92, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Enhanced scrollbar styling for modal */
+    
+    /* Form validation styling */
+    .modal-content input:invalid,
+    .modal-content select:invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .modal-content input:valid,
+    .modal-content select:valid {
+        border-color: #3577ae;
+    }
+
+    /* Enhanced responsive design */
+    @media (max-width: 1400px) {
+        .modal-content {
+            max-width: 550px;
+            width: 88%;
+        }
+        
+        .modal-content form {
+            gap: 18px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .sidebar {
+            width: 220px;
+            min-width: 220px;
+        }
+        
+        .content {
+            margin-left: 220px;
+            width: calc(100vw - 220px);
+            max-width: calc(100vw - 220px);
+            padding: 20px;
+        }
+        
+        .trip-table {
+            min-width: 700px;
         }
 
         .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
+            max-width: 520px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
         }
-
-        .modal-header {
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 15px;
+        
+        .modal-header h2 {
+            font-size: 1.4rem;
         }
-
-        .modal-body {
-            overflow-y: auto;
-            flex-grow: 1;
-            padding-right: 10px;
-        }
-
-        .modal-footer {
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            margin-top: 15px;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #aaa;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: #333;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #1f1a5c;
-            text-align: center;
-        }
-
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .modal-content label {
-            font-weight: bold;
-            color: #1f1a5c;
-        }
-
+        
         .modal-content select,
         .modal-content input {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
+            padding: 13px 16px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .modal-content {
+            max-width: 480px;
+            width: 92%;
+            max-height: 85vh;
+        }
+        
+        .modal-content form {
+            gap: 16px;
+        }
+        
+        .modal-body {
+            padding: 25px 22px;
+        }
+        
+        .modal-footer {
+            padding: 18px 22px 25px;
+        }
+    }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+                min-width: 200px;
+            }
+            
+            .content {
+                margin-left: 200px;
+                width: calc(100vw - 200px);
+                max-width: calc(100vw - 200px);
+                padding: 15px;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .truck-select {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .date-filter {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .date-btn {
+                flex-grow: 1;
+                min-width: 0;
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .pagination-controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .modal-content {
+                max-width: 450px;
+                width: 94%;
+            }
+
+            .modal-content form {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .modal-content form > div:nth-child(6), 
+            .modal-content form > div:nth-child(7), 
+            .modal-content form > div:nth-child(10), 
+            .modal-content form > div:nth-child(11) {
+                grid-column: 1;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.35rem;
+            }
         }
 
-        .modal-content button[type="submit"] {
-            background-color: #1f1a5c;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+                min-width: auto;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 15px;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .content-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .trip-table {
+                min-width: 600px;
+                font-size: 12px;
+            }
+            
+            .trip-table th,
+            .trip-table td {
+                padding: 8px;
+            }
+            
+            .actions {
+                gap: 5px;
+            }
+            
+            .actions button {
+                font-size: 14px;
+                padding: 2px;
+                min-height: 32px;
+            }
+
+            .modal-content {
+                width: 96%;
+                max-width: 96%;
+                margin: 8px;
+                border-radius: 16px;
+                max-height: 88vh;
+            }
+
+            .modal-header {
+                padding: 22px 25px;
+                border-radius: 16px 16px 0 0;
+            }
+
+            .modal-header h2 {
+                font-size: 1.3rem;
+                gap: 10px;
+            }
+
+            .modal-body {
+                padding: 22px 18px;
+            }
+
+            .modal-footer {
+                padding: 16px 18px 22px;
+            }
+
+            .close {
+                top: 18px;
+                right: 22px;
+                font-size: 26px;
+                width: 38px;
+                height: 38px;
+            }
+            
+            .modal-content form {
+                gap: 14px;
+            }
+            
+            .modal-content select,
+            .modal-content input {
+                padding: 13px 15px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+            
+            .modal-content button[type="submit"] {
+                padding: 15px 28px;
+                font-size: 15px;
+            }
         }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                width: 98%;
+                max-width: 98%;
+                margin: 5px;
+                max-height: 92vh;
+                border-radius: 14px;
+            }
+            
+            .modal-header {
+                padding: 20px 22px;
+                border-radius: 14px 14px 0 0;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.25rem;
+                gap: 8px;
+            }
+            
+            .modal-body {
+                padding: 20px 16px;
+            }
+            
+            .modal-footer {
+                padding: 14px 16px 20px;
+            }
+            
+            .close {
+                top: 16px;
+                right: 20px;
+                font-size: 24px;
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content {
+                padding: 10px;
+            }
+            
+            .table-container {
+                padding: 15px;
+            }
+            
+            .trip-table {
+                min-width: 500px;
+                font-size: 11px;
+            }
+            
+            .trip-table th,
+            .trip-table td {
+                padding: 6px;
+            }
+            
+            .filter-container {
+                gap: 10px;
+            }
+
+            .date-filter {
+                flex-direction: column;
+            }
+            
+            .date-btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                border-radius: 12px;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 18px 20px;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .modal-body {
+                padding: 18px 14px;
+            }
+
+            .modal-footer {
+                padding: 12px 14px 18px;
+            }
+
+            .modal-content form {
+                gap: 13px;
+            }
+
+            .modal-content select,
+            .modal-content input {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            
+            .modal-content label {
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+            
+            .modal-content button[type="submit"] {
+                padding: 14px 24px;
+                font-size: 14px;
+            }
+            
+            .close {
+                top: 14px;
+                right: 18px;
+                width: 34px;
+                height: 34px;
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+            
+            .modal-header {
+                border-radius: 0;
+                padding: 16px 18px;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.15rem;
+            }
+            
+            .modal-body {
+                padding: 16px 12px;
+            }
+            
+            .modal-footer {
+                padding: 10px 12px 16px;
+            }
+            
+            .close {
+                top: 12px;
+                right: 16px;
+                width: 32px;
+                height: 32px;
+                font-size: 20px;
+            }
+            
+            .modal-content form {
+                gap: 12px;
+            }
+            
+            .modal-content select,
+            .modal-content input {
+                padding: 11px 13px;
+                font-size: 13px;
+                border-radius: 8px;
+            }
+            
+            .modal-content label {
+                font-size: 0.8rem;
+                margin-bottom: 5px;
+            }
+            
+            .modal-content button[type="submit"] {
+                padding: 13px 20px;
+                font-size: 13px;
+                border-radius: 8px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .modal-body {
+                padding: 14px 10px;
+            }
+            
+            .modal-footer {
+                padding: 8px 10px 14px;
+            }
+            
+            .modal-content select,
+            .modal-content input {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .modal-content label {
+                font-size: 0.75rem;
+            }
+            
+            .modal-content button[type="submit"] {
+                padding: 12px 18px;
+                font-size: 12px;
+            }
+            
+            .close {
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+        }
+
+        /* Landscape orientation adjustments for mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .modal-content {
+                max-height: 95vh;
+                width: 90%;
+                max-width: 600px;
+            }
+            
+            .modal-header {
+                padding: 12px 20px;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .modal-body {
+                padding: 15px 20px;
+            }
+            
+            .modal-footer {
+                padding: 10px 20px 15px;
+            }
+            
+            .modal-content form {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            
+            .modal-content form > div:nth-child(6), 
+            .modal-content form > div:nth-child(7), 
+            .modal-content form > div:nth-child(10), 
+            .modal-content form > div:nth-child(11) {
+                grid-column: 1 / -1;
+            }
+            
+            .close {
+                top: 8px;
+                right: 15px;
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+        }
+
+        /* High DPI adjustments */
+        @media (-webkit-min-device-pixel-ratio: 2) {
+            .modal-content select,
+            .modal-content input {
+                border-width: 1px;
+            }
+            
+            .modal-content label::before {
+                width: 2px;
+            }
+        }
+
+        /* Zoom level adjustments */
+        @media screen and (min-resolution: 144dpi) {
+            .content {
+                padding: clamp(15px, 3vw, 25px);
+            }
+            
+            .trip-table {
+                font-size: clamp(11px, 1.3vw, 13px);
+            }
+        }
+
+        /* High DPI displays */
+        @media screen and (-webkit-min-device-pixel-ratio: 1.5) {
+            .trip-table th,
+            .trip-table td {
+                padding: clamp(8px, 1.8vw, 12px);
+            }
+        }
+    
 
         .table-scroll-container::-webkit-scrollbar,
         .modal-body::-webkit-scrollbar {
@@ -610,37 +1301,6 @@
             background: #555;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-            }
-            
-            .content {
-                margin-left: 0;
-            }
-            
-            .filter-container {
-                flex-direction: column;
-            }
-            
-            .date-filter {
-                width: 100%;
-            }
-            
-            .date-btn {
-                flex-grow: 1;
-            }
-
-            .search-bar {
-                width: 100%;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 20px;
-            }
-        }
     </style>
 </head>
 
@@ -714,7 +1374,8 @@
                             <th>EIR No.</th>
                             <th>Container Van No.</th>
                             <th>Size</th>
-                            <th>Shipper/Consignee</th>
+                            <th>Shipper</th>
+                             <th>Consignee</th>
                             <th>Voyage Vessel</th>
                             <th>Voyage No.</th>
                             <th>Pickup Location</th>
@@ -731,7 +1392,8 @@
                                     <td>{{ $cargo->eir_no }}</td>
                                     <td>{{ $cargo->container_van_no }}</td>
                                     <td>{{ $cargo->size }}</td>
-                                    <td>{{ $cargo->shipper_consignee }}</td>
+                                    <td>{{ $cargo->shipper }}</td>
+                                    <td>{{ $cargo->consignee }}</td>
                                     <td>{{ $cargo->voyage_vessel }}</td>
                                     <td>{{ $cargo->voyage_no }}</td>
                                     <td>{{ $cargo->pickup_location }}</td>
@@ -744,7 +1406,8 @@
                                                 '{{ $cargo->eir_no }}',
                                                 '{{ $cargo->container_van_no }}',
                                                 '{{ $cargo->size }}',
-                                                '{{ $cargo->shipper_consignee }}',
+                                                '{{ $cargo->shipper }}',
+                                                '{{ $cargo->consignee }}',
                                                 '{{ $cargo->voyage_vessel }}',
                                                 '{{ $cargo->voyage_no }}',
                                                 '{{ $cargo->pickup_location }}',
@@ -795,7 +1458,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="modal-header">
-                <h2>Update Trip</h2>
+                <h2>Update Trip Record</h2>
             </div>
             <div class="modal-body">
                 <form id="updateTripForm">
@@ -803,41 +1466,64 @@
                     @method('PUT')
                     <input type="hidden" id="trip_id" name="id">
 
-                    <label for="update_plate_no">Plate No.:</label>
-                    <select id="update_plate_no" name="plate_no" required>
-                        <option disabled value="">-- Plate Number --</option>
-                        @foreach($plateNumbers as $plate)
-                            <option value="{{ $plate }}">{{ $plate }}</option>
-                        @endforeach
-                    </select>
+                    <div>
+                        <label for="update_plate_no">Plate No.:</label>
+                        <select id="update_plate_no" name="plate_no" required>
+                            <option disabled value="">-- Select Plate Number --</option>
+                            @foreach(['UVP353', 'TQE262', 'NBB7212', 'APA3309', 'WIE914'] as $plate)
+                                <option value="{{ $plate }}">{{ $plate }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <label for="update_eir_no">EIR No.:</label>
-                    <input type="text" id="update_eir_no" name="eir_no" required>
+                    <div>
+                        <label for="update_eir_no">EIR No.:</label>
+                        <input type="text" id="update_eir_no" name="eir_no" required>
+                    </div>
 
-                    <label for="update_container_van_no">Container Van No.:</label>
-                    <input type="text" id="update_container_van_no" name="container_van_no" required>
+                    <div>
+                        <label for="update_container_van_no">Container Van No.:</label>
+                        <input type="text" id="update_container_van_no" name="container_van_no" required>
+                    </div>
 
-                    <label for="update_size">Size:</label>
-                    <input type="text" id="update_size" name="size" required>
+                    <div>
+                        <label for="update_size">Size:</label>
+                        <input type="text" id="update_size" name="size" required>
+                    </div>
 
-                    <label for="update_shipper_consignee">Shipper/Consignee:</label>
-                    <input type="text" id="update_shipper_consignee" name="shipper_consignee" required>
+                    <div>
+                        <label for="update_voyage_vessel">Voyage Vessel:</label>
+                        <input type="text" id="update_voyage_vessel" name="voyage_vessel" required>
+                    </div>
 
-                    <label for="update_voyage_vessel">Voyage Vessel:</label>
-                    <input type="text" id="update_voyage_vessel" name="voyage_vessel" required>
+                    <div>
+                        <label for="update_voyage_no">Voyage No.:</label>
+                        <input type="text" id="update_voyage_no" name="voyage_no" required>
+                    </div>
 
-                    <label for="update_voyage_no">Voyage No.:</label>
-                    <input type="text" id="update_voyage_no" name="voyage_no" required>
+                    <div>
+                        <label for="update_shipper">Shipper:</label>
+                        <input type="text" id="update_shipper" name="shipper" required>
+                    </div>
+                    
+                    <div>
+                        <label for="update_consignee">Consignee:</label>
+                        <input type="text" id="update_consignee" name="consignee" required>
+                    </div>
 
-                    <label for="update_pickup_location">Pickup Location:</label>
-                    <input type="text" id="update_pickup_location" name="pickup_location" required>
+                    <div>
+                        <label for="update_pickup_location">Pickup Location:</label>
+                        <input type="text" id="update_pickup_location" name="pickup_location" required>
+                    </div>
 
-                    <label for="update_delivery_location">Delivery Location:</label>
-                    <input type="text" id="update_delivery_location" name="delivery_location" required>
+                    <div>
+                        <label for="update_delivery_location">Delivery Location:</label>
+                        <input type="text" id="update_delivery_location" name="delivery_location" required>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" form="updateTripForm" class="submit-btn">Update</button>
+                <button type="submit" form="updateTripForm" class="submit-btn">Update Trip Record</button>
             </div>
         </div>
     </div>
@@ -1029,61 +1715,60 @@
     }); // End DOMContentLoaded
 
     // --- Export to Excel Function ---
-    // Made global because it's called via `onclick` in HTML
-    function exportToExcel() {
-        const table = document.getElementById('cargoTable');
-        if (!table) {
-            console.error("Table with ID 'cargoTable' not found. Cannot export.");
-            return;
-        }
-
-        const wb = XLSX.utils.book_new();
-        const wsData = [];
-
-        // Add headers (from the first row of the table)
-        const headers = [];
-        if (table.rows.length > 0) {
-            for (let cell of table.rows[0].cells) {
-                // Exclude 'Actions' column from export
-                if (cell.textContent.trim() !== 'Actions') {
-                    headers.push(cell.textContent.trim());
-                }
-            }
-            wsData.push(headers);
-        }
-
-        // Add data rows (only visible rows)
-        for (let i = 1; i < table.rows.length; i++) {
-            const row = table.rows[i];
-            // Only export rows that are currently displayed (not hidden by search or pagination)
-            if (row.style.display === 'none') {
-                continue;
-            }
-            const rowData = [];
-            // Iterate through cells, excluding the last one (Actions column)
-            for (let j = 0; j < row.cells.length - 1; j++) {
-                let cellData = row.cells[j].textContent.trim();
-
-                // Special formatting for date column (assuming it's at index 1)
-                if (j === 1) { // Adjust this index if your date column is different
-                    const dateValue = new Date(cellData);
-                    if (!isNaN(dateValue)) {
-                        cellData = dateValue.toISOString().split('T')[0]; // Format to YYYY-MM-DD
-                    }
-                }
-                rowData.push(cellData);
-            }
-            wsData.push(rowData);
-        }
-
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        XLSX.utils.book_append_sheet(wb, ws, 'Cargo Records');
-        XLSX.writeFile(wb, 'cargo_records.xlsx');
+function exportToExcel() {
+    const table = document.getElementById('cargoTable');
+    if (!table) {
+        console.error("Table with ID 'cargoTable' not found. Cannot export.");
+        return;
     }
+
+    const wb = XLSX.utils.book_new();
+    const wsData = [];
+
+    // Add headers (from the first row of the table)
+    const headers = [];
+    if (table.rows.length > 0) {
+        for (let cell of table.rows[0].cells) {
+            // Exclude 'Actions' column from export
+            if (cell.textContent.trim() !== 'Actions') {
+                headers.push(cell.textContent.trim());
+            }
+        }
+        wsData.push(headers);
+    }
+
+    // Add data rows (only visible rows)
+    for (let i = 1; i < table.rows.length; i++) {
+        const row = table.rows[i];
+        // Only export rows that are currently displayed (not hidden by search or pagination)
+        if (row.style.display === 'none') {
+            continue;
+        }
+        const rowData = [];
+        // Iterate through cells, excluding the last one (Actions column)
+        for (let j = 0; j < row.cells.length - 1; j++) {
+            let cellData = row.cells[j].textContent.trim();
+
+            // Special formatting for date column (assuming it's at index 1)
+            if (j === 1) { // Adjust this index if your date column is different
+                const dateValue = new Date(cellData);
+                if (!isNaN(dateValue)) {
+                    cellData = dateValue.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+                }
+            }
+            rowData.push(cellData);
+        }
+        wsData.push(rowData);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Cargo Records');
+    XLSX.writeFile(wb, 'cargo_records.xlsx');
+}
 
     // --- Modal Functions ---
     // Made global because they are called via `onclick` in HTML
-    function openTripModal(id, plateNo, eirNo, containerVanNo, size, shipperConsignee, voyageVessel, voyageNo, pickupLocation, deliveryLocation) {
+    function openTripModal(id, plateNo, eirNo, containerVanNo, size, shipper, consignee, voyageVessel, voyageNo, pickupLocation, deliveryLocation) {
         const tripIdInput = document.getElementById('trip_id');
         if (tripIdInput) tripIdInput.value = id;
 
@@ -1097,7 +1782,8 @@
         const updateEirNo = document.getElementById('update_eir_no'); if (updateEirNo) updateEirNo.value = eirNo;
         const updateContainerVanNo = document.getElementById('update_container_van_no'); if (updateContainerVanNo) updateContainerVanNo.value = containerVanNo;
         const updateSize = document.getElementById('update_size'); if (updateSize) updateSize.value = size;
-        const updateShipperConsignee = document.getElementById('update_shipper_consignee'); if (updateShipperConsignee) updateShipperConsignee.value = shipperConsignee;
+        const updateShipper = document.getElementById('update_shipper'); if (updateShipper) updateShipper.value = shipper;
+        const updateConsignee = document.getElementById('update_consignee'); if (updateConsignee) updateConsignee.value = consignee;
         const updateVoyageVessel = document.getElementById('update_voyage_vessel'); if (updateVoyageVessel) updateVoyageVessel.value = voyageVessel;
         const updateVoyageNo = document.getElementById('update_voyage_no'); if (updateVoyageNo) updateVoyageNo.value = voyageNo;
         const updatePickupLocation = document.getElementById('update_pickup_location'); if (updatePickupLocation) updatePickupLocation.value = pickupLocation;

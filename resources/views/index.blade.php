@@ -479,12 +479,19 @@ img {
 
     .left-panel-content {
         background-size: 90%;
-        background-position: center 0;
+        background-position: center 20%;
     }
 
     .left-panel-heading {
+        font-size: 3rem;
         margin-top: 25%;
     }
+
+    .left-panel-subtext {
+        font-size: 1rem;
+        padding-bottom: 1.5rem;
+    }
+
 
     .right-panel-logo {
         top: 2rem;
@@ -526,16 +533,20 @@ img {
     .left-panel, .right-panel {
         flex: none;
         width: 100%;
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1rem; /* Reduced general padding */
         border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
-    .left-panel {
-        height: 40vh;
-        min-height: 250px;
-        justify-content: flex-start;
-        padding-bottom: 1.5rem;
+        .left-panel {
+        height: 35vh; /* Adjusted height to give more space to the form */
+        min-height: 180px; /* Ensure a minimum height */
+        padding-bottom: 1rem; /* Reduced padding */
         text-align: center;
+
         background-size:
             150px 150px,
             80px 80px,
@@ -544,6 +555,7 @@ img {
             30px 30px,
             0 0, 40px 40px;
     }
+    
 
     .left-panel-background-image {
         opacity: 0.05;
@@ -551,11 +563,11 @@ img {
 
     .left-panel-content {
         padding-top: 0;
-        height: auto;
+        height: 100%;
         justify-content: center;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        background-size: contain;
+        padding-left: 0.8rem; /* Reduced padding */
+        padding-right: 0.8rem; /* Reduced padding */
+        background-size: cover;
         background-position: center;
     }
 
@@ -565,18 +577,13 @@ img {
     }
 
     .left-panel-heading {
-        font-size: 2.2rem;
-        margin-top: 0;
-        margin-bottom: 0.8rem;
-        padding: 0 0.5rem;
+        font-size: 1.5rem;
+        margin-bottom: 0.2rem;
     }
 
     .left-panel-subtext {
-        font-size: 0.95rem;
-        max-width: 100%;
-        padding-bottom: 1.5rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        font-size: 0.75rem;
+        padding-bottom: 0.5rem;
     }
 
     .left-panel-footer {
@@ -637,31 +644,32 @@ img {
 
 @media (max-width: 480px) {
     .left-panel {
-        height: 35vh;
-        min-height: 180px;
-        padding: 1.5rem 1rem;
+        height: 30vh; /* Further adjusted height for smaller screens */
+        min-height: 150px;
+        padding: 1rem 0.8rem;
     }
 
+
     .left-panel-content {
-        background-size: contain;
+        background-size: cover;
         background-position: center;
     }
 
-    .left-panel-heading {
-        font-size: 1.8rem;
-        margin-top: 0;
-        padding: 0 0.5rem;
+    .left-panel-content {
+        background-size: cover;
+        background-position: center;
     }
 
     .left-panel-subtext {
-        font-size: 0.85rem;
-        padding: 0 0.5rem 1rem;
+        font-size: 0.8rem; /* Further reduced font size */
+        padding: 0 0.5rem 0.8rem; /* Reduced padding */
+        line-height: 1.3;
     }
 
     .left-panel-footer {
-        font-size: 0.75rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
+        font-size: 0.7rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
     }
 
     .right-panel {
@@ -702,6 +710,8 @@ img {
         padding: 0.7rem;
     }
 }
+
+
 </style>
 <body>
     <div class="login-wrapper">

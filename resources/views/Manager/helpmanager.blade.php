@@ -405,11 +405,11 @@
                 <div class="rules-section">
                     <h5>Rules and Regulations</h5>
                     <ul>
-                        <li>Complete daily vehicle inspection reports</li>
-                        <li>Follow all traffic laws and regulations</li>
-                        <li>Report any accidents or incidents immediately</li>
-                        <li>Maintain proper documentation for all shipments</li>
-                        <li>Submit fuel receipts and delivery reports on time</li>
+                        <li>Reviewing and approving driver reports</li>
+                        <li>Monitoring fleet performance</li>
+                        <li>Generating monthly reports</li>
+                        <li>Ensuring compliance with company policies</li>
+                        <li>Managing driver assignments and schedules</li>
                     </ul>
                 </div>
             </section>

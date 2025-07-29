@@ -1,471 +1,618 @@
 <div id="tripModal" class="modal">
     <div class="modal-content">
-        <span class="close">×</span>
+        <span class="close">&times;</span>
         <div class="modal-header">
-            <h2 class="modal-title">Add New Trip</h2>
+            <h2>Add New Trip</h2>
         </div>
-        <form id="tripForm" class="modal-form">
-            @csrf
-            <div class="form-group">
-                <label for="plate_no">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
-                        <path d="M7 10h10M7 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    Plate Number
-                </label>
-                <select id="plate_no" name="plate_no" class="form-control" required>
-                    <option value="" disabled selected>-- Select Plate Number --</option>
-                    @foreach($plateNumbers as $plate)
-                        <option value="{{ $plate }}">{{ $plate }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="trip_type">
-                    <!-- Navigation Icon -->
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="3" width="15" height="13" />
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                    <circle cx="5.5" cy="19.5" r="2.5" />
-                    <circle cx="18.5" cy="19.5" r="2.5" />
-                </svg>
-                    Trip Type
-                </label>
-                <select id="trip_type" name="trip_type" class="form-control" required>
-                    <option disabled selected>-- Select Trip --</option>
+        <div class="modal-body">
+            <form id="tripForm">
+                @csrf
+                <div>
+                    <label for="plate_no">Plate Number:</label>
+                    <select id="plate_no" name="plate_no" required>
+                        <option value="" disabled selected>-- Select Plate Number --</option>
+                        @foreach($plateNumbers as $plate)
+                            <option value="{{ $plate }}">{{ $plate }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="trip_type">Trip Type:</label>
+                    <select id="trip_type" name="trip_type" class="form-control" required>
+                    <option value="" disabled selected>-- Select Trip --</option>
                     <option value="One Way Trip">One Way Trip</option>
                     <option value="Round Trip">Round Trip</option>
                     <option value="Door-To-Door Trip">Door-To-Door Trip</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="num_trips">
-                    <!-- Hashtag Icon -->
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="4" y1="9" x2="20" y2="9"/>
-                        <line x1="4" y1="15" x2="20" y2="15"/>
-                        <line x1="10" y1="3" x2="10" y2="21"/>
-                        <line x1="14" y1="3" x2="14" y2="21"/>
-                    </svg>
-                    Number of Trips
-                </label>
-                <input type="number" id="num_trips" name="num_trips" class="form-control" min="1" required>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Submit Trip
-                </button>
-            </div>
-        </form>
+                </div>
+
+                <div>
+                    <label for="num_trips">Number of Trips:</label>
+                    <input type="number" id="num_trips" name="num_trips" min="1" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" form="tripForm">Submit Trip</button>
+        </div>
     </div>
 </div>
 
 <style>
-    .modal {
+    /* ENHANCED MODAL STYLING */
+    #tripModal {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 1100;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        
-        overflow: auto;
+        background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent background */    
     }
 
-    .modal-content {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        margin: 5% auto;
-        padding: 0;
-        border-radius: 20px;
+    #tripModal.show {
+        display: flex !important;
+        justify-content: center;
+        align-items: center; /* Change from flex-start to center */
+        padding-top: 0;
+    }
+
+    #tripModal .modal-content {
+        margin: auto;
+        padding: 0 !important;
+        border-radius: 25px !important;
         width: 90%;
         max-width: 480px;
-        box-shadow: 
-            0 25px 50px rgba(31, 26, 92, 0.15),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
-        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        overflow: hidden;
         position: relative;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(4vh);
+        overflow: hidden;
     }
 
-    .modal-content::before {
+    #tripModal .modal-header {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 20px 20px 0 0;
+        margin: 0;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #tripModal .modal-header::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #1f1a5c, #6e5ff1, #1c1a91, #1f1a5c);
-        background-size: 300% 100%;
-        animation: shimmer 3s ease-in-out infinite;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+        pointer-events: none;
     }
 
-    .modal-header {
-        text-align: center;
-        padding: 25px 30px 10px;
-        background: linear-gradient(135deg, #e2f2ff, #ffffff);
-        border-bottom: 1px solid rgba(31, 26, 92, 0.08);
+    #tripModal .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 1;
         position: relative;
     }
 
-    .modal-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(90deg, #1f1a5c, #7c97ed, #1f1a5c);
-        border-radius: 0 0 20px 20px;
+    #tripModal .modal-header h2::before {
+        content: '\f067';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 1.2rem;
+        color: #64b5f6;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
 
-    .modal-title {
-        color: #1f1a5c;
-        margin: 0 auto;
-        font-size: 28px;
-        font-weight: bold;
-        letter-spacing: -1px;
-        text-transform: uppercase;
-        text-align: center;
-        display: inline-block;
-        width: 100%;
-        background: linear-gradient(135deg, #1f1a5c, #463fba, #1f1a5c);
-        background-size: 200% 200%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: gradientShift 4s ease-in-out infinite;
-        position: relative;
+    #tripModal .modal-body {
+        overflow-y: auto;
+        flex-grow: 1;
+        padding: 30px;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
     }
 
-    .modal-title::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #1f1a5c, transparent);
-        border-radius: 2px;
+    #tripModal .modal-footer {
+        padding: 20px 30px 30px;
+        border: none;
+        margin: 0;
+        background: linear-gradient(to top, #f8f9fa, #ffffff);
     }
 
-    .close {
+    #tripModal .close {
         position: absolute;
         top: 20px;
-        right: 20px;
-        color: #374151;
-        font-size: 24px;
-        font-weight: bold;
+        right: 25px;
+        font-size: 28px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+        transition: all 0.3s ease;
+        z-index: 2;
+        width: 35px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
-        background: rgba(156, 163, 175, 0.2);
-        z-index: 1001;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
 
-    .close:hover {
-        color: #403ca7;
-        background: rgba(77, 123, 202, 0.2);
+    #tripModal .close:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
         transform: rotate(90deg);
     }
 
-    .modal-form {
-        padding: 20px 30px 30px;
+    #tripModal .modal-content form {
         display: flex;
         flex-direction: column;
         gap: 20px;
     }
 
-    .form-group {
+    #tripModal .modal-content form > div {
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        position: relative;
     }
 
-    .form-group label {
+    #tripModal .modal-content label {
         font-weight: 600;
-        color: #374151;
-        font-size: 14px;
+        color: #1f1a5c;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        position: relative;
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 4px;
     }
 
-    .form-group label svg {
-        color: #1f1a5c;
-        flex-shrink: 0;
+    #tripModal .modal-content label::before {
+        content: '';
+        width: 3px;
+        height: 16px;
+        background: linear-gradient(to bottom, #1f1a5c, #1f1a5c);
+        border-radius: 2px;
     }
 
-    .form-control {
-        padding: 14px 16px;
-        border: 2px solid #e5e7eb;
+    #tripModal .modal-content select,
+    #tripModal .modal-content input {
+        padding: 14px 18px;
+        border: 2px solid #e8ecf0;
         border-radius: 12px;
         font-size: 15px;
-        background: #ffffff;
+        width: 100%;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        font-family: 'Poppins', sans-serif;
     }
 
-    .form-control:focus {
-        outline: none;
+    #tripModal .modal-content select:focus,
+    #tripModal .modal-content input:focus {
         border-color: #1f1a5c;
-        box-shadow: 0 0 0 3px rgba(31, 26, 92, 0.1);
+        outline: none;
+        box-shadow: 
+            0 0 0 3px rgba(31, 26, 92, 0.1),
+            0 4px 12px rgba(31, 26, 92, 0.15);
+        background: #ffffff;
         transform: translateY(-1px);
     }
 
-    .form-control:hover {
-        border-color: #d1d5db;
+    #tripModal .modal-content select:hover,
+    #tripModal .modal-content input:hover {
+        border-color: #64b5f6;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
     }
 
-    select.form-control {
-        cursor: pointer;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 12px center;
-        background-repeat: no-repeat;
-        background-size: 16px;
-        padding-right: 40px;
-        appearance: none;
-    }
-
-    input[type="number"].form-control {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: textfield;
-    }
-
-    input[type="number"].form-control::-webkit-outer-spin-button,
-    input[type="number"].form-control::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: center;
-        margin-top: 24px;
-    }
-
-    .btn {
-        padding: 14px 32px;
+    #tripModal .modal-content button[type="submit"] {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
         border: none;
+        padding: 16px 32px;
         border-radius: 12px;
         cursor: pointer;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        text-transform: uppercase;
         letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 4px 15px rgba(31, 26, 92, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
         position: relative;
         overflow: hidden;
-        background: none;
-        color: inherit;
-    }
-
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
         width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
 
-    .btn:hover::before {
-        left: 100%;
+    #tripModal .modal-content button[type="submit"]::before {
+        content: '\f00c';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #1f1a5c, #251eb6);
-        color: white;
-        box-shadow: 0 8px 20px rgba(31, 26, 92, 0.3);
-        min-height: 48px;
+    #tripModal .modal-content button[type="submit"]:hover::before {
+        opacity: 1;
     }
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #1f1a5c, #4942b7);
+    #tripModal .modal-content button[type="submit"]:hover {
+        background: linear-gradient(135deg, #161245, #233140);
         transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(31, 26, 92, 0.4);
+        box-shadow: 
+            0 8px 25px rgba(31, 26, 92, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    .btn-primary:active {
+    #tripModal .modal-content button[type="submit"]:active {
         transform: translateY(0);
-        box-shadow: 0 4px 12px rgba(31, 26, 92, 0.3);
+        box-shadow: 
+            0 4px 15px rgba(31, 26, 92, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    /* Form validation styling */
+    #tripModal .modal-content input:invalid,
+    #tripModal .modal-content select:invalid {
+        border-color: #ff96a1;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
     }
 
-    @keyframes slideUp {
-        from { 
-            opacity: 0; 
-            transform: translateY(50px) scale(0.95); 
+    #tripModal .modal-content input:valid,
+    #tripModal .modal-content select:valid {
+        border-color: #3577ae;
+    }
+
+    /* Enhanced responsive design */
+    @media (max-width: 1400px) {
+        #tripModal .modal-content {
+            max-width: 450px;
+            width: 88%;
         }
-        to { 
-            opacity: 1; 
-            transform: translateY(0) scale(1); 
+    }
+
+    @media (max-width: 1200px) {
+        #tripModal .modal-content {
+            max-width: 420px;
+            width: 90%;
+        }
+        
+        #tripModal .modal-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            padding: 13px 16px;
+            font-size: 14px;
         }
     }
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    @media (max-width: 1024px) {
+        #tripModal .modal-content {
+            max-width: 400px;
+            width: 92%;
+            max-height: 85vh;
+        }
+        
+        #tripModal .modal-body {
+            padding: 25px 22px;
+        }
+        
+        #tripModal .modal-footer {
+            padding: 18px 22px 25px;
+        }
     }
 
-    @keyframes shimmer {
-        0% { background-position: -300% 0; }
-        100% { background-position: 300% 0; }
+    @media (max-width: 992px) {
+        #tripModal .modal-content {
+            max-width: 380px;
+            width: 94%;
+        }
+
+        #tripModal .modal-header h2 {
+            font-size: 1.35rem;
+        }
     }
 
     @media (max-width: 768px) {
-        .modal-content {
-            width: 95%;
-            margin: 10% auto;
+        #tripModal .modal-content {
+            width: 96%;
+            max-width: 96%;
+            margin: 8px;
             border-radius: 16px;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-height: 88vh;
+        }
+
+        #tripModal .modal-header {
+            padding: 22px 25px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        #tripModal .modal-header h2 {
+            font-size: 1.3rem;
+            gap: 10px;
+        }
+
+        #tripModal .modal-body {
+            padding: 22px 18px;
+        }
+
+        #tripModal .modal-footer {
+            padding: 16px 18px 22px;
+        }
+
+        #tripModal .close {
+            top: 18px;
+            right: 22px;
+            font-size: 26px;
+            width: 38px;
+            height: 38px;
         }
         
-        .modal-form {
-            padding: 12px 16px 16px;
-            gap: 12px;
+        #tripModal .modal-content form {
+            gap: 14px;
         }
         
-        .modal-header {
-            padding: 25px 16px 12px;
-        }
-        
-        .modal-title {
-            font-size: 18px;
-        }
-        
-        .form-group label {
-            font-size: 13px;
-        }
-        
-        .form-control {
-            padding: 10px 12px;
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            padding: 13px 15px;
             font-size: 14px;
             border-radius: 10px;
         }
         
-        .form-actions {
-            margin-top: 16px;
+        #tripModal .modal-content button[type="submit"] {
+            padding: 15px 28px;
+            font-size: 15px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #tripModal .modal-content {
+            width: 98%;
+            max-width: 98%;
+            margin: 5px;
+            max-height: 92vh;
+            border-radius: 14px;
         }
         
-        .btn {
-            padding: 10px 20px;
-            font-size: 13px;
-            min-height: 44px;
-            width: 100%;
-            justify-content: center;
-            border-radius: 10px;
+        #tripModal .modal-header {
+            padding: 20px 22px;
+            border-radius: 14px 14px 0 0;
+        }
+        
+        #tripModal .modal-header h2 {
+            font-size: 1.25rem;
+            gap: 8px;
+        }
+        
+        #tripModal .modal-body {
+            padding: 20px 16px;
+        }
+        
+        #tripModal .modal-footer {
+            padding: 14px 16px 20px;
+        }
+        
+        #tripModal .close {
+            top: 16px;
+            right: 20px;
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        #tripModal .modal-content {
+            border-radius: 12px;
+            max-height: 95vh;
+        }
+
+        #tripModal .modal-header {
+            padding: 18px 20px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        #tripModal .modal-header h2 {
+            font-size: 1.2rem;
+        }
+
+        #tripModal .modal-body {
+            padding: 18px 14px;
+        }
+
+        #tripModal .modal-footer {
+            padding: 12px 14px 18px;
+        }
+
+        #tripModal .modal-content form {
+            gap: 13px;
+        }
+
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+        
+        #tripModal .modal-content label {
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        
+        #tripModal .modal-content button[type="submit"] {
+            padding: 14px 24px;
+            font-size: 14px;
+        }
+        
+        #tripModal .close {
+            top: 14px;
+            right: 18px;
+            width: 34px;
+            height: 34px;
+            font-size: 22px;
         }
     }
 
     @media (max-width: 480px) {
-        .modal-content {
+        #tripModal .modal-content {
             width: 100%;
+            max-width: 100%;
             margin: 0;
-            max-height: 90vh;
             border-radius: 0;
-            animation: slideInFromBottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            max-height: 100vh;
         }
         
-        .modal-header {
-            padding: 25px 12px 8px;
+        #tripModal .modal-header {
+            border-radius: 0;
+            padding: 16px 18px;
         }
         
-        .modal-title {
-            font-size: 16px;
+        #tripModal .modal-header h2 {
+            font-size: 1.15rem;
         }
         
-        .modal-form {
-            padding: 8px 12px 12px;
-            gap: 10px;
-            flex-grow: 1;
+        #tripModal .modal-body {
+            padding: 16px 12px;
         }
         
-        .form-group label {
-            font-size: 12px;
+        #tripModal .modal-footer {
+            padding: 10px 12px 16px;
         }
         
-        .form-control {
-            padding: 8px 10px;
+        #tripModal .close {
+            top: 12px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+        }
+        
+        #tripModal .modal-content form {
+            gap: 12px;
+        }
+        
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            padding: 11px 13px;
             font-size: 13px;
             border-radius: 8px;
         }
         
-        .form-actions {
-            margin-top: 12px;
+        #tripModal .modal-content label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
         }
         
-        .btn {
-            padding: 8px 16px;
-            font-size: 12px;
-            min-height: 40px;
-            width: 100%;
-            justify-content: center;
+        #tripModal .modal-content button[type="submit"] {
+            padding: 13px 20px;
+            font-size: 13px;
             border-radius: 8px;
-            line-height: 1.2;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #1f1a5c, #251eb6);
-            box-shadow: 0 6px 15px rgba(31, 26, 92, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #1f1a5c, #4942b7);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(31, 26, 92, 0.4);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 10px rgba(31, 26, 92, 0.3);
-        }
-        
-        .close {
-            top: 12px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
-            font-size: 20px;
         }
     }
 
-    @keyframes slideInFromBottom {
-        from { 
-            opacity: 0; 
-            transform: translateY(100%); 
+    @media (max-width: 360px) {
+        #tripModal .modal-header h2 {
+            font-size: 1.1rem;
         }
-        to { 
-            opacity: 1; 
-            transform: translateY(0); 
+        
+        #tripModal .modal-body {
+            padding: 14px 10px;
+        }
+        
+        #tripModal .modal-footer {
+            padding: 8px 10px 14px;
+        }
+        
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+        
+        #tripModal .modal-content label {
+            font-size: 0.75rem;
+        }
+        
+        #tripModal .modal-content button[type="submit"] {
+            padding: 12px 18px;
+            font-size: 12px;
+        }
+        
+        #tripModal .close {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+        }
+    }
+
+    /* Landscape orientation adjustments for mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+        #tripModal .modal-content {
+            max-height: 95vh;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        #tripModal .modal-header {
+            padding: 12px 20px;
+        }
+        
+        #tripModal .modal-header h2 {
+            font-size: 1.1rem;
+        }
+        
+        #tripModal .modal-body {
+            padding: 15px 20px;
+        }
+        
+        #tripModal .modal-footer {
+            padding: 10px 20px 15px;
+        }
+        
+        #tripModal .modal-content form {
+            gap: 12px;
+        }
+        
+        #tripModal .close {
+            top: 8px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+        }
+    }
+
+    /* High DPI adjustments */
+    @media (-webkit-min-device-pixel-ratio: 2) {
+        #tripModal .modal-content select,
+        #tripModal .modal-content input {
+            border-width: 1px;
+        }
+        
+        #tripModal .modal-content label::before {
+            width: 2px;
         }
     }
 </style>

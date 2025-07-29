@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <link rel="icon" href="{{ asset('/public/images/logo.jpg') }}" type="image/jpg">
     <style>
         * {
             margin: 0;
@@ -87,7 +87,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 2px solid rgba(233, 236, 239, 10);
+            border: 1.5px solid rgba(150, 150, 150, 0.3);
             transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
             position: relative;
             overflow: hidden;
@@ -131,6 +131,7 @@
             font-weight: 700;
             line-height: 1;
             margin: 0;
+            margin-bottom: 10px;
             color: #1f1a5c;
             position: relative;
             z-index: 1;
@@ -147,24 +148,25 @@
         }
 
         .trip-card .reset-btn {
-            background: linear-gradient(90deg, #dc3545, #c82333);
-            color: white;
+            background: none!important;
+            color: red;
             border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
+           /* padding: 8px 15px;
+            border-radius: 6px;*/
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            /*transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
+            position: relative;*/
             z-index: 1;
             margin-bottom: 10px;
         }
 
         .trip-card .reset-btn:hover {
-            background: linear-gradient(90deg, #c82333, #bd2130);
+           /* background: linear-gradient(90deg, #c82333, #bd2130);*/
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            color:darkred;
+           /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);*/
         }
 
         .section-title {
@@ -174,38 +176,38 @@
             margin-bottom: 1.5rem;
         }
 
-        .add-trip-btn {
-            background-color: #1f1a5c;
-            color: white;
-            border: 1px solid #1f1a5c;
-            padding: 7px 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
+       .add-trip-btn {
+    background-color: #3B82F6; /* Brighter Blue */
+    color: white;
+    border: none; /* Remove border for a cleaner look */
+    padding: 10px 20px; /* Slightly larger padding */
+    border-radius: 12px; /* More rounded corners */
+    font-size: 15px; /* Slightly larger text */
+    font-weight: 600; /* Bolder text */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Slightly more space between icon and text */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3); /* Stronger, colored shadow */
+    cursor: pointer; /* Indicate it's clickable */
+}
 
-        .add-trip-btn i {
-            color: white;
-            font-size: 15px;
-        }
+.add-trip-btn i {
+    color: white; /* Icon color remains white */
+    font-size: 16px; /* Slightly larger icon */
+}
 
-        .add-trip-btn:hover {
-            background-color: #161245;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+.add-trip-btn:hover {
+    background-color: #2563EB; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lift more on hover */
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4); /* Stronger shadow on hover */
+}
 
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -216,16 +218,31 @@
             gap: 20px;
             margin-left: auto;
         }
+.top-controls-container {
+    display: flex; /* Make it a flex container */
+    justify-content: space-between; /* Pushes items to the ends with space between them */
+    align-items: center; /* Vertically aligns items in the middle */
+    margin-bottom: 5px; /* Optional: add some space below these controls */
+    width: 100%; /* Ensures it takes full width of its parent to allow space-between to work */
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens if they don't fit */
+}
+
+/* New CSS for the button group */
+.button-group {
+    display: flex; /* Make the button group itself a flex container */
+    gap: 15px; /* Add space between the export and add trip buttons */
+    align-items: center; /* Vertically align buttons within their group */
+}
 
         .plate-number-section select {
-            padding: 10px 15px;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            font-size: 16px;
-            color: #495057;
-            background-color: #fff;
-            width: 220px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+             padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #495057;
+    background-color: #fff;
+    width: 125px; /* You might adjust this width if needed */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .plate-number-section select:focus {
@@ -246,7 +263,7 @@
 
         .trip-table th,
         .trip-table td {
-            padding: 15px 20px;
+            padding: 10px 20px;
             text-align: left;
             border-bottom: 1px solid #e9ecef;
             transition: background-color 0.2s ease;
@@ -255,7 +272,7 @@
         .trip-table th {
             background-color: #f8f9fa;
             font-weight: 600;
-            color: #2c3e50;
+            color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -276,9 +293,9 @@
             background: linear-gradient(90deg, #1f1a5c, #2c3e50);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -290,23 +307,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .reset-btn {
-            background: linear-gradient(90deg, #dc3545, #c82333);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .reset-btn:hover {
-            background: linear-gradient(90deg, #c82333, #bd2130);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
+       
 
         .export-trip-btn {
             background-color: #f2f4f8;
@@ -321,7 +322,6 @@
             gap: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            margin-left: auto;
         }
 
         .export-trip-btn i {
@@ -542,49 +542,54 @@
     <div class="content">
         <!-- Header Section -->
         <div class="header-section">
-            <div class="plate-number-section">
-                <select id="plateNumberSelect">
-                    <option value="all" selected>All Trucks</option>
-                    @foreach($plateNumbers as $plate)
-                        <option value="{{ $plate }}">{{ $plate }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="d-flex">
-                <button class="add-trip-btn" id="openModal">
-                    <i class="fas fa-plus"></i> Add Trip
-                </button>
-                <button class="export-trip-btn" id="exportToExcel">
-                    <i class="fas fa-file-excel"></i> Export Excel
-                </button>
-            </div>
+                   <h2 class="section-title">TOTAL COUNTS</h2>
+
         </div>
 
         <!-- Trip Counts Section -->
-        <h2 class="section-title">TOTAL COUNTS</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="trip-card">
-                    <h3>ONE WAY TRIP</h3>
-                    <p id="oneWayTripCount">0</p>
-                    <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="trip-card">
-                    <h3>ROUND TRIP</h3>
-                    <p id="roundTripCount">0</p>
-                    <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="trip-card">
-                    <h3>DOOR TO DOOR TRIP</h3>
-                    <p id="doorToDoorTripCount">0</p>
-                    <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
-                </div>
-            </div>
+        
+     <div class="row g-4">
+    <div class="top-controls-container">
+        <div class="plate-number-section">
+            <select id="plateNumberSelect">
+                <option value="all" selected>All Trucks</option>
+                @foreach($plateNumbers as $plate)
+                    <option value="{{ $plate }}">{{ $plate }}</option>
+                @endforeach
+            </select>
         </div>
+        <div class="button-group">
+            <button class="export-trip-btn" id="exportToExcel">
+                <i class="fas fa-upload me-2"></i> Export 
+            </button>
+            <button class="add-trip-btn" id="openModal">
+                <i class="fas fa-plus"></i> Add Trip
+            </button>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="trip-card">
+            <h3>ONE WAY TRIP</h3>
+            <p id="oneWayTripCount">0</p>
+            <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="trip-card">
+            <h3>ROUND TRIP</h3>
+            <p id="roundTripCount">0</p>
+            <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="trip-card">
+            <h3>DOOR TO DOOR TRIP</h3>
+            <p id="doorToDoorTripCount">0</p>
+            <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
+        </div>
+    </div>
+</div>
 
         <!-- Trip Table -->
         <table class="trip-table">
