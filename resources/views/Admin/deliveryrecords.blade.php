@@ -180,7 +180,7 @@
     background-color: #3B82F6; /* Brighter Blue */
     color: white;
     border: none; /* Remove border for a cleaner look */
-    padding: 10px 20px; /* Slightly larger padding */
+    padding: 12px 24px; /* Slightly larger padding */
     border-radius: 12px; /* More rounded corners */
     font-size: 15px; /* Slightly larger text */
     font-weight: 600; /* Bolder text */
@@ -195,6 +195,7 @@
 .add-trip-btn i {
     color: white; /* Icon color remains white */
     font-size: 16px; /* Slightly larger icon */
+    transition: transform 0.3s ease;
 }
 
 .add-trip-btn:hover {
@@ -203,6 +204,71 @@
     box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4); /* Stronger shadow on hover */
 }
 
+.add-trip-btn:hover i {
+    transform: rotate(90deg);
+}
+
+/* Add responsive styles for different screen sizes */
+@media (max-width: 1200px) {
+    .add-trip-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .add-trip-btn i {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 992px) {
+    .add-trip-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+        flex: 0 1 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .add-trip-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        width: auto;
+        justify-content: center;
+    }
+
+    .button-group {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 576px) {
+    .add-trip-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+
+    .add-trip-btn i {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .add-trip-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+        border-radius: 8px;
+    }
+
+    .add-trip-btn i {
+        font-size: 13px;
+    }
+    
+    .button-group {
+        gap: 8px;
+    }
+}
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -426,6 +492,7 @@
 
             .plate-number-section select {
                 width: 100%;
+                margin-bottom: 20px;
             }
         }
 
@@ -484,6 +551,7 @@
 
             .plate-number-section select {
                 width: 100%;
+                margin-bottom: 20px;
             }
         }
 
@@ -527,6 +595,7 @@
 
             .plate-number-section select {
                 width: 100%;
+                margin-bottom: 20px;
             }
         }
     </style>

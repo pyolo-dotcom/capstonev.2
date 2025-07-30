@@ -44,7 +44,7 @@
     #tripModal {
         display: none;
         position: fixed;
-        z-index: 1100;
+        z-index: 999;
         left: 0;
         top: 0;
         width: 100%;
@@ -394,6 +394,7 @@
             margin: 5px;
             max-height: 92vh;
             border-radius: 14px;
+            transform: translateY(8vh);
         }
         
         #tripModal .modal-header {
