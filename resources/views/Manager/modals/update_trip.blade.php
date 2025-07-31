@@ -1,4 +1,5 @@
-<div id="updateModal" class="modal" style="display: none;">
+<div id="updateModal" class="modal">
+    <!-- Remove the inline style display:none -->
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2 class="modal-title">Update Trip</h2>
@@ -39,99 +40,244 @@
 </div>
 
 <style>
-    .modal {
+    #updateModal {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 1100;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        overflow: auto;
+        background: rgba(0, 0, 0, 0.6);
     }
 
-    .modal-content {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 25px;
-        border-radius: 8px;
-        width: 50%;
-        max-width: 500px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        animation: modalopen 0.3s;
+    /* When modal is shown */
+    #updateModal.show {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        padding-top: 0;
     }
 
-    .modal-title {
-        color: #1f1a5c;
-        margin-bottom: 20px;
-        text-align: center;
+    #updateModal .modal-content {
+        margin: auto; /* Add this */
+        background: #fff;
+        padding: 0 !important;
+        border-radius: 25px !important;
+        width: 90%;
+        max-width: 480px;
+        position: relative;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(31, 26, 92, 0.25);
+        transform: translateY(1vh); /* Add this */
     }
 
-    .close {
-        color: #aaa;
-        float: right;
+    #updateModal .modal-title {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 20px 20px 0 0;
+        margin: 0;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #updateModal .close {
+        position: absolute;
+        top: 20px;
+        right: 25px;
         font-size: 28px;
-        font-weight: bold;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 2;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
     }
 
-    .close:hover {
-        color: #333;
+    #updateModal .close:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
     }
 
-    .modal-form {
+    #updateModal .modal-form {
+        padding: 30px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
     }
 
-    .form-group {
+    #updateModal .form-group {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 8px;
     }
 
-    .form-control {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
+    #updateModal .form-group label {
+        font-weight: 600;
+        color: #1f1a5c;
+        font-size: 0.9rem;
     }
 
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
+    #updateModal .form-control {
+        padding: 14px 18px;
+        border: 2px solid #e8ecf0;
+        border-radius: 12px;
+        font-size: 15px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    #updateModal .form-control:focus {
+        border-color: #1f1a5c;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(31, 26, 92, 0.1);
+    }
+
+    #updateModal .form-actions {
         margin-top: 20px;
     }
 
-    .btn {
-        padding: 10px 20px;
+    #updateModal .btn-primary {
+        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+        color: white;
         border: none;
-        border-radius: 4px;
+        padding: 16px 32px;
+        border-radius: 12px;
         cursor: pointer;
         font-size: 16px;
-        transition: all 0.3s;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
     }
 
-    .btn-primary {
-        background-color: #1f1a5c;
-        color: white;
+    #updateModal .btn-primary:hover {
+        background: linear-gradient(135deg, #161245, #233140);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(31, 26, 92, 0.4);
     }
 
-    .btn-primary:hover {
-        background-color: #161245;
+    #updateModal .modal-content form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
 
-    @keyframes modalopen {
-        from {opacity: 0; transform: translateY(-50px);}
-        to {opacity: 1; transform: translateY(0);}
+    #updateModal .modal-content form > div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #updateModal .modal-content label {
+        font-weight: 600;
+        color: #1f1a5c;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #updateModal .modal-content label::before {
+        content: '';
+        width: 3px;
+        height: 16px;
+        background: linear-gradient(to bottom, #1f1a5c, #1f1a5c);
+        border-radius: 2px;
+    }
+
+    /* Media queries */
+    @media (max-width: 1400px) {
+        #updateModal .modal-content {
+            max-width: 450px;
+            width: 88%;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        #updateModal .modal-content {
+            max-width: 420px;
+            width: 90%;
+        }
+        
+        #updateModal .modal-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        #updateModal .modal-content select,
+        #updateModal .modal-content input {
+            padding: 13px 16px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        #updateModal .modal-content {
+            max-width: 400px;
+            width: 92%;
+            max-height: 85vh;
+        }
+        
+        #updateModal .modal-body {
+            padding: 25px 22px;
+        }
+        
+        #updateModal .modal-footer {
+            padding: 18px 22px 25px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        #updateModal .modal-content {
+            max-width: 380px;
+            width: 94%;
+        }
+
+        #updateModal .modal-header h2 {
+            font-size: 1.35rem;
+        }
     }
 
     @media (max-width: 768px) {
-        .modal-content {
-            width: 80%;
-            margin: 20% auto;
+        #updateModal .modal-content {
+            width: 96%;
+            max-width: 96%;
+            margin: 8px;
+            border-radius: 16px;
+            max-height: 88vh;
+        }
+
+        #updateModal .modal-header {
+            padding: 22px 25px;
+            border-radius: 16px 16px 0 0;
+        }
+    }
+
+    /* High DPI adjustments */
+    @media (-webkit-min-device-pixel-ratio: 2) {
+        #updateModal .modal-content select,
+        #updateModal .modal-content input {
+            border-width: 1px;
+        }
+        
+        #updateModal .modal-content label::before {
+            width: 2px;
         }
     }
 </style>
