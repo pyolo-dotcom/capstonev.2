@@ -235,7 +235,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('manager.managetrip') }}" class="menu-item" id="tripRecordsBtn">
+                <a href="{{ route('manager.managetrip') }}"
+                   class="menu-item {{ request()->routeIs('manager.managetrip') ? 'active' : '' }}" id="tripRecordsBtn">
                     <i class="bi bi-truck"></i> <span>Manage Trip Records</span>
                 </a>
             </li>
