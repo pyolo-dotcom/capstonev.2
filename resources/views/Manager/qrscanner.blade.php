@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <link rel="icon" href="{{ asset('/public/images/logo.jpg') }}" type="image/jpg">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -55,15 +55,23 @@
             max-width: 500px;
             margin-left: auto;
             margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #reader {
             width: 100%;
             max-width: 400px;
-            height: 400px;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            min-height: 250px;
             margin: auto;
             border: 3px solid #2c3e50;
             border-radius: 10px;
+            background: #000;
+            box-sizing: border-box;
+            display: block;
         }
 
         #result {
@@ -134,9 +142,15 @@
                 padding: 15px;
             }
 
-            #reader {
-                height: 300px;
+            .scanner-container {
                 max-width: 100%;
+                padding: 0 10px;
+            }
+
+            #reader {
+                max-width: 100%;
+                min-height: 180px;
+                aspect-ratio: 1 / 1;
             }
 
             .alert.alert-info {
@@ -150,6 +164,14 @@
 
             .alert.alert-info ul li {
                 font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #reader {
+                min-height: 120px;
+                max-width: 100%;
+                aspect-ratio: 1 / 1;
             }
         }
     </style>
@@ -202,11 +224,11 @@
         </ul>
     </div>
 
-     <script>
+    <script>
         let scanner;
         let currentCameraId = null;
         let cameras = [];
-        let scannedCodes = new Set(); // Set to store scanned QR codes
+        let scannedCodes = new Set();
 
         function startScanner(cameraId) {
             if (scanner) {
@@ -232,25 +254,28 @@
                     }
 
                     try {
-                        let scannedData;
-                        try {
-                            scannedData = JSON.parse(decodedText);
-                        } catch (e) {
-                            if (decodedText.includes('?')) {
-                                const urlParams = new URLSearchParams(decodedText.split('?')[1]);
-                                scannedData = Object.fromEntries(urlParams.entries());
-                            } else {
-                                throw new Error("Invalid QR data format");
-                            }
-                        }
+                        let scannedData = JSON.parse(decodedText);
                         console.log("Processed scanned data:", scannedData);
+                        
+                        // Validate required fields
+                        if (!scannedData.plate_no || !scannedData.eir_no || !scannedData.container_van_no || 
+                            !scannedData.size || !scannedData.shipper || !scannedData.consignee || 
+                            !scannedData.voyage_vessel || !scannedData.voyage_no || 
+                            !scannedData.pickup_location || !scannedData.delivery_location) {
+                            throw new Error("Missing required fields in QR code data");
+                        }
+
                         document.getElementById('result').innerText = "Scanned Data: " + JSON.stringify(scannedData);
                         localStorage.setItem("scannedCargoData", JSON.stringify(scannedData));
-                        scannedCodes.add(decodedText); // Add the scanned QR code to the set
+                        scannedCodes.add(decodedText);
                         sendScannedData(scannedData);
                     } catch (error) {
                         console.error("Error processing scanned data:", error);
-                        Swal.fire({ title: 'Error', text: 'Invalid QR code format: ' + error.message, icon: 'error' });
+                        Swal.fire({ 
+                            title: 'Error', 
+                            text: 'Invalid QR code format: ' + error.message, 
+                            icon: 'error' 
+                        });
                     }
                 },
                 (error) => {
@@ -258,66 +283,122 @@
                 }
             ).catch(err => {
                 console.error("QR Scanner failed to start:", err);
-                Swal.fire({ title: 'Scanner Error', text: 'Failed to initialize QR scanner. Check camera permissions.', icon: 'error' });
+                Swal.fire({ 
+                    title: 'Scanner Error', 
+                    text: 'Failed to initialize QR scanner. Check camera permissions.', 
+                    icon: 'error' 
+                });
             });
         }
 
-        function sendScannedData(data) {
-            const postData = {
-                plate_no: data.plate_no,
-                eir_no: data.eir_no,
-                container_van_no: data.container_van_no,
-                size: data.size,
-                shipper_consignee: data.shipper_consignee,
-                voyage_vessel: data.voyage_vessel,
-                voyage_no: data.voyage_no,
-                pickup_location: data.pickup_location,
-                delivery_location: data.delivery_location
-            };
+function sendScannedData(data) {
+    // Ensure all required fields are present and properly formatted
+    const postData = {
+        plate_no: data.plate_no || '',
+        eir_no: data.eir_no || '',
+        container_van_no: data.container_van_no || '',
+        size: data.size || '',
+        shipper: data.shipper || '',  // Make sure this matches your backend
+        consignee: data.consignee || '',  // Make sure this matches your backend
+        voyage_vessel: data.voyage_vessel || '',
+        voyage_no: data.voyage_no || '',
+        pickup_location: data.pickup_location || '',
+        delivery_location: data.delivery_location || '',
+        status: 'Pending'  // Add this if your backend expects it
+    };
 
-            console.log("Sending data to server:", postData);
+    console.log("Sending data to server:", postData);
 
-            axios.post("/cargo/scanned", postData, {
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => {
-                if (response.data.error) {
-                    throw new Error(response.data.error);
-                }
+    // Show loading indicator
+    Swal.fire({
+        title: 'Processing',
+        html: 'Sending cargo data...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-                const cargo = response.data.cargo;
-                let cargoDetails = `
-                    <div style="text-align: left;">
-                        <p><strong>Plate No:</strong> ${cargo.plate_no || 'N/A'}</p>
-                        <p><strong>EIR No:</strong> ${cargo.eir_no || 'N/A'}</p>
-                        <p><strong>Container Van No:</strong> ${cargo.container_van_no || 'N/A'}</p>
-                        <p><strong>Size:</strong> ${cargo.size || 'N/A'}</p>
-                        <p><strong>Shipper/Consignee:</strong> ${cargo.shipper_consignee || 'N/A'}</p>
-                        <p><strong>Voyage Vessel:</strong> ${cargo.voyage_vessel || 'N/A'}</p>
-                        <p><strong>Voyage Number:</strong> ${cargo.voyage_no || 'N/A'}</p>
-                        <p><strong>Pickup Location:</strong> ${cargo.pickup_location || 'N/A'}</p>
-                        <p><strong>Delivery Location:</strong> ${cargo.delivery_location || 'N/A'}</p>
-                    </div>
-                `;
-
-                Swal.fire({ title: 'Success!', html: cargoDetails, icon: 'success', customClass: { popup: 'swal-wide' } });
-
-                localStorage.removeItem("scannedCargoData");
-                document.getElementById('result').innerText = "";
-            })
-            .catch(error => {
-                console.error("Error sending data:", error);
-                Swal.fire({ title: 'Error', text: error.message || 'Failed to store cargo details', icon: 'error' });
-            });
+    axios.post("{{ route('cargo.scanned') }}", postData, {
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        }
+    })
+    .then(response => {
+        // Close loading indicator
+        Swal.close();
+        
+        if (response.data.error) {
+            throw new Error(response.data.error);
         }
 
+        // Show success message with cargo details
+        const cargo = response.data.cargo || response.data.data;
+        let cargoDetails = `
+            <div style="text-align: left;">
+                <p><strong>Plate No:</strong> ${cargo.plate_no || 'N/A'}</p>
+                <p><strong>EIR No:</strong> ${cargo.eir_no || 'N/A'}</p>
+                <p><strong>Container Van No:</strong> ${cargo.container_van_no || 'N/A'}</p>
+                <p><strong>Size:</strong> ${cargo.size || 'N/A'}</p>
+                <p><strong>Shipper:</strong> ${cargo.shipper || 'N/A'}</p>
+                <p><strong>Consignee:</strong> ${cargo.consignee || 'N/A'}</p>
+                <p><strong>Voyage Vessel:</strong> ${cargo.voyage_vessel || 'N/A'}</p>
+                <p><strong>Voyage Number:</strong> ${cargo.voyage_no || 'N/A'}</p>
+                <p><strong>Pickup Location:</strong> ${cargo.pickup_location || 'N/A'}</p>
+                <p><strong>Delivery Location:</strong> ${cargo.delivery_location || 'N/A'}</p>
+            </div>
+        `;
+
+        Swal.fire({
+            title: 'Success!',
+            html: cargoDetails,
+            icon: 'success',
+            customClass: { popup: 'swal-wide' },
+            confirmButtonText: 'OK'
+        });
+
+        // Clear the scanned data display
+        document.getElementById('result').innerText = '';
+        localStorage.removeItem("scannedCargoData");
+    })
+    .catch(error => {
+        console.error("Error details:", error.response);
+        let errorMessage = "Failed to store cargo details";
+        
+        if (error.response) {
+            // Server responded with a status code that falls out of 2xx
+            if (error.response.data && error.response.data.message) {
+                errorMessage = error.response.data.message;
+            }
+            if (error.response.data && error.response.data.errors) {
+                errorMessage += "\n" + Object.values(error.response.data.errors).join("\n");
+            }
+        } else if (error.request) {
+            // Request was made but no response received
+            errorMessage = "No response from server";
+        } else {
+            // Something happened in setting up the request
+            errorMessage = error.message;
+        }
+        
+        Swal.fire({ 
+            title: 'Error', 
+            text: errorMessage, 
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
+}
         document.addEventListener("DOMContentLoaded", function () {
             Html5Qrcode.getCameras().then(camList => {
                 if (camList.length === 0) {
-                    Swal.fire({ title: 'Camera Error', text: 'No cameras found. Please check your camera permissions.', icon: 'error' });
+                    Swal.fire({ 
+                        title: 'Camera Error', 
+                        text: 'No cameras found. Please check your camera permissions.', 
+                        icon: 'error' 
+                    });
                     return;
                 }
                 cameras = camList;
@@ -331,9 +412,37 @@
                     currentCameraId = cameras[(index + 1) % cameras.length].id;
                     startScanner(currentCameraId);
                 } else {
-                    Swal.fire({ title: 'Camera Info', text: 'Only one camera detected.', icon: 'info' });
+                    Swal.fire({ 
+                        title: 'Camera Info', 
+                        text: 'Only one camera detected.', 
+                        icon: 'info' 
+                    });
                 }
             });
+
+            // Check for any previously scanned data in localStorage
+            const savedData = localStorage.getItem("scannedCargoData");
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    Swal.fire({
+                        title: 'Resend Data?',
+                        text: 'Found previously scanned data. Would you like to send it again?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, send again',
+                        cancelButtonText: 'No, discard'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            sendScannedData(data);
+                        } else {
+                            localStorage.removeItem("scannedCargoData");
+                        }
+                    });
+                } catch (e) {
+                    localStorage.removeItem("scannedCargoData");
+                }
+            }
         });
     </script>
 

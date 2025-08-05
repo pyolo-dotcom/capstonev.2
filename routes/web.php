@@ -25,6 +25,7 @@ use App\Http\Controllers\ShipmentDriverController;
 use App\Http\Controllers\ProfileDriverController;
 use App\Http\Controllers\HelpDriverController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FlespiFetchController;
 use App\Models\Tracking;
 use App\Models\User;
 use App\Http\Controllers\DriverTrackingController;
@@ -129,10 +130,13 @@ Route::get('/fuel-analytics', [FuelManagerController::class, 'getFuelAnalytics']
 Route::get('/gpscontrol', [GPSControlController::class, 'showGPSControl']);
 Route::get('/get-truck-distance', [GPSControlController::class, 'getTruckDistances']);
 Route::get('/manager/qrscanner', function () {
+    if (!Auth::check()) {
+            return redirect('/');
+        }
     return view('manager.qrscanner');
 })->name('manager.qrscanner');
-Route::post('/cargo/scanned', [ShipmentDriverController::class, 'storeScannedData']);
-
+Route::post('/cargo/scanned', [ShipmentDriverController::class, 'storeScannedData'])
+    ->name('cargo.scanned');
 // Driver Routes
 Route::get('driver/deliveryrecords', [DeliveryDriverController::class, 'index'])->name('driver.deliveryrecords');
 Route::get('driver/fuel', [FuelDriverController::class, 'showFuelDriver'])->name('driver.fuel');
@@ -163,7 +167,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile', [ProfileController::class, 'showProfile'])->name('admin.profile');
         Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
         Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.change-password');
-        Route::post('/profile/remove-image', [ProfileController::class, 'removeImage'])->name('admin.profile.remove-image');
     });
 
     // Manager Profile
@@ -172,6 +175,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile/update', [ProfileManagerController::class, 'updateProfile'])->name('manager.profile.update');
         Route::post('/profile/change-password', [ProfileManagerController::class, 'changePassword'])->name('manager.profile.change-password');
     });
+
 
     // Driver Profile
     Route::prefix('driver')->group(function () {
@@ -187,9 +191,10 @@ Route::post('/fuel-consumption', [FuelController::class, 'store']);
 Route::get('/admin/fuel/edit/{id}', [FuelController::class, 'edit'])->name('admin.fuel.edit');
 Route::put('/admin/fuel/update/{id}', [FuelController::class, 'update'])->name('admin.fuel.update'); // Change to PUT
 Route::post('/admin/fuel/archive/{id}', [FuelController::class, 'archive'])->name('admin.fuel.archive');
-// Archive Routes
 Route::put('admin/archive/restore/fuel/{id}', [ArchiveController::class, 'restoreFuel'])->name('admin.archive.restore.fuel');
 Route::delete('admin/archive/delete/fuel/{id}', [ArchiveController::class, 'destroyFuel'])->name('admin.archive.delete.fuel');
+
+// Trip Archive Routes
 Route::post('/admin/archive-trip/{id}', [ManageTripController::class, 'archiveTrip'])->name('admin.archive.trip');
 Route::put('/admin/archive/restore/trip/{id}', [ArchiveController::class, 'restoreTrip'])->name('admin.archive.restore.trip');
 Route::delete('/admin/archive/delete/trip/{id}', [ArchiveController::class, 'destroyTrip'])->name('admin.archive.delete.trip');
@@ -204,6 +209,7 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name
 Route::get('/verify-otp', [OTPController::class, 'showOTPForm'])->name('verify.otp.view');
 Route::post('/verify-otp', [OTPController::class, 'verifyOTP'])->name('verify.otp');
 Route::post('/send-otp', [OTPController::class, 'sendOTP'])->name('send.otp');
+Route::post('/resend-otp', [OTPController::class, 'resendOTP'])->name('resend.otp');
 
 // Truck Routes
 Route::post('admin/truckdetails/store', [TruckController::class, 'store'])->name('admin.truckdetails.store');
@@ -285,7 +291,8 @@ Route::get('/get-live-locations', [ManageGPSController::class, 'getLiveLocations
 
 // Add these routes
 Route::get('/get-driver-location/{truck_id}', [ManageGPSController::class, 'getDriverLocation']);
-Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance']);
+Route::post('/reset-distance/{truck_id}', [ManageGPSController::class, 'resetDistance'])
+    ->name('reset.distance');
 
 // Add these new routes for WebSocket authentication
 Route::post('/broadcasting/auth', function () {
@@ -299,3 +306,74 @@ Route::post('/pusher/webhook', function (Request $request) {
 });
 
 Route::get('/admin/activeaccount/{id}/edit-form', [ActiveController::class, 'editForm']);
+
+Route::get('/flespi/fetch', [FlespiFetchController::class, 'fetchAndStore'])
+    ->name('flespi.fetch');
+    
+Route::post('/flespi-webhook', function (Request $request) {
+    // Validate the request has data
+    if (!$request->has('data')) {
+        return response()->json(['error' => 'No data provided'], 400);
+    }
+
+    $data = $request->input('data');
+    
+
+    // Option 2: If not using model, use DB facade directly
+    DB::table('flespi_data')->insert([
+        'payload' => json_encode($data),
+        'device_id' => $data['device_id'] ?? null,
+        'latitude' => $data['position']['latitude'] ?? null,
+        'longitude' => $data['position']['longitude'] ?? null,
+        'timestamp' => isset($data['timestamp']) ? date('Y-m-d H:i:s', $data['timestamp']) : null,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    // Log the received data for debugging
+    \Log::info('Flespi data received and stored:', $data);
+
+    return response()->json(['success' => true, 'message' => 'Data stored successfully']);
+});
+
+// Route to view stored data (for testing)
+Route::get('/flespi-data', function () {
+    $data = FlespiData::latest()->take(10)->get();
+    return view('flespi-data', ['data' => $data]);
+});
+
+
+// Flespi data routes
+Route::get('/flespi-data', function() {
+    $data = \App\Models\FlespiData::where('device_id', env('FLESPI_DEVICE_ID'))
+                                ->orderBy('timestamp', 'desc')
+                                ->take(20)
+                                ->get();
+    return view('flespi-data', compact('data'));
+});
+
+Route::get('/get-flespi-location', function() {
+    $data = \App\Models\FlespiData::where('device_id', env('FLESPI_DEVICE_ID'))
+                                ->orderBy('timestamp', 'desc')
+                                ->first();
+    
+    if (!$data) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No location data available'
+        ]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'latitude' => $data->latitude,
+            'longitude' => $data->longitude,
+            'speed' => $data->speed,
+            'altitude' => $data->altitude,
+            'battery' => $data->battery,
+            'timestamp' => $data->timestamp,
+            'device_id' => $data->device_id
+        ]
+    ]);
+});
