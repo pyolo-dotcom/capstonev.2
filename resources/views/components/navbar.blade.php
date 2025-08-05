@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Navigation</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root {
@@ -22,11 +19,11 @@
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
-            background-color: #f5f7fa;
+            background-color: #2f4156;
         }
         
         .sidebar {
-            width: 250px;
+            width: 260px;
             height: 100vh;
             background: var(--secondary-color);
             color: white;
@@ -35,7 +32,9 @@
             top: 0;
             transition: all 0.3s;
             z-index: 1000;
-            overflow-y: auto;
+            overflow-y: auto; /* Changed to auto to allow scrolling if menu is long */
+            display: flex;
+            flex-direction: column;
         }
         
         .sidebar.collapsed {
@@ -43,13 +42,31 @@
         }
         
         .sidebar-header {
-            padding: 20px;
+            padding: 20px 10px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .sidebar-logo {
+            width: 90%;
+            height: auto;
+            object-fit: contain;
+            background: transparent;
+            display: block;
+            margin: 0 auto;
+            padding: 15px; /* Added padding for better spacing */
+            box-sizing: border-box;
+            transition: all 0.3s;
+            margin-top: -60px;
+        }
+        
+        .sidebar.collapsed .sidebar-logo {
+            max-width: 50px;
+            padding: 10px;
         }
         
         .sidebar-header h2 {
-            color: #ffffff;
+            color: white;
             font-size: 1.25rem;
             margin-bottom: 5px;
             transition: all 0.3s;
@@ -71,19 +88,22 @@
         .sidebar.collapsed .menu-item i {
             margin-right: 0;
             font-size: 1.2rem;
+            text-align: center;
+            width: 100%; /* Ensures icons are centered */
         }
-        
+
         .menu {
             list-style: none;
             padding: 0;
             margin: 0;
             display: flex;
             flex-direction: column;
-            height: calc(100% - 120px);
+            flex-grow: 1; /* Allows menu to take up remaining space */
+            height: calc(100vh - 100px); /* Adjusted to give more space */
         }
         
         .menu-item {
-            color: #ffffff;
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -97,7 +117,9 @@
         .menu-item.active {
             background: rgba(255,255,255,0.1);
             color: white;
-            border-left: 3px solid var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            border-radius: 20px;
+            width: 245px;
         }
         
         .menu-item i {
@@ -120,7 +142,7 @@
         
         .submenu-item {
             padding: 10px 15px;
-            color: #ffffff;
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
             display: block;
             font-size: 0.9rem;
@@ -132,6 +154,10 @@
         .submenu-item.active {
             color: white;
             background: rgba(255,255,255,0.05);
+            border-bottom: 2px solid var(--primary-color);
+            border-radius: 20px;
+                        width: 245px;
+
         }
         
         .hamburger {
@@ -153,13 +179,14 @@
         }
         
         .content {
-            margin-left: 250px;
-            padding: 20px;
+            margin-left: 260px;
+            padding: 25px;
             flex-grow: 1;
-            transition: all 0.3s;
+            background-color: #f2f2f2;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            margin-top: 10px;
+            border-radius: 30px;
+            transition: all 0.3s;
         }
         
         .content.collapsed {
@@ -198,7 +225,6 @@
             .content {
                 margin-left: 0;
                 width: 100%;
-                margin-top: 55px;
             }
             
             .content.collapsed {
@@ -212,102 +238,93 @@
     </style>
 </head>
 <body>
-    <!-- Hamburger Menu (visible on mobile only) -->
     <div class="hamburger d-lg-none" id="hamburger">
         <div></div>
         <div></div>
         <div></div>
     </div>
 
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <!-- Sidebar Header -->
-        <div class="sidebar-header">
-            <h2>SYA</h2>
-            <h2>Trucking Services</h2>
-            <p><i>Since 2018</i></p>
-        </div>
-
-        <!-- Sidebar Menu -->
-        <ul class="menu">
-            <li>
-                <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
-                    <i class="bi bi-list"></i> <span>Trip Countings Records</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.managetrip') }}"
-                class="menu-item {{ request()->routeIs('admin.managetrip') ? 'active' : '' }}" id="tripRecordsBtn">
-                    <i class="bi bi-truck"></i> <span>Manage Trip Records</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.managegps') }}" class="menu-item" id="gpscontrolbtn">
-                    <i class="bi bi-map"></i> <span>Manage GPS Tracker</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.fuel') }}" class="menu-item" id="fuelManagementBtn">
-                    <i class="bi bi-fuel-pump"></i> <span>Fuel Management</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.profit') }}" class="menu-item" id="profitreportsbtn">
-                    <i class="bi bi-graph-up"></i> <span>Profit Reports</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.truckdetails') }}" class="menu-item" id="trucksBtn">
-                    <i class="bi bi-truck"></i> <span>Truck Details</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="menu-item" id="settings-toggle">
-                    <i class="bi bi-gear"></i> <span>Settings</span>
-                    <i class="bi bi-chevron-down ms-auto dropdown-arrow"></i>
-                </a>
-                <ul class="submenu" id="settings-submenu">
-                    <li>
-                        <a href="{{ route('admin.profile') }}" class="submenu-item" id="profile-management-btn">
-                            <i class="bi bi-person"></i> Profile Management
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.activeaccount') }}" class="submenu-item" id="active-account-btn">
-                            <i class="bi bi-person-check"></i> Active Account
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.archive') }}" class="submenu-item" id="archivebtn">
-                            <i class="bi bi-archive"></i> Archive
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.help') }}" class="submenu-item" id="helpSupportBtn">
-                            <i class="bi bi-question-circle"></i> Help & Support
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="mt-auto">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-                <a href="#" class="menu-item logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-left"></i> <span>Logout</span>
-                </a>
-            </li>
-        </ul>
+    <div class="sidebar-header">
+        <img src="/public/images/loggo.png" alt="Company Logo" class="sidebar-logo">
     </div>
 
-    <!-- Main Content -->
+    <ul class="menu">
+        <li>
+            <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
+                <i class="bi bi-list"></i> <span>Trip Countings Records</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.managetrip') }}" class="menu-item" id="tripRecordsBtn">
+                <i class="bi bi-truck"></i> <span>Manage Trip Records</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.managegps') }}" class="menu-item" id="gpscontrolbtn">
+                <i class="bi bi-map"></i> <span>Manage GPS Tracker</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.fuel') }}" class="menu-item" id="fuelManagementBtn">
+                <i class="bi bi-fuel-pump"></i> <span>Fuel Management</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.profit') }}" class="menu-item" id="profitreportsbtn">
+                <i class="bi bi-graph-up"></i> <span>Profit Reports</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin.truckdetails') }}" class="menu-item" id="trucksBtn">
+                <i class="bi bi-truck"></i> <span>Truck Details</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-item" id="settings-toggle">
+                <i class="bi bi-gear"></i> <span>Settings</span>
+                <i class="bi bi-chevron-down ms-auto dropdown-arrow"></i>
+            </a>
+            <ul class="submenu" id="settings-submenu">
+                <li>
+                    <a href="{{ route('admin.profile') }}" class="submenu-item" id="profile-management-btn">
+                        <i class="bi bi-person"></i> Profile Management
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.activeaccount') }}" class="submenu-item" id="active-account-btn">
+                        <i class="bi bi-person-check"></i> Active Account
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.archive') }}" class="submenu-item" id="archivebtn">
+                        <i class="bi bi-archive"></i> Archive
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.help') }}" class="submenu-item" id="helpSupportBtn">
+                        <i class="bi bi-question-circle"></i> Help & Support
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="mt-auto">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a href="#" class="menu-item logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="bi bi-box-arrow-left"></i> <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
     <div class="content" id="content">
         <div class="main-content-wrapper">
             @yield('content')
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

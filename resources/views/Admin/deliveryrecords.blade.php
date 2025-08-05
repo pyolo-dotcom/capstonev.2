@@ -24,31 +24,36 @@
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #2f4156;
             color: #333;
+            
         }
 
         .sidebar {
             width: 250px;
-            background: linear-gradient(145deg, #2c3e50, #34495e);
             color: white;
             padding: 20px 0;
             position: fixed;
             height: 100%;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
-            background-color: #fff;
+            background-color: #f2f2f2;
             min-height: 100vh;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+            margin-top: 10px;
+            border-radius: 30px;
         }
-
+.container{
+      border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: #F0F4F7;
+  border: 2px solid #E3EEF7;
+  padding: 20px;
+  width: 200px;
+}
         .truck-display {
             background: #f1f3f5;
             padding: 15px 25px;
@@ -612,11 +617,9 @@
         <!-- Header Section -->
         <div class="header-section">
                    <h2 class="section-title">TOTAL COUNTS</h2>
-
         </div>
 
-        <!-- Trip Counts Section -->
-        
+<div class="container" >       
      <div class="row g-4">
     <div class="top-controls-container">
         <div class="plate-number-section">
@@ -695,7 +698,7 @@
             </tbody>
         </table>
     </div>
-
+</div>
     @include('admin.modals.add_trip')
     @include('admin.modals.update_trip')
 

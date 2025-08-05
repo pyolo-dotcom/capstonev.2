@@ -28,7 +28,7 @@
         body {
             display: flex;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--secondary-color);
             overflow-x: hidden;
         }
 
@@ -73,7 +73,6 @@
             background:none!important;
             padding: 0px;
             border-radius: 20px;
-            box-shadow:none!important;
             margin-bottom: 50px;
             display: flex;
             justify-content: space-between;
