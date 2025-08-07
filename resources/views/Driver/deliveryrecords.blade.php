@@ -6,26 +6,24 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trip Countings</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="{{ asset('public/images/logo.jpg') }}" type="image/jpg">
-    <style>
+ <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins';
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #f2f2f2; /* Changed to fixed color */
             color: #333;
+            overflow: hidden; /* Prevent body from scrolling */
         }
 
         .sidebar {
@@ -47,33 +45,100 @@
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent content from scrolling */
         }
 
-        .truck-display {
-            background: #f1f3f5;
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: inline-block;
-            font-size: 16px;
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 20px;
+            flex-shrink: 0; /* Prevents this section from shrinking */
+        }
+
+        .header-section .d-flex {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+      /* A Minimalist and High-Aesthetic Select Dropdown */
+
+.plate-number-section select {
+    /* Core Style: Clean and understated */
+    padding: 14px 20px; /* Generous padding for a sophisticated, spacious feel */
+    border: 1px solid #e0e6ed; /* Very light, subtle border */
+    border-radius: 12px; /* Smooth, modern rounded corners */
+    font-size: 16px;
+    font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* A clean, modern sans-serif font */
+    color: #37474f; /* A soft, dark gray for elegance and readability */
+    background-color: #ffffff;
+    width: 200px; /* Adjusted to be more compact */
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft, subtle shadow for depth */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth, refined transitions */
+}
+
+/* State changes for a polished user experience */
+.plate-number-section select:hover {
+    border-color: #c4d4e3; /* Light border highlight on hover */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly more pronounced shadow */
+}
+
+.plate-number-section select:focus {
+    border-color: #5a87b8; /* A muted, professional blue for focus */
+    box-shadow: 0 0 0 4px rgba(90, 135, 184, 0.2); /* A diffused focus glow */
+    outline: none;
+}
+
+/* Custom Dropdown Indicator (Optional but Recommended) */
+.plate-number-section {
+    position: relative;
+    display: inline-block; /* Ensures the wrapper only takes up the space of the select */
+}
+
+.plate-number-section::after {
+    content: '↓'; /* A simple, elegant down arrow character */
+    font-size: 14px;
+    color: #90a4ae; /* Muted gray for the arrow */
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.2s ease-in-out;
+}
+
+.plate-number-section select:focus + .plate-number-section::after {
+    transform: translateY(-50%) rotate(180deg); /* Rotates the arrow on focus */
+}
+
+        .section-title {
+            font-size: 1.5rem;
             font-weight: 600;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
-        .truck-display:hover {
-            transform: translateY(-2px);
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+            flex-shrink: 0;
         }
 
-        .truck-display i {
-            margin-right: 12px;
-            color: #495057;
-            transition: color 0.2s ease;
-        }
-
-        .truck-display:hover i {
-            color: #1f1a5c;
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding: 10px;
         }
 
         .trip-card {
@@ -87,7 +152,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid rgba(204, 206, 206, 0.8);
+            border: 1.5px solid rgba(150, 150, 150, 0.3);
             transition: transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
             position: relative;
             overflow: hidden;
@@ -131,6 +196,7 @@
             font-weight: 700;
             line-height: 1;
             margin: 0;
+            margin-bottom: 10px;
             color: #1f1a5c;
             position: relative;
             z-index: 1;
@@ -146,46 +212,231 @@
             }
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
+        .trip-card .reset-btn {
+            background: none!important;
+            background-color: none;
+            box-shadow: none;
+            color: red;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1;
+            margin-bottom: 10px
+        }
+
+        .trip-card .reset-btn:hover {
+            color: black;
+            box-shadow: none;
+            background-color: none;
         }
 
         .add-trip-btn {
-            background: linear-gradient(90deg, #1f1a5c 0%, #2a236f 100%); /* Added subtle gradient */
+            background-color: #3B82F6;
             color: white;
-            border: 1px solid #1f1a5c;
-            padding: 8px 16px; /* Slightly increased padding for better proportions */
-            border-radius: 10px; /* Softer, more rounded corners */
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+        }
+
+        .add-trip-btn i {
+            color: white;
+            font-size: 15px;
+        }
+
+        .add-trip-btn:hover {
+            background-color: #161245;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .export-trip-btn {
+            background-color: #f2f4f8;
+            color: #495057;
+            border: 1px solid #e1e5e9;
+            padding: 7px 15px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
             display: flex;
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
-            max-width: fit-content;
-            white-space: nowrap;
-            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            margin-left: auto;
         }
 
-        .add-trip-btn:hover {
-            background: linear-gradient(90deg, #2a236f 0%, #352b8a 100%); /* Brighter gradient on hover */
+        .export-trip-btn i {
+            color: #28a745;
+            font-size: 15px;
+        }
+
+        .export-trip-btn:hover {
+            background-color: #e6e9ee;
+            color: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+.table-container {
+    flex-grow: 1;
+    overflow-y: auto; 
+    max-height: 400px;
+    margin-top: 20px;
+    position: relative;
+    background-color: #fff; 
+    border: 1px solid #e0e0e0;
+    border-radius: 12px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.trip-table {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+.trip-table th,
+.trip-table td {
+    padding: 8px 24px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0; 
+    transition: background-color 0.3s ease; 
+}
+
+
+.trip-table th {
+        padding: 16px 24px;
+
+    background-color: #f7f9fc; 
+    color: #1f1a5c; 
+    font-weight: bold;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 14px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0; 
+}
+
+.trip-table tr:nth-child(even) {
+    background-color: #fcfdfe; 
+}
+
+.trip-table tr:hover {
+    background-color: #f5f8fa; 
+}
+
+.trip-table tr:last-child td {
+    border-bottom: none;
+}
+        .update-btn {
+            background: linear-gradient(90deg, #1f1a5c, #2c3e50);
             color: white;
-            border-color: #2a236f; /* Matches gradient start */
-            transform: translateY(-2px) scale(1.03); /* Added subtle scale for pop */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .header-section {
+        .update-btn:hover {
+            background: linear-gradient(90deg, #161245, #233140);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .reset-btn {
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .reset-btn:hover {
+            background: linear-gradient(90deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .pagination-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            background-color: #1f1a5c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover {
+            background-color: #161245;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 1200px) {
+            .header-section .d-flex {
+                gap: 15px;
+                flex-wrap: nowrap;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 7px 14px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-section .d-flex {
+                justify-content: space-between;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+                flex: 1;
+                text-align: center;
+            }
         }
 
         @media (max-width: 768px) {
@@ -209,15 +460,40 @@
                 font-size: 2.2rem;
             }
 
-            .trip-card h3 {
-                font-size: 0.95rem;
+            .trip-card .reset-btn {
                 margin-bottom: 8px;
+                padding: 7px 12px;
+                font-size: 0.85rem;
             }
 
             .header-section {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
                 gap: 10px;
+            }
+
+            .header-section .d-flex {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                flex: 1;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 220px;
+                width: 100%;
+            }
+
+            .plate-number-section select {
+                width: 100%;
             }
         }
 
@@ -232,8 +508,59 @@
             }
 
             .trip-card h3 {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 margin-bottom: 8px;
+            }
+
+            .trip-card .reset-btn {
+                margin-bottom: 6px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .trip-table th,
+            .trip-table td {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .update-btn,
+            .reset-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+                width: 45%;
+            }
+
+            .header-section .d-flex {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 220px;
+                width: 100%;
+            }
+
+            .plate-number-section select {
+                width: 100%;
+            }
+
+            .pagination-controls {
+                flex-wrap: wrap;
+            }
+
+            .pagination-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
         }
 
@@ -251,216 +578,519 @@
                 font-size: 0.9rem;
                 margin-bottom: 6px;
             }
+
+            .trip-card .reset-btn {
+                margin-bottom: 5px;
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
+
+            .add-trip-btn,
+            .export-trip-btn {
+                padding: 7px 8px;
+                font-size: 11px;
+                width: 45%;
+            }
+
+            .header-section .d-flex {
+                gap: 8px;
+            }
+
+            .plate-number-section {
+                margin: 0 auto;
+                max-width: 180px;
+                width: 100%;
+            }
+
+            .plate-number-section select {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <x-drivernavbar />
+        <x-navbar />
     </div>
 
-    <!-- Main Content Area -->
     <div class="content">
-        <!-- Header Section -->
         <div class="header-section">
-            <div class="truck-display">
-                <i class="fas fa-user"></i>
-                <span id="assignedPlateNumber" data-plate="{{ $plateNumber }}">{{ $driverName }}</span>
+            <div class="plate-number-section">
+                <select id="plateNumberSelect">
+                    <option value="all" selected>All Trucks</option>
+                    @foreach($plateNumbers as $plate)
+                        <option value="{{ $plate }}">{{ $plate }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="d-flex">
+                <button class="add-trip-btn" id="openModal">
+                    <i class="fas fa-plus"></i> Add Trip
+                </button>
+                <button class="export-trip-btn" id="exportToExcel">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
             </div>
         </div>
-        <button class="add-trip-btn" id="openModal">
-            <i class="fas fa-plus"></i> Add Trip
-        </button>
 
-        <!-- Trip Counts Section -->
         <h2 class="section-title">TOTAL COUNTS</h2>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="trip-card">
                     <h3>ONE WAY TRIP</h3>
-                    <p>0</p>
+                    <p id="oneWayTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="trip-card">
                     <h3>ROUND TRIP</h3>
-                    <p>0</p>
+                    <p id="roundTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="trip-card">
                     <h3>DOOR TO DOOR TRIP</h3>
-                    <p>0</p>
+                    <p id="doorToDoorTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
                 </div>
             </div>
         </div>
+
+        <div class="table-container">
+            <table class="trip-table">
+                <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Trip Type</th>
+                        <th>Number of Trips</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tripTableBody">
+                    @if(count($trips) == 0)
+                        <tr>
+                            <td colspan="4" class="no-data-row" style="text-align: center;">No data available</td>
+                        </tr>
+                    @else
+                        @foreach ($trips->take(10) as $trip)
+                        <tr
+                            data-id="{{ $trip->id }}"
+                            data-plate="{{ trim(str_replace(' ', '', $trip->plate_no)) }}"
+                            data-trip="{{ $trip->trip_type }}"
+                            data-num="{{ $trip->num_trips }}"
+                        >
+                            <td>{{ $trip->plate_no }}</td>
+                            <td>{{ $trip->trip_type }}</td>
+                            <td>{{ $trip->num_trips }}</td>
+                            <td>
+                                <button class="update-btn" data-trip-id="{{ $trip->id }}">UPDATE</button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
+        @if(count($trips) > 10)
+        <div class="pagination-controls">
+            <button id="prevPageBtn" class="pagination-btn" disabled>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <button id="nextPageBtn" class="pagination-btn">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        @endif
     </div>
 
-    @include('driver.modals.drivermodal')
-    
-    <!-- Bootstrap 5 JS Bundle with Popper -->
+    @include('admin.modals.add_trip')
+    @include('admin.modals.update_trip')
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+
     <script>
         var tripStoreUrl = @json(route('trips.store'));
-
-        function openTrackingWindow() {
-            let trackingWindow = window.open('/tracking', 'TruckTracking', 'width=300,height=200');
-        }
+        var tripUpdateUrl = @json(route('trips.update', ['id' => ':id']));
+        var resetAllUrl = @json(route('trips.reset-all'));
+        var getTripCountsUrl = @json(route('admin.get-trip-counts'));
         
-        window.onload = function () {
-            openTrackingWindow();
-        };
-
-        // Combined JavaScript from driver.js
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get the assigned plate number from the data attribute
-            const plateNumber = $('#assignedPlateNumber').data('plate');
+        // Pagination variables
+        var currentPage = 1;
+        var itemsPerPage = 10;
+        var allTrips = @json($trips);
+        
+        $(document).ready(function() {
+            // Initialize counts with all trucks data
+            updateTripCounts('all');
             
-            // Ensure modal is hidden initially
-            var modal = document.getElementById("tripModal");
-            if (modal) {
-                modal.style.display = "none";
-
-                // Get the close button inside the modal
-                var closeBtn = modal.querySelector(".close");
-
-                // Close modal when clicking the close button
-                if (closeBtn) {
-                    closeBtn.addEventListener("click", function () {
-                        modal.style.display = "none"; // Hide modal
-                    });
+            // Handle plate number selection change
+            $("#plateNumberSelect").change(function() {
+                const plateNo = $(this).val();
+                updateTripCounts(plateNo);
+                filterTableRows(plateNo);
+            });
+            
+            function updateTripCounts(plateNo) {
+                if (!plateNo) return;
+                
+                $.ajax({
+                    url: getTripCountsUrl,
+                    type: "GET",
+                    data: { 
+                        plate_no: plateNo,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        $("#oneWayTripCount").text(response.oneWayTrip || 0);
+                        $("#roundTripCount").text(response.roundTrip || 0);
+                        $("#doorToDoorTripCount").text(response.doorToDoorTrip || 0);
+                    },
+                    error: function(xhr) {
+                        console.error("Error fetching trip counts:", xhr.responseText);
+                        $("#oneWayTripCount").text("0");
+                        $("#roundTripCount").text("0");
+                        $("#doorToDoorTripCount").text("0");
+                    }
+                });
+            }
+            
+            function filterTableRows(plateNo) {
+                const tableBody = $("#tripTableBody");
+                const noDataRow = `<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>`;
+                
+                if (plateNo === 'all') {
+                    // Show all rows and remove the 'no data' message if it exists
+                    renderTablePage(1);
+                    return;
                 }
 
-                // Close modal when clicking outside the modal content
-                window.addEventListener("click", function (event) {
-                    if (event.target === modal) {
-                        modal.style.display = "none";
-                    }
+                const selectedPlate = plateNo.replace(/\s+/g, "").toUpperCase();
+                let filteredTrips = allTrips.filter(trip => {
+                    const tripPlate = trip.plate_no.replace(/\s+/g, "").toUpperCase();
+                    return tripPlate === selectedPlate;
                 });
+                
+                if (filteredTrips.length === 0) {
+                    tableBody.html(noDataRow);
+                    $('.pagination-controls').hide();
+                } else {
+                    renderFilteredTable(filteredTrips);
+                }
             }
-
-            // Get the button that opens the modal
-            var btn = document.getElementById("openModal");
-
-            // Open modal on button click
-            if (btn) {
-                btn.addEventListener("click", function () {
-                    // Check if plate number is assigned
-                    if (plateNumber === '') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'No Plate Number Assigned',
-                            text: 'You cannot add trips without an assigned plate number',
-                        });
-                        return;
-                    }
-                    if (modal) {
-                        modal.style.display = "flex"; // Show modal
-                    }
-                });
-            }
-
-            // Load initial trip counts if plate number is assigned
-            if (plateNumber && plateNumber !== '') {
-                fetchTripCounts(plateNumber);
-            }
-
-            // Disable "Add Trip" button if no plate number is assigned
-            if (plateNumber === '') {
-                $('#openModal').prop('disabled', true)
-                    .css('opacity', '0.7')
-                    .attr('title', 'You need an assigned plate number to add trips');
-            }
-        });
-    
-        // Function to fetch trip counts
-        function fetchTripCounts(plateNo) {
-            const formattedPlateNo = plateNo.replace(/\s+/g, '');
             
-            $.ajax({
-                url: '/get-trip-counts',
-                type: 'GET',
-                data: { plate_no: formattedPlateNo },
-                success: function(response) {
-                    $('.trip-card').eq(0).find('p').text(response.oneWayTrip || 0);
-                    $('.trip-card').eq(1).find('p').text(response.roundTrip || 0);
-                    $('.trip-card').eq(2).find('p').text(response.doorToDoorTrip || 0);
-                },
-                error: function(xhr) {
-                    console.error('Error fetching trip counts:', xhr.responseText);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to load trip counts',
+            function renderTablePage(page) {
+                currentPage = page;
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedTrips = allTrips.slice(startIndex, endIndex);
+                
+                const tableBody = $("#tripTableBody");
+                tableBody.empty();
+                
+                if (paginatedTrips.length === 0) {
+                    tableBody.html('<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>');
+                } else {
+                    paginatedTrips.forEach(trip => {
+                        tableBody.append(`
+                            <tr data-id="${trip.id}" 
+                                data-plate="${trip.plate_no.replace(/\s+/g, '')}" 
+                                data-trip="${trip.trip_type}" 
+                                data-num="${trip.num_trips}">
+                                <td>${trip.plate_no}</td>
+                                <td>${trip.trip_type}</td>
+                                <td>${trip.num_trips}</td>
+                                <td>
+                                    <button class="update-btn" data-trip-id="${trip.id}">UPDATE</button>
+                                </td>
+                            </tr>
+                        `);
                     });
+                }
+                
+                // Update pagination buttons
+                updatePaginationButtons();
+            }
+            
+            function renderFilteredTable(filteredTrips) {
+                const tableBody = $("#tripTableBody");
+                tableBody.empty();
+                
+                if (filteredTrips.length === 0) {
+                    tableBody.html('<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>');
+                    $('.pagination-controls').hide();
+                } else {
+                    filteredTrips.forEach(trip => {
+                        tableBody.append(`
+                            <tr data-id="${trip.id}" 
+                                data-plate="${trip.plate_no.replace(/\s+/g, '')}" 
+                                data-trip="${trip.trip_type}" 
+                                data-num="${trip.num_trips}">
+                                <td>${trip.plate_no}</td>
+                                <td>${trip.trip_type}</td>
+                                <td>${trip.num_trips}</td>
+                                <td>
+                                    <button class="update-btn" data-trip-id="${trip.id}">UPDATE</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                    
+                    if (filteredTrips.length > itemsPerPage) {
+                        $('.pagination-controls').show();
+                    } else {
+                        $('.pagination-controls').hide();
+                    }
+                }
+            }
+            
+            function updatePaginationButtons() {
+                const totalPages = Math.ceil(allTrips.length / itemsPerPage);
+                
+                $('#prevPageBtn').prop('disabled', currentPage === 1);
+                $('#nextPageBtn').prop('disabled', currentPage === totalPages);
+            }
+            
+            // Pagination button handlers
+            $('#nextPageBtn').click(function() {
+                const totalPages = Math.ceil(allTrips.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    renderTablePage(currentPage + 1);
                 }
             });
-        }
-    
-        // AJAX form submission with jQuery and SweetAlert
-        $(document).ready(function () {
-            $('#tripForm').submit(function (e) {
-                e.preventDefault(); // Prevent page reload
+            
+            $('#prevPageBtn').click(function() {
+                if (currentPage > 1) {
+                    renderTablePage(currentPage - 1);
+                }
+            });
+            
+            // Handle Add Trip modal opening
+            $("#openModal").click(function() {
+                $("#tripModal").fadeIn();
+            });
+            
+            // Handle update button click
+            $(document).on('click', '.update-btn', function() {
+                const row = $(this).closest('tr');
+                const tripId = $(this).data('trip-id') || row.data('id');
+                const plateNo = row.data('plate');
+                const tripType = row.data('trip');
+                const numTrips = row.data('num');
                 
-                // Get the assigned plate number from the data attribute
-                const plateNumber = $('#assignedPlateNumber').data('plate');
-                
-                if (plateNumber === '') {
+                console.log('Data to update:', {
+                    tripId: tripId,
+                    plateNo: plateNo,
+                    tripType: tripType,
+                    numTrips: numTrips
+                });
+
+                if (!tripId) {
+                    Swal.fire('Error', 'Trip ID is missing!', 'error');
+                    return;
+                }
+
+                $('#trip_id').val(tripId);
+                $('#update_plate_no').val(plateNo);
+                $('#update_trip_type').val(tripType);
+                $('#update_num_trips').val(numTrips);
+                $('#updateModal').fadeIn();
+            });
+
+            // Reset button functionality
+            $(".reset-btn").click(function() {
+                const tripType = $(this).data("trip-type");
+                let plateNo = $("#plateNumberSelect").val(); 
+
+                if (!plateNo) {
+                    Swal.fire("Error", "Please select a plate number first.", "error");
+                    return;
+                }
+
+                if (plateNo === 'all') {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'You cannot add trips without an assigned plate number',
+                        title: "Are you sure?",
+                        text: `This will reset ALL "${tripType}" trips for ALL trucks!`,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, reset all!",
+                        dangerMode: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: resetAllUrl,
+                                type: "DELETE",
+                                headers: {
+                                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                                },
+                                data: {
+                                    trip_type: tripType
+                                },
+                                success: function(response) {
+                                    Swal.fire("Success", response.message, "success");
+                                    updateTripCounts('all');
+                                    location.reload(); // Reload to get fresh data
+                                },
+                                error: function(xhr) {
+                                    Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
+                                }
+                            });
+                        }
                     });
                     return;
                 }
-    
-                // Prepare form data with the assigned plate number
-                const formData = {
-                    plate_no: plateNumber.replace(/\s+/g, ''),
-                    trip_type: $('#trip_type').val(),
-                    num_trips: $('#num_trips').val(),
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                };
-    
+
+                plateNo = plateNo.replace(/\s+/g, "");
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: `Reset all "${tripType}" trips for ${plateNo}?`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, reset it!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/trips/reset",
+                            type: "DELETE",
+                            headers: {
+                                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                            },
+                            data: {
+                                plate_no: plateNo,
+                                trip_type: tripType
+                            },
+                            success: function(response) {
+                                Swal.fire("Success", response.message, "success");
+                                updateTripCounts(plateNo);
+                                location.reload(); // Reload to get fresh data
+                            },
+                            error: function(xhr) {
+                                Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Excel Export Functionality
+            $("#exportToExcel").click(function() {
+                // Get the selected plate number
+                const plateNo = $("#plateNumberSelect").val();
+                let fileName = "Trip_Data";
+                
+                if (plateNo && plateNo !== 'all') {
+                    fileName = `Trip_Data_${plateNo.replace(/\s+/g, '_')}`;
+                }
+                
+                // Prepare the data for export
+                let data = [];
+                const headers = ["Plate Number", "Trip Type", "Number of Trips"];
+                data.push(headers);
+                
+                // Determine which data to export based on filter
+                let exportData = [];
+                if (plateNo === 'all') {
+                    exportData = allTrips;
+                } else {
+                    const selectedPlate = plateNo.replace(/\s+/g, "").toUpperCase();
+                    exportData = allTrips.filter(trip => {
+                        const tripPlate = trip.plate_no.replace(/\s+/g, "").toUpperCase();
+                        return tripPlate === selectedPlate;
+                    });
+                }
+                
+                // Add data rows
+                exportData.forEach(trip => {
+                    data.push([
+                        trip.plate_no,
+                        trip.trip_type,
+                        trip.num_trips
+                    ]);
+                });
+                
+                // If no data (only headers), add a message
+                if (data.length === 1) {
+                    data.push(["No data available", "", ""]);
+                }
+                
+                // Create worksheet
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                
+                // Create workbook
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Trip Data");
+                
+                // Export the file
+                XLSX.writeFile(wb, `${fileName}.xlsx`);
+            });
+            
+            // Modal controls
+            $('.close').click(function() {
+                $('.modal').fadeOut();
+            });
+
+            $(window).click(function(event) {
+                if ($(event.target).hasClass('modal')) {
+                    $('.modal').fadeOut();
+                }
+            });
+
+            // Handle form submissions
+            $("#tripForm").submit(function(e) {
+                e.preventDefault();
                 $.ajax({
                     url: tripStoreUrl,
-                    method: "POST",
-                    data: formData,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.success,
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            // Refresh trip counts after successful submission
-                            fetchTripCounts(plateNumber);
-                            // Reset form and close modal
-                            $('#tripForm')[0].reset();
-                            $('#tripModal').hide();
-                        });
+                    type: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
                     },
-                    error: function (xhr) {
-                        let errorMessage = "Something went wrong!";
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            errorMessage = Object.values(xhr.responseJSON.errors).join('\n');
-                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-                        
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: errorMessage,
-                        });
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        Swal.fire("Success", response.message, "success");
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        Swal.fire("Error", xhr.responseJSON.message || "Failed to add trip.", "error");
+                    }
+                });
+            });
+
+            $('#updateTripForm').submit(function(e) {
+                e.preventDefault();
+                const tripId = $('#trip_id').val();
+                if (!tripId) {
+                    Swal.fire('Error', 'Trip ID is missing!', 'error');
+                    return;
+                }
+
+                const updateUrl = tripUpdateUrl.replace(':id', tripId);
+                const formData = {
+                    plate_no: $('#update_plate_no').val().trim(),
+                    trip_type: $('#update_trip_type').val(),
+                    num_trips: $('#update_num_trips').val(),
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    _method: 'PUT'
+                };
+
+                $.ajax({
+                    url: updateUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire('Success', response.message, 'success');
+                        $('#updateModal').fadeOut();
+                        setTimeout(() => location.reload(), 1500);
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'Failed to update trip';
+                        Swal.fire('Error', errorMsg, 'error');
                     }
                 });
             });

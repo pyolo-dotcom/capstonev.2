@@ -6,79 +6,139 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Trip Countings</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="{{ asset('/public/images/logo.jpg') }}" type="image/jpg">
-    <style>
+    <link rel="icon" href="{{ asset('public/images/logo.jpg') }}" type="image/jpg">
+ <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins';
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
             display: flex;
             min-height: 100vh;
-            background-color: #2f4156;
+            background-color: #f2f2f2; /* Changed to fixed color */
             color: #333;
-            
+            overflow: hidden; /* Prevent body from scrolling */
         }
 
         .sidebar {
             width: 250px;
+            background: linear-gradient(145deg, #2c3e50, #34495e);
             color: white;
             padding: 20px 0;
             position: fixed;
             height: 100%;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .content {
             margin-left: 250px;
             padding: 25px;
             flex-grow: 1;
-            background-color: #f2f2f2;
+            background-color: #fff;
             min-height: 100vh;
-            margin-top: 10px;
-            border-radius: 30px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent content from scrolling */
         }
-.container{
-      border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  background-color: #F0F4F7;
-  border: 2px solid #E3EEF7;
-  padding: 20px;
-  width: 200px;
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 20px;
+            flex-shrink: 0; /* Prevents this section from shrinking */
+        }
+
+        .header-section .d-flex {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+      /* A Minimalist and High-Aesthetic Select Dropdown */
+
+.plate-number-section select {
+    /* Core Style: Clean and understated */
+    padding: 14px 20px; /* Generous padding for a sophisticated, spacious feel */
+    border: 1px solid #e0e6ed; /* Very light, subtle border */
+    border-radius: 12px; /* Smooth, modern rounded corners */
+    font-size: 16px;
+    font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* A clean, modern sans-serif font */
+    color: #37474f; /* A soft, dark gray for elegance and readability */
+    background-color: #ffffff;
+    width: 200px; /* Adjusted to be more compact */
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft, subtle shadow for depth */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth, refined transitions */
 }
-        .truck-display {
-            background: #f1f3f5;
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: inline-block;
-            font-size: 16px;
+
+/* State changes for a polished user experience */
+.plate-number-section select:hover {
+    border-color: #c4d4e3; /* Light border highlight on hover */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08); /* Slightly more pronounced shadow */
+}
+
+.plate-number-section select:focus {
+    border-color: #5a87b8; /* A muted, professional blue for focus */
+    box-shadow: 0 0 0 4px rgba(90, 135, 184, 0.2); /* A diffused focus glow */
+    outline: none;
+}
+
+/* Custom Dropdown Indicator (Optional but Recommended) */
+.plate-number-section {
+    position: relative;
+    display: inline-block; /* Ensures the wrapper only takes up the space of the select */
+}
+
+.plate-number-section::after {
+    content: '↓'; /* A simple, elegant down arrow character */
+    font-size: 14px;
+    color: #90a4ae; /* Muted gray for the arrow */
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.2s ease-in-out;
+}
+
+.plate-number-section select:focus + .plate-number-section::after {
+    transform: translateY(-50%) rotate(180deg); /* Rotates the arrow on focus */
+}
+
+        .section-title {
+            font-size: 1.5rem;
             font-weight: 600;
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
-        .truck-display:hover {
-            transform: translateY(-2px);
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+            flex-shrink: 0;
         }
 
-        .truck-display i {
-            margin-right: 12px;
-            color: #495057;
-            transition: color 0.2s ease;
-        }
-
-        .truck-display:hover i {
-            color: #1f1a5c;
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding: 10px;
         }
 
         .trip-card {
@@ -154,231 +214,49 @@
 
         .trip-card .reset-btn {
             background: none!important;
+            background-color: none;
+            box-shadow: none;
             color: red;
             border: none;
-           /* padding: 8px 15px;
-            border-radius: 6px;*/
             font-size: 0.9rem;
             cursor: pointer;
-            /*transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;*/
             z-index: 1;
-            margin-bottom: 10px;
+            margin-bottom: 10px
         }
 
         .trip-card .reset-btn:hover {
-           /* background: linear-gradient(90deg, #c82333, #bd2130);*/
-            transform: translateY(-1px);
-            color:darkred;
-           /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);*/
+            color: black;
+            box-shadow: none;
+            background-color: none;
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-        }
-
-       .add-trip-btn {
-    background-color: #3B82F6; /* Brighter Blue */
-    color: white;
-    border: none; /* Remove border for a cleaner look */
-    padding: 12px 24px; /* Slightly larger padding */
-    border-radius: 12px; /* More rounded corners */
-    font-size: 15px; /* Slightly larger text */
-    font-weight: 600; /* Bolder text */
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Slightly more space between icon and text */
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3); /* Stronger, colored shadow */
-    cursor: pointer; /* Indicate it's clickable */
-}
-
-.add-trip-btn i {
-    color: white; /* Icon color remains white */
-    font-size: 16px; /* Slightly larger icon */
-    transition: transform 0.3s ease;
-}
-
-.add-trip-btn:hover {
-    background-color: #2563EB; /* Darker blue on hover */
-    transform: translateY(-2px); /* Lift more on hover */
-    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4); /* Stronger shadow on hover */
-}
-
-.add-trip-btn:hover i {
-    transform: rotate(90deg);
-}
-
-/* Add responsive styles for different screen sizes */
-@media (max-width: 1200px) {
-    .add-trip-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-    
-    .add-trip-btn i {
-        font-size: 15px;
-    }
-}
-
-@media (max-width: 992px) {
-    .add-trip-btn {
-        padding: 10px 18px;
-        font-size: 13px;
-        flex: 0 1 auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .add-trip-btn {
-        padding: 8px 16px;
-        font-size: 13px;
-        width: auto;
-        justify-content: center;
-    }
-
-    .button-group {
-        width: 100%;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 576px) {
-    .add-trip-btn {
-        padding: 8px 14px;
-        font-size: 12px;
-        border-radius: 10px;
-    }
-
-    .add-trip-btn i {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 400px) {
-    .add-trip-btn {
-        padding: 7px 12px;
-        font-size: 11px;
-        border-radius: 8px;
-    }
-
-    .add-trip-btn i {
-        font-size: 13px;
-    }
-    
-    .button-group {
-        gap: 8px;
-    }
-}
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .header-section .d-flex {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-left: auto;
-        }
-.top-controls-container {
-    display: flex; /* Make it a flex container */
-    justify-content: space-between; /* Pushes items to the ends with space between them */
-    align-items: center; /* Vertically aligns items in the middle */
-    margin-bottom: 5px; /* Optional: add some space below these controls */
-    width: 100%; /* Ensures it takes full width of its parent to allow space-between to work */
-    flex-wrap: wrap; /* Allows items to wrap on smaller screens if they don't fit */
-}
-
-/* New CSS for the button group */
-.button-group {
-    display: flex; /* Make the button group itself a flex container */
-    gap: 15px; /* Add space between the export and add trip buttons */
-    align-items: center; /* Vertically align buttons within their group */
-}
-
-        .plate-number-section select {
-             padding: 10px 15px;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #495057;
-    background-color: #fff;
-    width: 125px; /* You might adjust this width if needed */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .plate-number-section select:focus {
-            border-color: #1f1a5c;
-            box-shadow: 0 0 5px rgba(31, 26, 92, 0.3);
-            outline: none;
-        }
-
-        .trip-table {
-            width: 100%;
-            margin-top: 35px;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .trip-table th,
-        .trip-table td {
-            padding: 10px 20px;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-            transition: background-color 0.2s ease;
-        }
-
-        .trip-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .trip-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .trip-table tr:hover {
-            background-color: #e9ecef;
-        }
-
-        .trip-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .update-btn {
-            background: linear-gradient(90deg, #1f1a5c, #2c3e50);
+        .add-trip-btn {
+            background-color: #3B82F6;
             color: white;
             border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
         }
 
-        .update-btn:hover {
-            background: linear-gradient(90deg, #161245, #233140);
+        .add-trip-btn i {
+            color: white;
+            font-size: 15px;
+        }
+
+        .add-trip-btn:hover {
+            background-color: #161245;
+            color: white;
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-       
 
         .export-trip-btn {
             background-color: #f2f4f8;
@@ -393,6 +271,7 @@
             gap: 8px;
             transition: all 0.3s ease;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            margin-left: auto;
         }
 
         .export-trip-btn i {
@@ -405,6 +284,124 @@
             color: #333;
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+.table-container {
+    flex-grow: 1;
+    overflow-y: auto; 
+    max-height: 400px;
+    margin-top: 20px;
+    position: relative;
+    background-color: #fff; 
+    border: 1px solid #e0e0e0;
+    border-radius: 12px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.trip-table {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+.trip-table th,
+.trip-table td {
+    padding: 8px 24px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0; 
+    transition: background-color 0.3s ease; 
+}
+
+
+.trip-table th {
+        padding: 16px 24px;
+
+    background-color: #f7f9fc; 
+    color: #1f1a5c; 
+    font-weight: bold;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 14px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0; 
+}
+
+.trip-table tr:nth-child(even) {
+    background-color: #fcfdfe; 
+}
+
+.trip-table tr:hover {
+    background-color: #f5f8fa; 
+}
+
+.trip-table tr:last-child td {
+    border-bottom: none;
+}
+        .update-btn {
+            background: linear-gradient(90deg, #1f1a5c, #2c3e50);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-btn:hover {
+            background: linear-gradient(90deg, #161245, #233140);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .reset-btn {
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .reset-btn:hover {
+            background: linear-gradient(90deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            background-color: #1f1a5c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover {
+            background-color: #161245;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
         }
 
         @media (max-width: 1200px) {
@@ -497,7 +494,6 @@
 
             .plate-number-section select {
                 width: 100%;
-                margin-bottom: 20px;
             }
         }
 
@@ -556,7 +552,15 @@
 
             .plate-number-section select {
                 width: 100%;
-                margin-bottom: 20px;
+            }
+
+            .pagination-controls {
+                flex-wrap: wrap;
+            }
+
+            .pagination-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
         }
 
@@ -600,109 +604,112 @@
 
             .plate-number-section select {
                 width: 100%;
-                margin-bottom: 20px;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <x-navbar />
     </div>
 
-    <!-- Main Content Area -->
     <div class="content">
-        <!-- Header Section -->
         <div class="header-section">
-                   <h2 class="section-title">TOTAL COUNTS</h2>
-        </div>
-
-<div class="container" >       
-     <div class="row g-4">
-    <div class="top-controls-container">
-        <div class="plate-number-section">
-            <select id="plateNumberSelect">
-                <option value="all" selected>All Trucks</option>
-                @foreach($plateNumbers as $plate)
-                    <option value="{{ $plate }}">{{ $plate }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="button-group">
-            <button class="export-trip-btn" id="exportToExcel">
-                <i class="fas fa-upload me-2"></i> Export 
-            </button>
-            <button class="add-trip-btn" id="openModal">
-                <i class="fas fa-plus"></i> Add Trip
-            </button>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="trip-card">
-            <h3>ONE WAY TRIP</h3>
-            <p id="oneWayTripCount">0</p>
-            <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="trip-card">
-            <h3>ROUND TRIP</h3>
-            <p id="roundTripCount">0</p>
-            <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="trip-card">
-            <h3>DOOR TO DOOR TRIP</h3>
-            <p id="doorToDoorTripCount">0</p>
-            <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
-        </div>
-    </div>
-</div>
-
-        <!-- Trip Table -->
-        <table class="trip-table">
-            <thead>
-                <tr>
-                    <th>Plate Number</th>
-                    <th>Trip Type</th>
-                    <th>Number of Trips</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="tripTableBody">
-                @if(count($trips) == 0)
-                    <tr>
-                        <td colspan="4" style="text-align: center;">No data available</td>
-                    </tr>
-                @else
-                    @foreach ($trips as $trip)
-                    <tr 
-                        data-id="{{ $trip->id }}" 
-                        data-plate="{{ trim(str_replace(' ', '', $trip->plate_no)) }}" 
-                        data-trip="{{ $trip->trip_type }}" 
-                        data-num="{{ $trip->num_trips }}"
-                    >
-                        <td>{{ $trip->plate_no }}</td>
-                        <td>{{ $trip->trip_type }}</td>
-                        <td>{{ $trip->num_trips }}</td>
-                        <td>
-                            <button class="update-btn" data-trip-id="{{ $trip->id }}">UPDATE</button>
-                        </td>
-                    </tr>
+            <div class="plate-number-section">
+                <select id="plateNumberSelect">
+                    <option value="all" selected>All Trucks</option>
+                    @foreach($plateNumbers as $plate)
+                        <option value="{{ $plate }}">{{ $plate }}</option>
                     @endforeach
-                @endif
-            </tbody>
-        </table>
+                </select>
+            </div>
+            <div class="d-flex">
+                <button class="add-trip-btn" id="openModal">
+                    <i class="fas fa-plus"></i> Add Trip
+                </button>
+                <button class="export-trip-btn" id="exportToExcel">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+            </div>
+        </div>
+
+        <h2 class="section-title">TOTAL COUNTS</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="trip-card">
+                    <h3>ONE WAY TRIP</h3>
+                    <p id="oneWayTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="One Way Trip">Reset</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="trip-card">
+                    <h3>ROUND TRIP</h3>
+                    <p id="roundTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="Round Trip">Reset</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="trip-card">
+                    <h3>DOOR TO DOOR TRIP</h3>
+                    <p id="doorToDoorTripCount">0</p>
+                    <button class="reset-btn" data-trip-type="Door-To-Door Trip">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="trip-table">
+                <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Trip Type</th>
+                        <th>Number of Trips</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tripTableBody">
+                    @if(count($trips) == 0)
+                        <tr>
+                            <td colspan="4" class="no-data-row" style="text-align: center;">No data available</td>
+                        </tr>
+                    @else
+                        @foreach ($trips->take(10) as $trip)
+                        <tr
+                            data-id="{{ $trip->id }}"
+                            data-plate="{{ trim(str_replace(' ', '', $trip->plate_no)) }}"
+                            data-trip="{{ $trip->trip_type }}"
+                            data-num="{{ $trip->num_trips }}"
+                        >
+                            <td>{{ $trip->plate_no }}</td>
+                            <td>{{ $trip->trip_type }}</td>
+                            <td>{{ $trip->num_trips }}</td>
+                            <td>
+                                <button class="update-btn" data-trip-id="{{ $trip->id }}">UPDATE</button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
+        @if(count($trips) > 10)
+        <div class="pagination-controls">
+            <button id="prevPageBtn" class="pagination-btn" disabled>
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <button id="nextPageBtn" class="pagination-btn">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        @endif
     </div>
-</div>
+
     @include('admin.modals.add_trip')
     @include('admin.modals.update_trip')
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -713,6 +720,11 @@
         var tripUpdateUrl = @json(route('trips.update', ['id' => ':id']));
         var resetAllUrl = @json(route('trips.reset-all'));
         var getTripCountsUrl = @json(route('admin.get-trip-counts'));
+        
+        // Pagination variables
+        var currentPage = 1;
+        var itemsPerPage = 10;
+        var allTrips = @json($trips);
         
         $(document).ready(function() {
             // Initialize counts with all trucks data
@@ -750,32 +762,114 @@
             }
             
             function filterTableRows(plateNo) {
-                if (!plateNo || plateNo === 'all') {
-                    // Show all rows when "All Trucks" is selected
-                    $("#tripTableBody tr").show();
+                const tableBody = $("#tripTableBody");
+                const noDataRow = `<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>`;
+                
+                if (plateNo === 'all') {
+                    // Show all rows and remove the 'no data' message if it exists
+                    renderTablePage(1);
                     return;
                 }
 
                 const selectedPlate = plateNo.replace(/\s+/g, "").toUpperCase();
-                let hasVisibleRows = false;
-
-                $("#tripTableBody tr").each(function() {
-                    if ($(this).data("id")) { // Skip the "no data" row
-                        const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "").toUpperCase();
-                        if (rowPlate === selectedPlate) {
-                            $(this).show();
-                            hasVisibleRows = true;
-                        } else {
-                            $(this).hide();
-                        }
-                    }
+                let filteredTrips = allTrips.filter(trip => {
+                    const tripPlate = trip.plate_no.replace(/\s+/g, "").toUpperCase();
+                    return tripPlate === selectedPlate;
                 });
-
-                if (!hasVisibleRows) {
-                    $("#tripTableBody tr").hide();
-                    $("#tripTableBody tr:first").show();
+                
+                if (filteredTrips.length === 0) {
+                    tableBody.html(noDataRow);
+                    $('.pagination-controls').hide();
+                } else {
+                    renderFilteredTable(filteredTrips);
                 }
             }
+            
+            function renderTablePage(page) {
+                currentPage = page;
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedTrips = allTrips.slice(startIndex, endIndex);
+                
+                const tableBody = $("#tripTableBody");
+                tableBody.empty();
+                
+                if (paginatedTrips.length === 0) {
+                    tableBody.html('<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>');
+                } else {
+                    paginatedTrips.forEach(trip => {
+                        tableBody.append(`
+                            <tr data-id="${trip.id}" 
+                                data-plate="${trip.plate_no.replace(/\s+/g, '')}" 
+                                data-trip="${trip.trip_type}" 
+                                data-num="${trip.num_trips}">
+                                <td>${trip.plate_no}</td>
+                                <td>${trip.trip_type}</td>
+                                <td>${trip.num_trips}</td>
+                                <td>
+                                    <button class="update-btn" data-trip-id="${trip.id}">UPDATE</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                }
+                
+                // Update pagination buttons
+                updatePaginationButtons();
+            }
+            
+            function renderFilteredTable(filteredTrips) {
+                const tableBody = $("#tripTableBody");
+                tableBody.empty();
+                
+                if (filteredTrips.length === 0) {
+                    tableBody.html('<tr class="no-data-row"><td colspan="4" style="text-align: center;">No data available</td></tr>');
+                    $('.pagination-controls').hide();
+                } else {
+                    filteredTrips.forEach(trip => {
+                        tableBody.append(`
+                            <tr data-id="${trip.id}" 
+                                data-plate="${trip.plate_no.replace(/\s+/g, '')}" 
+                                data-trip="${trip.trip_type}" 
+                                data-num="${trip.num_trips}">
+                                <td>${trip.plate_no}</td>
+                                <td>${trip.trip_type}</td>
+                                <td>${trip.num_trips}</td>
+                                <td>
+                                    <button class="update-btn" data-trip-id="${trip.id}">UPDATE</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                    
+                    if (filteredTrips.length > itemsPerPage) {
+                        $('.pagination-controls').show();
+                    } else {
+                        $('.pagination-controls').hide();
+                    }
+                }
+            }
+            
+            function updatePaginationButtons() {
+                const totalPages = Math.ceil(allTrips.length / itemsPerPage);
+                
+                $('#prevPageBtn').prop('disabled', currentPage === 1);
+                $('#nextPageBtn').prop('disabled', currentPage === totalPages);
+            }
+            
+            // Pagination button handlers
+            $('#nextPageBtn').click(function() {
+                const totalPages = Math.ceil(allTrips.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    renderTablePage(currentPage + 1);
+                }
+            });
+            
+            $('#prevPageBtn').click(function() {
+                if (currentPage > 1) {
+                    renderTablePage(currentPage - 1);
+                }
+            });
             
             // Handle Add Trip modal opening
             $("#openModal").click(function() {
@@ -841,7 +935,7 @@
                                 success: function(response) {
                                     Swal.fire("Success", response.message, "success");
                                     updateTripCounts('all');
-                                    filterTableRows('all');
+                                    location.reload(); // Reload to get fresh data
                                 },
                                 error: function(xhr) {
                                     Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
@@ -875,7 +969,7 @@
                             success: function(response) {
                                 Swal.fire("Success", response.message, "success");
                                 updateTripCounts(plateNo);
-                                filterTableRows(plateNo);
+                                location.reload(); // Reload to get fresh data
                             },
                             error: function(xhr) {
                                 Swal.fire("Error", xhr.responseJSON.message || "Failed to reset trips.", "error");
@@ -900,21 +994,25 @@
                 const headers = ["Plate Number", "Trip Type", "Number of Trips"];
                 data.push(headers);
                 
-                // Filter rows based on selection
-                $("#tripTableBody tr").each(function() {
-                    if ($(this).data("id")) { // Skip the "no data" row
-                        const rowPlate = $(this).data("plate").toString().replace(/\s+/g, "").toUpperCase();
-                        const selectedPlate = plateNo === 'all' ? null : plateNo.replace(/\s+/g, "").toUpperCase();
-                        
-                        if (!selectedPlate || rowPlate === selectedPlate) {
-                            const rowData = [
-                                $(this).find("td:eq(0)").text().trim(),
-                                $(this).find("td:eq(1)").text().trim(),
-                                $(this).find("td:eq(2)").text().trim()
-                            ];
-                            data.push(rowData);
-                        }
-                    }
+                // Determine which data to export based on filter
+                let exportData = [];
+                if (plateNo === 'all') {
+                    exportData = allTrips;
+                } else {
+                    const selectedPlate = plateNo.replace(/\s+/g, "").toUpperCase();
+                    exportData = allTrips.filter(trip => {
+                        const tripPlate = trip.plate_no.replace(/\s+/g, "").toUpperCase();
+                        return tripPlate === selectedPlate;
+                    });
+                }
+                
+                // Add data rows
+                exportData.forEach(trip => {
+                    data.push([
+                        trip.plate_no,
+                        trip.trip_type,
+                        trip.num_trips
+                    ]);
                 });
                 
                 // If no data (only headers), add a message

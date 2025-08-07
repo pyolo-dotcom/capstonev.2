@@ -274,37 +274,37 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="/public/images/loggo.png" alt="Company Logo" class="sidebar-logo">
+            <img src="/images/loggo.png" alt="Company Logo" class="sidebar-logo">
         </div>
 
         <ul class="menu">
             <li>
-                <a href="{{ route('admin.deliveryrecords') }}" class="menu-item {{ request()->routeIs('admin.deliveryrecords*') ? 'active' : '' }}" id="deliverybtn">
+                <a href="{{ route('admin.deliveryrecords') }}" class="menu-item" id="deliverybtn">
                     <i class="bi bi-list"></i> <span>Trip Countings Records</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.managetrip') }}" class="menu-item {{ request()->routeIs('admin.managetrip*') ? 'active' : '' }}" id="tripRecordsBtn">
+                <a href="{{ route('admin.managetrip') }}" class="menu-item" id="tripRecordsBtn">
                     <i class="bi bi-truck"></i> <span>Manage Trip Records</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.managegps') }}" class="menu-item {{ request()->routeIs('admin.managegps*') ? 'active' : '' }}" id="gpscontrolbtn">
+                <a href="{{ route('admin.managegps') }}" class="menu-item" id="gpscontrolbtn">
                     <i class="bi bi-map"></i> <span>Manage GPS Tracker</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.fuel') }}" class="menu-item {{ request()->routeIs('admin.fuel*') ? 'active' : '' }}" id="fuelManagementBtn">
+                <a href="{{ route('admin.fuel') }}" class="menu-item" id="fuelManagementBtn">
                     <i class="bi bi-fuel-pump"></i> <span>Fuel Management</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.profit') }}" class="menu-item {{ request()->routeIs('admin.profit*') ? 'active' : '' }}" id="profitreportsbtn">
+                <a href="{{ route('admin.profit') }}" class="menu-item" id="profitreportsbtn">
                     <i class="bi bi-graph-up"></i> <span>Profit Reports</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.truckdetails') }}" class="menu-item {{ request()->routeIs('admin.truckdetails*') ? 'active' : '' }}" id="trucksBtn">
+                <a href="{{ route('admin.truckdetails') }}" class="menu-item" id="trucksBtn">
                     <i class="bi bi-truck"></i> <span>Truck Details</span>
                 </a>
             </li>
@@ -403,6 +403,9 @@
                 arrow.classList.toggle('bi-chevron-down');
                 arrow.classList.toggle('bi-chevron-up');
             });
+
+            // Set active menu item based on current URL
+            function setActiveMenuItem() {
                 const currentUrl = window.location.href;
                 const menuItems = document.querySelectorAll('.menu-item');
                 const submenuItems = document.querySelectorAll('.submenu-item');

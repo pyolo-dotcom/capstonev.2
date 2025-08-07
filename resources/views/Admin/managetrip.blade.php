@@ -6,12 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Cargo Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="{{ asset('/public/images/logo.jpg') }}" type="image/jpg">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -29,36 +25,83 @@
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
+            overflow: hidden;
         }
 
         .sidebar {
             width: 250px;
-            background: #343a40;
-            color: white;
+            background: #fff;
+            color: #2f4156;
             padding: 20px 0;
             position: fixed;
             height: 100%;
         }
 
-     .content {
-    margin-left: 250px;
-    padding: 20px;
-    flex-grow: 1;
-    transition: all 0.3s;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    /* This should prevent anything from escaping its horizontal bounds */
-    overflow-x: hidden;
-}
-.table-scroll-container {
-    overflow-x: auto!important;
-    -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS devices */
-    width: 100%; /* Ensures the container takes full available width */
-    margin-top: 20px; /* Add some space above the table if needed */
-    margin-bottom: 20px; /* Add some space below the table if needed */
-}
+               .content {
+            margin-left: 260px;
+            padding: 30px;
+            flex-grow: 1;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            min-height: 100vh;
+            width: calc(100vw - 260px);
+            max-width: calc(100vw - 260px);
+            border-top-left-radius: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+       /* .container{
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: #F0F4F7;
+            border: 2px solid #E3EEF7;
+            padding: 10px;
+            width: 200px;
+        }*/
         
+      .table-scroll-container {
+  max-height: 550px; 
+  margin-top: 10px;
+  overflow-y: auto;
+  position: relative; /* This is crucial for sticky headers to work */
+  border: 1px solid #ddd; /* Adds a border to the scrollable area */
+  border-radius: 8px; /* Optional: adds rounded corners */
+      overflow-x: hidden;
+
+}
+        .data-table {
+    width: 100%;
+    border-collapse: collapse; /* A cleaner look without cell spacing */
+    min-width: 800px; /* Adjust this value as needed based on your columns */
+    table-layout: fixed; /* Ensures columns don't stretch in an odd way */
+}
+
+.data-table th, .data-table td {
+  padding: 12px 20px;
+  text-align: left; /* or right, depending on your preference */
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word;
+  vertical-align: middle; /* <-- Add this line for vertical alignment */
+}
+
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10; /* This ensures the header stays on top of the content */
+  background-color: #f4f7fa; /* Add a background color to prevent content from showing through */
+}
+.data-table tbody tr:hover {
+    background-color: #f9fafb; /* Subtle hover effect for better user experience */
+}
+
+/* Add a line on the left side of the table for a cleaner look */
+.data-table {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+.data-table thead {
+    border-bottom: 2px solid #ddd;
+}
 
         .content-header {
             background:none!important;
@@ -71,69 +114,126 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin: 0;
+             position: relative;
+    
         }
-.header-controls {
-    display: flex;
-    justify-content: space-between; /* Pushes items to opposite ends */
-    align-items: center; /* Vertically aligns items in the middle */
-    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
-    gap: 20px; /* Adds space between items when they wrap */
-    margin-bottom: 20px; /* Add some space below this header section */
+.header-controls h2::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; /* Adjust this to control the distance from the h2 */
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #1d4ed8;
+    transition: width 0.3s ease;
+}
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            
+        }
+
+        .header-controls h2 {
+            margin: 0;
+            white-space: nowrap;
+            flex-shrink: 0;
+            padding-bottom: 5px; /* Add some space for the line */
+    border-bottom: 3px solid #e0e7ff;
+        }
+.table-container::-webkit-scrollbar {
+    width: 10px;
+}
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.table-container::-webkit-scrollbar-thumb {
+    background-color: rgba(220, 220, 220, 0.7); /* Lighter gray, more transparent */
+    border-radius: 5px;
+}
+.table-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(200, 200, 200, 0.9); /* Slightly darker on hover for contrast */
 }
 
-/* Ensure the h2 inside header-controls doesn't have conflicting margins if any */
-.header-controls h2 {
-    margin: 0; /* Remove default margin that might push it around */
-    white-space: nowrap; /* Prevent the title from wrapping prematurely */
-    flex-shrink: 0; /* Prevent the title from shrinking if space is tight */
+/* Custom scrollbar for Firefox */
+.table-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 100, 100, 0.4) transparent;
 }
 
-       .table-container {
-    width: 100%; /* Use 100% without !important unless absolutely necessary */
-    margin-top: 0;
-    background-color: none!important;
-    padding: 20px; /* This padding reduces the available width for its children */
-  
-    border-top: none;
+      /* Container for the table */
+.table-container {
+    width: 100%;
+    height: ;
+    margin-top: 20px;
+    background-color: #ffffff; /* Use a white background */
+    padding: 20px; /* Increased padding */
+    border-radius: 12px; /* Smooth rounded corners */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Soft, subtle shadow */
+    overflow: hidden;
 }
 
-
-        .trip-table {
-       
-    width: 100%!important;
-    border-collapse: collapse;
-     min-width: 800px!important
-    min-width: fit-content; /* Alternative: Let table be as wide as its content */
+/* Base table styling */
+.trip-table {
+    width: 100%;
+    border-collapse: separate; /* Use separate for border-radius on cells if needed */
+    border-spacing: 0;
+    min-width: 800px;
 }
 
-
-        .trip-table th {
-          background-color: #f8f9fa;
-    color: #6c757d;
-    padding: 12px 15px;
+/* Table header styling */
+.trip-table thead th {
+    background-color: #f7f9fc; /* A subtle, light header background */
+    color: #555555; /* Darker text for readability */
+    padding: 16px 20px; /* Generous padding */
     text-align: left;
     font-weight: 600;
     position: sticky;
     top: 0;
-    font-size: 12px;          
-
+    font-size: 13px; /* Slightly larger font size */
     text-transform: uppercase;
-    letter-spacing: 0.1px;
-    border-bottom: 1px solid #e1e5e9;
-        }
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e0e0e0; /* A more defined bottom border */
+}
 
-        .trip-table td {
-              padding: 10px 15px;
-    border-bottom: 1px solid #e9ecef;
+/* Styling for table body */
+.trip-table tbody {
+    display: table-row-group; /* Ensures the tbody behaves as expected */
+}
+
+/* Table data cells */
+.trip-table td {
+    padding: 8px 20px;
+    border-bottom: 1px solid #f0f0f0; /* Lighter border */
     vertical-align: middle;
-    color: #495057;
+    color: #444444; /* Improved text color */
     font-size: 12px;
+}
 
-        }
+/* Dynamic table row styles */
+.trip-table tr {
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
 
-        .trip-table tr:hover td {
-            background-color: rgba(31, 26, 92, 0.05);
-        }
+
+
+/* Aligning the last column for actions */
+.trip-table th:last-child,
+.trip-table td:last-child {
+    text-align: right; /* Align actions to the right */
+    padding-right: 24px;
+}
+
+.trip-table th:first-child,
+.trip-table td:first-child {
+    padding-left: 24px;
+}
+        
+        /* End of new styles */
 
         .actions {
             display: flex;
@@ -155,11 +255,7 @@
             margin: 0;
         }
 
-        .trip-table td:last-child {
-            padding: 0;
-            vertical-align: middle;
-        }
-
+        /* New Styles for Action Buttons */
         .actions button {
             background: none;
             border: none;
@@ -170,13 +266,9 @@
             align-items: center;
             justify-content: center;
             min-height: 44px;
-        }
-
-        .actions form {
-            margin: 0;
-            padding: 0;
-            display: inline-flex;
-            height: 100%;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
         }
 
         .actions .edit-btn {
@@ -186,6 +278,12 @@
         .actions .edit-btn:hover {
             transform: scale(1.1);
             color: #003d82;
+            background-color: #e6f0ff;
+        }
+        
+        .actions .edit-btn:active {
+            transform: scale(0.95);
+            background-color: #cce0ff;
         }
 
         .actions .archive-btn {
@@ -195,10 +293,15 @@
         .actions .archive-btn:hover {
             transform: scale(1.1);
             color: #b02a37;
+            background-color: #ffe6e6;
         }
-
- 
-        /* Original .filter-container - keeping for reference but it's not directly used for the main layout now */
+        
+        .actions .archive-btn:active {
+            transform: scale(0.95);
+            background-color: #ffcccc;
+        }
+        /* End of new styles */
+        
         .filter-container {
             display: flex;
             justify-content: space-between;
@@ -208,7 +311,6 @@
             gap: 15px;
         }
 
-        /* Original .truck-select from user's original CSS - modified for visual to match 'Show' dropdown in image */
         .truck-select {
             padding: 8px 15px;
             border: 1px solid #e1e5e9;
@@ -216,44 +318,46 @@
             font-size: 16px;
             color: #495057;
             background-color: #fff;
-            width: auto; /* Changed to auto to fit content naturally */
-            min-width: 120px; /* Ensures a minimum width */
-            appearance: none; /* Removes default dropdown arrow */
+            width: auto;
+            min-width: 120px;
+            appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            /* Custom arrow for dropdown - same as before */
-          
             background-position: right 10px center;
             background-size: 10px;
             cursor: pointer;
         }
 
-       
-
-        .filter-top-row {
-    display: flex
-;
-    
-    align-items: flex-end;
-    margin-bottom: 0;
+       .filter-top-row {
+    display: flex;
+    justify-content: space-between; /* Pushes the search bar to one side and the button group to the other */
+    align-items: center; /* Vertically aligns all items */
+    margin-bottom: 10px;
     flex-wrap: wrap;
-    gap: 15px;        }
+    gap: 15px;
+}
+
+.filter-bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adds space between the buttons/selects */
+    flex-wrap: wrap;
+}
+
 
         .filter-bottom-row {
-            justify-content: space-between; /* Align Filter dropdown to left, Export button to right */
+            justify-content: space-between;
         }
 
-        /* Existing Shared spacing utility (no change) */
         .spaced-between {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Existing Search Bar - remains largely the same, but HTML position changed */
         .search-bar {
             position: relative;
-            width: 300px; /* Keep fixed width as per original CSS */
+            width: 300px;
         }
 
         .search-bar input {
@@ -273,11 +377,10 @@
             color: #6c757d;
         }
 
-        /* New: Container for "Showing" label and plate select dropdown */
         .showing-controls {
             display: flex;
             align-items: center;
-            gap: 10px; /* Space between "Showing" text and the dropdown */
+            gap: 10px;
         }
 
         .showing-controls span {
@@ -285,27 +388,25 @@
             color: #495057;
         }
 
-        /* New: Filter button and its dropdown container */
         .filter-dropdown-container {
             position: relative;
-            display: inline-block; /* Allows width to shrink to content and positioning of dropdown */
+            display: inline-block;
         }
 
         .filter-button {
-           padding: 10px 15px;
-    border: 1px solid #ddd;
-    background-color: #f0f2f5;
-    color: #555;
-    font-size: 15px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex
-;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background-color: #f0f2f5;
+            color: #555;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
         }
 
         .filter-button:hover {
@@ -313,47 +414,44 @@
         }
 
         .filter-button i {
-            font-size: 16px; /* Icon size */
+            font-size: 16px;
         }
 
         .filter-dropdown-content {
-            display: none; /* Hidden by default, toggled by JS */
+            display: none;
             position: absolute;
             background-color: #fff;
-            min-width: 160px;
+            min-width: 220px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 10; /* Ensure it appears above other content */
+            z-index: 10;
             border-radius: 8px;
-            overflow: hidden; /* Ensures rounded corners are applied */
-            top: 100%; /* Position directly below the button */
-            left: 0; /* Align with the button's left edge */
-            margin-top: 5px; /* Small gap between button and dropdown */
+            overflow: hidden;
+            top: 100%;
+            left: 0;
+            margin-top: 5px;
         }
 
-        /* Class added by JS to show the dropdown */
         .filter-dropdown-content.show {
             display: block;
         }
 
-        /* Existing Date Filters - adjusted to stack vertically inside dropdown */
         .date-filter {
             display: flex;
-            flex-direction: column; /* Stack buttons vertically in dropdown */
-            gap: 0; /* Remove gap between buttons, they will take full width */
+            flex-direction: column;
+            gap: 0;
         }
 
-        /* Existing .date-btn - adjusted for appearance within the dropdown */
         .date-btn {
-            padding: 10px 15px; /* Slightly more padding for dropdown items */
-            border: none; /* No individual borders for buttons in dropdown */
-            background-color: transparent; /* Transparent background by default */
+            padding: 10px 15px;
+            border: none;
+            background-color: transparent;
             color: #495057;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
-            text-align: left; /* Align text to the left within the dropdown */
-            width: 100%; /* Make buttons take full width of dropdown */
-            border-radius: 0; /* No border-radius for individual items in dropdown */
+            text-align: left;
+            width: 100%;
+            border-radius: 0;
         }
 
         .date-btn.active {
@@ -363,73 +461,77 @@
 
         .date-btn:hover {
             background-color: #f1f1f1;
-            color: #495057; /* Ensure text color is readable on hover */
+            color: #495057;
         }
 
-        /* Existing Export Button (no change) */
+        /* Custom Date Range Styles */
+        .custom-date-container {
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .date-range-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .date-range-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-range-label {
+            font-size: 14px;
+            color: #495057;
+            min-width: 60px;
+        }
+
+        .date-range-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .apply-date-btn {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background-color: #1f1a5c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .apply-date-btn:hover {
+            background-color: #161245;
+        }
+
         .export-btn {
-           background-color: #f2f4f8;
-    color: #495057;
-    border: 1px solid #e1e5e9;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 14px;
-    display: inline-flex
-;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            background-color: #f2f4f8;
+            color: #495057;
+            border: 1px solid #e1e5e9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .export-btn:hover {
-            background-color: #e6e9ee; /* Slightly darker gray on hover */
-    color: #333;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #e6e9ee;
+            color: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        /* Responsive adjustments (no change from previous refined version) */
-        @media (max-width: 768px) {
-            .filter-top-row,
-            .filter-bottom-row {
-                flex-direction: column;
-                align-items: flex-start; /* Align items to left in column layout */
-            }
-
-            .search-bar {
-                width: 100%;
-            }
-
-            .showing-controls,
-            .showing-controls select { /* Adjust select width inside controls */
-                width: 100%;
-            }
-
-            .filter-dropdown-container {
-                width: 100%;
-            }
-
-            .filter-button {
-                width: 100%;
-                justify-content: center; /* Center content in button */
-            }
-
-            .filter-dropdown-content {
-                width: 100%;
-                left: 0;
-                right: 0;
-            }
-
-            .export-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-/*end*/
-
-
- 
 
         .no-data {
             text-align: center;
@@ -446,20 +548,14 @@
             font-size: 18px;
         }
 
-        .table-scroll-container {
-            max-height: 500px;
-            overflow-y: auto;
-            margin-top: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-        }
-
+        /* New Pagination Styles */
         .pagination-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 15px;
-            padding: 10px 0;
+            padding: 0px;
+         
         }
 
         .page-info {
@@ -477,10 +573,12 @@
             background-color: #1f1a5c;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
+            min-width: 100px;
+            font-weight: 500;
         }
 
         .page-btn:hover {
@@ -492,481 +590,323 @@
             color: #6c757d;
             cursor: not-allowed;
         }
+        /* End of new styles */
 
-       
-        /* ENHANCED MODAL STYLING */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1100;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent background */    
-        justify-content: center;
-        align-items: center;
-        animation: modalFadeIn 0.3s ease-out;
-    }
-
-    @keyframes modalFadeIn {
-        from {
-            opacity: 0;
-            backdrop-filter: blur(0px);
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            animation: modalFadeIn 0.3s ease-out;
         }
-        to {
-            opacity: 1;
-            backdrop-filter: blur(8px);
-        }
-    }
 
-    .modal-content {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        padding: 0;
-        border-radius: 20px;
-        width: 90%;
-        max-width: 580px;
-        box-shadow: 
-            0 25px 50px rgba(31, 26, 92, 0.25),
-            0 0 0 1px rgba(255, 255, 255, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.6);
-        position: relative;
-        max-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        transform: scale(0.9);
-        animation: modalSlideIn 0.3s ease-out forwards;
-        overflow: hidden;
-    }
-
-    @keyframes modalSlideIn {
-        from {
-            transform: scale(0.9) translateY(-20px);
-            opacity: 0;
-        }
-        to {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
-        color: white;
-        padding: 25px 30px;
-        border-radius: 20px 20px 0 0;
-        margin: 0;
-        border: none;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .modal-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
-        pointer-events: none;
-    }
-
-    .modal-header h2 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: white;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 1;
-        position: relative;
-    }
-
-    .modal-header h2::before {
-        content: '\f044';
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        font-size: 1.2rem;
-        color: #64b5f6;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    }
-
-    .modal-body {
-        overflow-y: auto;
-        flex-grow: 1;
-        padding: 30px;
-        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
-    }
-
-    .modal-footer {
-        padding: 20px 30px 30px;
-        border: none;
-        margin: 0;
-        background: linear-gradient(to top, #f8f9fa, #ffffff);
-    }
-
-    .close {
-        position: absolute;
-        top: 20px;
-        right: 25px;
-        font-size: 28px;
-        font-weight: 300;
-        color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 2;
-        width: 35px;
-        height: 35px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-    }
-
-    .close:hover {
-        color: white;
-        background: rgba(255, 255, 255, 0.2);
-        transform: rotate(90deg);
-    }
-
-    .modal-content form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        align-items: start;
-    }
-
-    .modal-content form > div {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .modal-content label {
-        font-weight: 600;
-        color: #1f1a5c;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .modal-content label::before {
-        content: '';
-        width: 3px;
-        height: 16px;
-        background: linear-gradient(to bottom, #1f1a5c, #1f1a5c);
-        border-radius: 2px;
-    }
-
-    .modal-content select,
-    .modal-content input {
-        padding: 14px 18px;
-        border: 2px solid #e8ecf0;
-        border-radius: 12px;
-        font-size: 15px;
-        width: 100%;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .modal-content select:focus,
-    .modal-content input:focus {
-        border-color: #1f1a5c;
-        outline: none;
-        box-shadow: 
-            0 0 0 3px rgba(31, 26, 92, 0.1),
-            0 4px 12px rgba(31, 26, 92, 0.15);
-        background: #ffffff;
-        transform: translateY(-1px);
-    }
-
-    .modal-content select:hover,
-    .modal-content input:hover {
-        border-color: #64b5f6;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
-    }
-
-    /* Full width fields for specific inputs */
-    .modal-content form > div:nth-child(6),  /* Shipper */
-    .modal-content form > div:nth-child(7),  /* Consignee */ 
-    .modal-content form > div:nth-child(10), /* Pickup Location */
-    .modal-content form > div:nth-child(11)  /* Delivery Location */ {
-        grid-column: 1 / -1;
-    }
-
-    .modal-content button[type="submit"] {
-        background: linear-gradient(135deg, #1f1a5c, #2c3e50);
-        color: white;
-        border: none;
-        padding: 16px 32px;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 
-            0 4px 15px rgba(31, 26, 92, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .modal-content button[type="submit"]::before {
-        content: '\f00c';
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .modal-content button[type="submit"]:hover::before {
-        opacity: 1;
-    }
-
-    .modal-content button[type="submit"]:hover {
-        background: linear-gradient(135deg, #161245, #233140);
-        transform: translateY(-2px);
-        box-shadow: 
-            0 8px 25px rgba(31, 26, 92, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .modal-content button[type="submit"]:active {
-        transform: translateY(0);
-        box-shadow: 
-            0 4px 15px rgba(31, 26, 92, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    /* Enhanced scrollbar styling for modal */
-    
-    /* Form validation styling */
-    .modal-content input:invalid,
-    .modal-content select:invalid {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-    }
-
-    .modal-content input:valid,
-    .modal-content select:valid {
-        border-color: #3577ae;
-    }
-
-    /* Enhanced responsive design */
-    @media (max-width: 1400px) {
-        .modal-content {
-            max-width: 550px;
-            width: 88%;
-        }
-        
-        .modal-content form {
-            gap: 18px;
-        }
-    }
-
-    @media (max-width: 1200px) {
-        .sidebar {
-            width: 220px;
-            min-width: 220px;
-        }
-        
-        .content {
-            margin-left: 220px;
-            width: calc(100vw - 220px);
-            max-width: calc(100vw - 220px);
-            padding: 20px;
-        }
-        
-        .trip-table {
-            min-width: 700px;
+        @keyframes modalFadeIn {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
         }
 
         .modal-content {
-            max-width: 520px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 0;
+            border-radius: 20px;
             width: 90%;
+            max-width: 580px;
+            box-shadow: 0 25px 50px rgba(31, 26, 92, 0.25),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            position: relative;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.9);
+            animation: modalSlideIn 0.3s ease-out forwards;
+            overflow: hidden;
         }
-        
+
+        @keyframes modalSlideIn {
+            from { transform: scale(0.9) translateY(-20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            margin: 0;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+        }
         .modal-header h2 {
-            font-size: 1.4rem;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1;
+            position: relative;
         }
-        
+        .modal-header h2::before {
+            content: '\f044';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #64b5f6;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .modal-body {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 30px;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        }
+        .modal-footer {
+            padding: 20px 30px 30px;
+            border: none;
+            margin: 0;
+            background: linear-gradient(to top, #f8f9fa, #ffffff);
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .close:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        .modal-content form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        .modal-content form > div {
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content label {
+            font-weight: 600;
+            color: #1f1a5c;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-content label::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(to bottom, #1f1a5c, #1f1a5c);
+            border-radius: 2px;
+        }
         .modal-content select,
         .modal-content input {
-            padding: 13px 16px;
-            font-size: 14px;
+            padding: 14px 18px;
+            border: 2px solid #e8ecf0;
+            border-radius: 12px;
+            font-size: 15px;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-family: 'Poppins', sans-serif;
         }
-    }
-
-    @media (max-width: 1024px) {
-        .modal-content {
-            max-width: 480px;
-            width: 92%;
-            max-height: 85vh;
+        .modal-content select:focus,
+        .modal-content input:focus {
+            border-color: #1f1a5c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(31, 26, 92, 0.1),
+                        0 4px 12px rgba(31, 26, 92, 0.15);
+            background: #ffffff;
+            transform: translateY(-1px);
         }
-        
-        .modal-content form {
-            gap: 16px;
+        .modal-content select:hover,
+        .modal-content input:hover {
+            border-color: #64b5f6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
         }
-        
-        .modal-body {
-            padding: 25px 22px;
+        /* Full width fields */
+        .modal-content form > div:nth-child(6),
+        .modal-content form > div:nth-child(7),
+        .modal-content form > div:nth-child(10),
+        .modal-content form > div:nth-child(11) {
+            grid-column: 1 / -1;
         }
-        
-        .modal-footer {
-            padding: 18px 22px 25px;
+        .modal-content button[type="submit"] {
+            background: linear-gradient(135deg, #1f1a5c, #2c3e50);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(31, 26, 92, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-    }
-
-        @media (max-width: 992px) {
+        .modal-content button[type="submit"]::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-content button[type="submit"]:hover::before {
+            opacity: 1;
+        }
+        .modal-content button[type="submit"]:hover {
+            background: linear-gradient(135deg, #161245, #233140);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(31, 26, 92, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        .modal-content button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(31, 26, 92, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        /* Responsive styles */
+        @media (max-width: 768px) {
             .sidebar {
-                width: 200px;
-                min-width: 200px;
-            }
-            
-            .content {
-                margin-left: 200px;
-                width: calc(100vw - 200px);
-                max-width: calc(100vw - 200px);
-                padding: 15px;
-            }
-            
-            .filter-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .truck-select {
+        display: none; /* Hides the sidebar completely on smaller screens */
+    }
+    .content {
+        margin-left: 0; /* Content now takes up the full width */
+        width: 100vw;
+        max-width: 100vw;
+        padding-top: 20px;
+    }
+    .header-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .header-controls h2 {
+        border-bottom: none; /* Remove the bottom line for a cleaner mobile look */
+        padding-bottom: 0;
+    }
+
+            .filter-container,
+    .filter-top-row,
+    .filter-bottom-row {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+.truck-select,
+    .search-bar,
+    .filter-dropdown-container,
+    .export-btn {
+        width: 100%;
+    }
+.filter-button,
+    .export-btn {
+        justify-content: center;
+    }
+            .data-table {
+        font-size: 14px;
+        /* You can add more specific rules here if needed */
+    }
+            .search-bar {
                 width: 100%;
-                max-width: 300px;
             }
-            
-            .date-filter {
+            .showing-controls,
+            .showing-controls select {
+                flex-direction: column;
+        align-items: flex-start;
+                width: 100%;
+            }
+            .filter-dropdown-container {
+                width: 100%;
+            }
+            .filter-button {
                 width: 100%;
                 justify-content: center;
             }
-            
-            .date-btn {
-                flex-grow: 1;
-                min-width: 0;
-            }
-
-            .search-bar {
+            .filter-dropdown-content {
                 width: 100%;
-                max-width: 300px;
+                left: 0;
+                right: 0;
             }
-            
-            .pagination-controls {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
+            .export-btn {
+                width: 100%;
+                justify-content: center;
             }
-
             .modal-content {
-                max-width: 450px;
-                width: 94%;
-            }
+        width: 96%;
+        max-width: 96%;
+        border-radius: 16px;
+        max-height: 90vh;
+    }
+            .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
+    .modal-content form {
+        grid-template-columns: 1fr;
+    }
 
-            .modal-content form {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .modal-content form > div:nth-child(6), 
-            .modal-content form > div:nth-child(7), 
-            .modal-content form > div:nth-child(10), 
-            .modal-content form > div:nth-child(11) {
-                grid-column: 1;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.35rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-                min-width: auto;
-            }
-            
-            .content {
-                margin-left: 0;
-                padding: 15px;
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            .content-header h2 {
-                font-size: 1.3rem;
-            }
-            
-            .trip-table {
-                min-width: 600px;
-                font-size: 12px;
-            }
-            
-            .trip-table th,
-            .trip-table td {
-                padding: 8px;
-            }
-            
-            .actions {
-                gap: 5px;
-            }
-            
-            .actions button {
-                font-size: 14px;
-                padding: 2px;
-                min-height: 32px;
-            }
-
-            .modal-content {
-                width: 96%;
-                max-width: 96%;
-                margin: 8px;
-                border-radius: 16px;
-                max-height: 88vh;
-            }
-
-            .modal-header {
-                padding: 22px 25px;
-                border-radius: 16px 16px 0 0;
-            }
-
-            .modal-header h2 {
-                font-size: 1.3rem;
-                gap: 10px;
-            }
-
-            .modal-body {
-                padding: 22px 18px;
-            }
-
-            .modal-footer {
-                padding: 16px 18px 22px;
-            }
-
+    .modal-content form > div:nth-child(6),
+    .modal-content form > div:nth-child(7),
+    .modal-content form > div:nth-child(10),
+    .modal-content form > div:nth-child(11) {
+        grid-column: auto;
+    }
             .close {
                 top: 18px;
                 right: 22px;
@@ -974,486 +914,167 @@
                 width: 38px;
                 height: 38px;
             }
-            
-            .modal-content form {
-                gap: 14px;
-            }
-            
-            .modal-content select,
-            .modal-content input {
-                padding: 13px 15px;
-                font-size: 14px;
-                border-radius: 10px;
-            }
-            
-            .modal-content button[type="submit"] {
-                padding: 15px 28px;
-                font-size: 15px;
-            }
         }
-
-        @media (max-width: 640px) {
-            .modal-content {
-                width: 98%;
-                max-width: 98%;
-                margin: 5px;
-                max-height: 92vh;
-                border-radius: 14px;
-            }
-            
-            .modal-header {
-                padding: 20px 22px;
-                border-radius: 14px 14px 0 0;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.25rem;
-                gap: 8px;
-            }
-            
-            .modal-body {
-                padding: 20px 16px;
-            }
-            
-            .modal-footer {
-                padding: 14px 16px 20px;
-            }
-            
-            .close {
-                top: 16px;
-                right: 20px;
-                font-size: 24px;
-                width: 36px;
-                height: 36px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .content {
-                padding: 10px;
-            }
-            
-            .table-container {
-                padding: 15px;
-            }
-            
-            .trip-table {
-                min-width: 500px;
-                font-size: 11px;
-            }
-            
-            .trip-table th,
-            .trip-table td {
-                padding: 6px;
-            }
-            
-            .filter-container {
-                gap: 10px;
-            }
-
-            .date-filter {
-                flex-direction: column;
-            }
-            
-            .date-btn {
-                width: 100%;
-            }
-
-            .modal-content {
-                border-radius: 12px;
-                max-height: 95vh;
-            }
-
-            .modal-header {
-                padding: 18px 20px;
-                border-radius: 12px 12px 0 0;
-            }
-
-            .modal-header h2 {
-                font-size: 1.2rem;
-            }
-
-            .modal-body {
-                padding: 18px 14px;
-            }
-
-            .modal-footer {
-                padding: 12px 14px 18px;
-            }
-
-            .modal-content form {
-                gap: 13px;
-            }
-
-            .modal-content select,
-            .modal-content input {
-                padding: 12px 14px;
-                font-size: 14px;
-            }
-            
-            .modal-content label {
-                font-size: 0.85rem;
-                margin-bottom: 6px;
-            }
-            
-            .modal-content button[type="submit"] {
-                padding: 14px 24px;
-                font-size: 14px;
-            }
-            
-            .close {
-                top: 14px;
-                right: 18px;
-                width: 34px;
-                height: 34px;
-                font-size: 22px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .modal-content {
-                width: 100%;
-                max-width: 100%;
-                margin: 0;
-                border-radius: 0;
-                max-height: 100vh;
-            }
-            
-            .modal-header {
-                border-radius: 0;
-                padding: 16px 18px;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.15rem;
-            }
-            
-            .modal-body {
-                padding: 16px 12px;
-            }
-            
-            .modal-footer {
-                padding: 10px 12px 16px;
-            }
-            
-            .close {
-                top: 12px;
-                right: 16px;
-                width: 32px;
-                height: 32px;
-                font-size: 20px;
-            }
-            
-            .modal-content form {
-                gap: 12px;
-            }
-            
-            .modal-content select,
-            .modal-content input {
-                padding: 11px 13px;
-                font-size: 13px;
-                border-radius: 8px;
-            }
-            
-            .modal-content label {
-                font-size: 0.8rem;
-                margin-bottom: 5px;
-            }
-            
-            .modal-content button[type="submit"] {
-                padding: 13px 20px;
-                font-size: 13px;
-                border-radius: 8px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .modal-header h2 {
-                font-size: 1.1rem;
-            }
-            
-            .modal-body {
-                padding: 14px 10px;
-            }
-            
-            .modal-footer {
-                padding: 8px 10px 14px;
-            }
-            
-            .modal-content select,
-            .modal-content input {
-                padding: 10px 12px;
-                font-size: 13px;
-            }
-            
-            .modal-content label {
-                font-size: 0.75rem;
-            }
-            
-            .modal-content button[type="submit"] {
-                padding: 12px 18px;
-                font-size: 12px;
-            }
-            
-            .close {
-                width: 30px;
-                height: 30px;
-                font-size: 18px;
-            }
-        }
-
-        /* Landscape orientation adjustments for mobile */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .modal-content {
-                max-height: 95vh;
-                width: 90%;
-                max-width: 600px;
-            }
-            
-            .modal-header {
-                padding: 12px 20px;
-            }
-            
-            .modal-header h2 {
-                font-size: 1.1rem;
-            }
-            
-            .modal-body {
-                padding: 15px 20px;
-            }
-            
-            .modal-footer {
-                padding: 10px 20px 15px;
-            }
-            
-            .modal-content form {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            
-            .modal-content form > div:nth-child(6), 
-            .modal-content form > div:nth-child(7), 
-            .modal-content form > div:nth-child(10), 
-            .modal-content form > div:nth-child(11) {
-                grid-column: 1 / -1;
-            }
-            
-            .close {
-                top: 8px;
-                right: 15px;
-                width: 30px;
-                height: 30px;
-                font-size: 18px;
-            }
-        }
-
-        /* High DPI adjustments */
-        @media (-webkit-min-device-pixel-ratio: 2) {
-            .modal-content select,
-            .modal-content input {
-                border-width: 1px;
-            }
-            
-            .modal-content label::before {
-                width: 2px;
-            }
-        }
-
-        /* Zoom level adjustments */
-        @media screen and (min-resolution: 144dpi) {
-            .content {
-                padding: clamp(15px, 3vw, 25px);
-            }
-            
-            .trip-table {
-                font-size: clamp(11px, 1.3vw, 13px);
-            }
-        }
-
-        /* High DPI displays */
-        @media screen and (-webkit-min-device-pixel-ratio: 1.5) {
-            .trip-table th,
-            .trip-table td {
-                padding: clamp(8px, 1.8vw, 12px);
-            }
-        }
-    
-
-        .table-scroll-container::-webkit-scrollbar,
-        .modal-body::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-scroll-container::-webkit-scrollbar-track,
-        .modal-body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .table-scroll-container::-webkit-scrollbar-thumb,
-        .modal-body::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-
-        .table-scroll-container::-webkit-scrollbar-thumb:hover,
-        .modal-body::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
     </style>
 </head>
-
 <body>
     <div class="sidebar">
         <ul>
             <x-navbar />
         </ul>
     </div>
-
    <div class="content">
-<div class="content-header">
+  <div class="content-header">
     <div class="header-controls">
-        <h2><i class="fas fa-route me-2"></i>View and Update Trip Records</h2>
-        <div class="search-bar">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Search records...">
-        </div>
+      <h2><i class="fas fa-route me-2"></i>View and Update Trip Records</h2>
+     
     </div>
-</div>
-    <div class="table-container">
-        <form method="GET" action="{{ route('admin.managetrip') }}" id="filterForm">
-            <div class="filter-top-row">
-                <div class="showing-controls">
-                     <select name="plate_no" class="truck-select" id="plateSelect">
-                        <option value="All Trucks">All Trucks</option>
-                       <!-- <option value="" disabled>-- Plate Number --</option>-->
-                       
-                        @foreach($plateNumbers as $plate)
-                            <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>
-                                {{ $plate }}
-                            </option>
-                        @endforeach
-                    </select>
-               
+  </div>
 
-            <div class="filter-bottom-row">
-                <div class="filter-dropdown-container"> <button type="button" class="filter-button" id="filterDropdownBtn">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                    <div class="filter-dropdown-content" id="filterDropdownContent">
-                        <div class="date-filter"> @foreach(['weekly' => 'Weekly', 'monthly' => 'Monthly', 'annually' => 'Annually'] as $value => $label)
-                                <button type="submit" name="filter" value="{{ $value }}"
-                                        class="date-btn {{ request('filter') == $value ? 'active' : '' }}">
-                                    {{ $label }}
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
- </div>
-                
-               
-            </div>
-                <button class="export-btn" onclick="exportToExcel()" id="exportBtn" type="button">
-                  <i class="fas fa-upload me-2"></i> Export
-                </button>
-            </div>
-        </form>
-        
+  <div class="table-container">
       
-                    
-           
-
-            <div class="table-scroll-container" id="tableScrollContainer" style="display: none;">
-                <table class="trip-table" id="cargoTable">
-                    <thead>
-                        <tr>
-                            <th>Plate No.</th>
-                            <th>Date</th>
-                            <th>EIR No.</th>
-                            <th>Container Van No.</th>
-                            <th>Size</th>
-                            <th>Shipper</th>
-                             <th>Consignee</th>
-                            <th>Voyage Vessel</th>
-                            <th>Voyage No.</th>
-                            <th>Pickup Location</th>
-                            <th>Delivery Location</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        @if(request()->has('plate_no') || request()->has('filter'))
-                            @forelse($cargos as $cargo)
-                                <tr>
-                                    <td>{{ $cargo->plate_no }}</td>
-                                    <td>{{ $cargo->created_at->format('Y-m-d') }}</td>
-                                    <td>{{ $cargo->eir_no }}</td>
-                                    <td>{{ $cargo->container_van_no }}</td>
-                                    <td>{{ $cargo->size }}</td>
-                                    <td>{{ $cargo->shipper }}</td>
-                                    <td>{{ $cargo->consignee }}</td>
-                                    <td>{{ $cargo->voyage_vessel }}</td>
-                                    <td>{{ $cargo->voyage_no }}</td>
-                                    <td>{{ $cargo->pickup_location }}</td>
-                                    <td>{{ $cargo->delivery_location }}</td>
-                                    <td>
-                                        <div class="actions">
-                                            <button class="edit-btn" onclick="openTripModal(
-                                                '{{ $cargo->id }}',
-                                                '{{ $cargo->plate_no }}',
-                                                '{{ $cargo->eir_no }}',
-                                                '{{ $cargo->container_van_no }}',
-                                                '{{ $cargo->size }}',
-                                                '{{ $cargo->shipper }}',
-                                                '{{ $cargo->consignee }}',
-                                                '{{ $cargo->voyage_vessel }}',
-                                                '{{ $cargo->voyage_no }}',
-                                                '{{ $cargo->pickup_location }}',
-                                                '{{ $cargo->delivery_location }}'
-                                            )">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                        
-                                            <form action="{{ route('admin.archive.trip', $cargo->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="archive-btn">
-                                                    <i class="fas fa-archive"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="11" class="no-data">
-                                        No cargo records found for the selected filter
-                                    </td>
-                                </tr>
-                            @endforelse
-                        @endif
-                    </tbody>    
-                </table>
-            </div>
-
-            <!-- Initial message when no filters are selected -->
-            <div id="initialMessage" class="initial-message">
-                Please select a plate number or date filter to display cargo records
-            </div>
-
-            <!-- Pagination Controls -->
-            <div class="pagination-controls" id="paginationControls">
-                <div class="page-info" id="pageInfo">Showing 1-10 of 0 records</div>
-                <div class="page-buttons">
-                    <button class="page-btn" id="prevPage" disabled>Previous</button>
-                    <button class="page-btn" id="nextPage" disabled>Next</button>
-                </div>
-            </div>
+    <form method="GET" action="{{ route('admin.managetrip') }}" id="filterForm">
+      <div class="filter-top-row">
+           <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search records...">
+      </div>
+       <div class="filter-bottom-row">
+        <div class="showing-controls">
+          <select name="plate_no" class="truck-select" id="plateSelect">
+            <option value="All Trucks">All Trucks</option>
+            @foreach($plateNumbers as $plate)
+            <option value="{{ $plate }}" {{ request('plate_no') == $plate ? 'selected' : '' }}>
+              {{ $plate }}
+            </option>
+            @endforeach
+          </select>
         </div>
+       
+          <div class="filter-dropdown-container">
+            <button type="button" class="filter-button" id="filterDropdownBtn">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+            <div class="filter-dropdown-content" id="filterDropdownContent">
+              <div class="date-filter">
+                @foreach(['weekly' => 'Weekly', 'monthly' => 'Monthly', 'annually' => 'Annually'] as $value => $label)
+                <button type="submit" name="filter" value="{{ $value }}"
+                  class="date-btn {{ request('filter') == $value ? 'active' : '' }}">
+                  {{ $label }}
+                </button>
+                @endforeach
+              </div>
+              <div class="custom-date-container">
+                <div class="date-range-group">
+                  <div class="date-range-row">
+                    <span class="date-range-label">From:</span>
+                    <input type="date" id="dateFrom" class="date-range-input" name="date_from"
+                      value="{{ request('date_from') }}">
+                  </div>
+                  <div class="date-range-row">
+                    <span class="date-range-label">To:</span>
+                    <input type="date" id="dateTo" class="date-range-input" name="date_to"
+                      value="{{ request('date_to') }}">
+                  </div>
+                </div>
+                <button type="submit" class="apply-date-btn" name="filter" value="custom_range">
+                  Apply Date Range
+                </button>
+              </div>
+            </div>
+          </div>
+     
+        <button class="export-btn" onclick="exportToExcel()" id="exportBtn" type="button">
+          <i class="fas fa-upload me-2"></i> Export
+        </button>
+           </div>
+      </div>
+    </form>
+
+    <div class="table-scroll-container" id="tableScrollContainer">
+      <table class="trip-table" id="cargoTable">
+        <thead>
+          <tr>
+            <th>Plate No.</th>
+            <th>Date</th>
+            <th>EIR No.</th>
+            <th>Container Van No.</th>
+            <th>Size</th>
+            <th>Shipper</th>
+            <th>Consignee</th>
+            <th>Voyage Vessel</th>
+            <th>Voyage No.</th>
+            <th>Pickup Location</th>
+            <th>Delivery Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          @if(request()->has('plate_no') || request()->has('filter') || request()->has('date_from'))
+          @forelse($cargos as $cargo)
+          <tr>
+            <td>{{ $cargo->plate_no }}</td>
+            <td>{{ $cargo->created_at->format('Y-m-d') }}</td>
+            <td>{{ $cargo->eir_no }}</td>
+            <td>{{ $cargo->container_van_no }}</td>
+            <td>{{ $cargo->size }}</td>
+            <td>{{ $cargo->shipper }}</td>
+            <td>{{ $cargo->consignee }}</td>
+            <td>{{ $cargo->voyage_vessel }}</td>
+            <td>{{ $cargo->voyage_no }}</td>
+            <td>{{ $cargo->pickup_location }}</td>
+            <td>{{ $cargo->delivery_location }}</td>
+            <td>
+              <div class="actions">
+                <button class="edit-btn" onclick="openTripModal(
+                    '{{ $cargo->id }}',
+                    '{{ $cargo->plate_no }}',
+                    '{{ $cargo->eir_no }}',
+                    '{{ $cargo->container_van_no }}',
+                    '{{ $cargo->size }}',
+                    '{{ $cargo->shipper }}',
+                    '{{ $cargo->consignee }}',
+                    '{{ $cargo->voyage_vessel }}',
+                    '{{ $cargo->voyage_no }}',
+                    '{{ $cargo->pickup_location }}',
+                    '{{ $cargo->delivery_location }}'
+                  )">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <form action="{{ route('admin.archive.trip', $cargo->id) }}" method="POST" class="d-inline">
+                  @csrf
+                  <button type="submit" class="archive-btn">
+                    <i class="fas fa-archive"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="12" class="no-data">
+              No cargo records found for the selected filter
+            </td>
+          </tr>
+          @endforelse
+          @endif
+        </tbody>
+      </table>
     </div>
 
-    <!-- Update Trip Modal -->
+    <div id="initialMessage" class="initial-message">
+      Please select a plate number or date filter to display cargo records
+    </div>
+    <div class="pagination-controls" id="paginationControls">
+      <div class="page-info" id="pageInfo">Showing 1-10 of 0 records</div>
+      <div class="page-buttons">
+        <button class="page-btn" id="prevPage" disabled>Previous</button>
+        <button class="page-btn" id="nextPage" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
     <div id="updateModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -1465,7 +1086,6 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" id="trip_id" name="id">
-
                     <div>
                         <label for="update_plate_no">Plate No.:</label>
                         <select id="update_plate_no" name="plate_no" required>
@@ -1475,47 +1095,39 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div>
                         <label for="update_eir_no">EIR No.:</label>
                         <input type="text" id="update_eir_no" name="eir_no" required>
                     </div>
-
                     <div>
                         <label for="update_container_van_no">Container Van No.:</label>
                         <input type="text" id="update_container_van_no" name="container_van_no" required>
                     </div>
-
                     <div>
                         <label for="update_size">Size:</label>
                         <input type="text" id="update_size" name="size" required>
                     </div>
-
                     <div>
                         <label for="update_voyage_vessel">Voyage Vessel:</label>
                         <input type="text" id="update_voyage_vessel" name="voyage_vessel" required>
                     </div>
-
                     <div>
                         <label for="update_voyage_no">Voyage No.:</label>
                         <input type="text" id="update_voyage_no" name="voyage_no" required>
                     </div>
-
                     <div>
                         <label for="update_shipper">Shipper:</label>
                         <input type="text" id="update_shipper" name="shipper" required>
                     </div>
-                    
+                
                     <div>
                         <label for="update_consignee">Consignee:</label>
                         <input type="text" id="update_consignee" name="consignee" required>
                     </div>
-
                     <div>
                         <label for="update_pickup_location">Pickup Location:</label>
                         <input type="text" id="update_pickup_location" name="pickup_location" required>
                     </div>
-
                     <div>
                         <label for="update_delivery_location">Delivery Location:</label>
                         <input type="text" id="update_delivery_location" name="delivery_location" required>
@@ -1527,10 +1139,9 @@
             </div>
         </div>
     </div>
-
-   <script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get all necessary elements, with safety checks
+        // Get all necessary elements
         const filterForm = document.getElementById('filterForm');
         const plateSelect = document.getElementById('plateSelect');
         const dateBtns = document.querySelectorAll('.date-btn');
@@ -1539,63 +1150,111 @@
         const exportBtn = document.getElementById('exportBtn');
         const paginationControls = document.getElementById('paginationControls');
         const searchInput = document.getElementById('searchInput');
-
-        // New elements for the filter dropdown
+        const dateFromInput = document.getElementById('dateFrom');
+        const dateToInput = document.getElementById('dateTo');
         const filterDropdownBtn = document.getElementById('filterDropdownBtn');
         const filterDropdownContent = document.getElementById('filterDropdownContent');
+        const applyDateRangeBtn = document.querySelector('.apply-date-btn'); // Get the apply button for custom range
 
-        // --- Filter Dropdown Toggle Logic ---
+        // Function to update the filter button text
+        function updateFilterButtonText() {
+            let filterText = 'Filter'; // Default text
+
+            // Check if any of the predefined date filters are active
+            let activeDateBtn = document.querySelector('.date-btn.active');
+            if (activeDateBtn) {
+                filterText = activeDateBtn.textContent;
+            }
+
+            // Check for custom date range filter
+            if (request('filter') === 'custom_range' && request('date_from') && request('date_to')) {
+                filterText = 'Custom Date';
+            }
+
+            filterDropdownBtn.innerHTML = `<i class="fas fa-filter"></i> ${filterText}`;
+        }
+
+        // Helper function to get URL parameter
+        function request(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Set default date range (today - 7 days to today)
+        if (dateFromInput && dateToInput) {
+            const today = new Date();
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(today.getDate() - 7);
+            
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            
+            if (!dateFromInput.value) dateFromInput.value = formatDate(sevenDaysAgo);
+            if (!dateToInput.value) dateToInput.value = formatDate(today);
+        }
+
+        // Filter dropdown toggle
         if (filterDropdownBtn && filterDropdownContent) {
             filterDropdownBtn.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent the document click listener from immediately closing it
-                filterDropdownContent.classList.toggle('show'); // Toggle the 'show' class
+                event.stopPropagation();
+                filterDropdownContent.classList.toggle('show');
             });
 
-            // Close dropdown if a click occurs outside of it
             document.addEventListener('click', function(event) {
-                // Check if the click was outside both the button and the dropdown content
                 if (!filterDropdownBtn.contains(event.target) && !filterDropdownContent.contains(event.target)) {
                     filterDropdownContent.classList.remove('show');
                 }
             });
         }
 
-        // --- Initial Load Visibility (based on server-side filters) ---
-        // This checks if plate_no or filter parameters are present in the URL
-        const hasFilters = window.location.search.includes('plate_no=') || window.location.search.includes('filter=');
+        // Check if filters are applied on page load
+        const hasFilters = window.location.search.includes('plate_no=') || 
+                            window.location.search.includes('filter=') || 
+                            window.location.search.includes('date_from=');
 
         if (hasFilters) {
             initialMessage.style.display = 'none';
             tableContainer.style.display = 'block';
             exportBtn.style.display = 'inline-flex';
             paginationControls.style.display = 'flex';
-            initializePagination(); // Initialize pagination as data is present
+            initializePagination();
+            updateFilterButtonText(); // Update button text on page load if filters are applied
         }
 
-        // --- Event Listeners for Server-Side Filter Changes (Form Submission) ---
-
-        // Plate Select (Truck Select) change - triggers form submission
+        // Plate select change
         if (plateSelect && filterForm) {
             plateSelect.addEventListener('change', function() {
-                filterForm.submit(); // Submits the form to the server
+                filterForm.submit();
             });
         }
 
-        // Date Filter Buttons (Weekly, Monthly, Annually) click - triggers form submission
+        // Date filter buttons
         if (dateBtns.length > 0 && filterForm) {
             dateBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // When a date button is clicked, it submits the form.
-                    // We also want to close the dropdown if it's open.
                     if (filterDropdownContent) {
                         filterDropdownContent.classList.remove('show');
                     }
-                    // The button's `type="submit"` will handle the form submission.
+                    // No need to manually update text here, as form submission will trigger page load and updateFilterButtonText()
                 });
             });
         }
 
-        // --- Client-Side Search Functionality ---
+        // Apply Date Range button click
+        if (applyDateRangeBtn) {
+            applyDateRangeBtn.addEventListener('click', function() {
+                if (filterDropdownContent) {
+                    filterDropdownContent.classList.remove('show');
+                }
+                // The form submission from this button will cause a page reload,
+                // and updateFilterButtonText() will handle setting the "Custom Date" text.
+            });
+        }
+
+        // Search functionality
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
@@ -1605,8 +1264,6 @@
                     const cells = row.querySelectorAll('td');
                     let shouldShow = false;
 
-                    // Iterate through cells, excluding the last one (Actions column)
-                    // Check for valid cells length to prevent errors
                     if (cells.length > 1) {
                         for (let i = 0; i < cells.length - 1; i++) {
                             if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
@@ -1615,27 +1272,24 @@
                             }
                         }
                     } else if (cells.length === 1 && cells[0].textContent.toLowerCase().includes(searchTerm)) {
-                         // Case for only one cell, check that
-                         shouldShow = true;
+                        shouldShow = true;
                     }
 
                     row.style.display = shouldShow ? '' : 'none';
                 });
 
-                // Re-initialize pagination to reflect the new set of visible rows after search
                 if (paginationControls && paginationControls.style.display === 'flex') {
                     initializePagination();
                 }
             });
         }
 
-        // --- Pagination Initialization ---
+        // Pagination
         function initializePagination() {
-            const rowsPerPage = 10; // This value is static. Adjust if plateSelect should control it.
+            const rowsPerPage = 10;
             const tableBody = document.getElementById('tableBody');
-            if (!tableBody) return; // Exit if table body isn't found
+            if (!tableBody) return;
 
-            // Get all table rows, then filter to get only those currently visible (not hidden by search)
             const allTableRows = Array.from(tableBody.querySelectorAll('tr'));
             const rowsCurrentlyVisibleBySearch = allTableRows.filter(row =>
                 row.style.display !== 'none'
@@ -1646,20 +1300,16 @@
             const prevBtn = document.getElementById('prevPage');
             const nextBtn = document.getElementById('nextPage');
 
-            // If any critical pagination element is missing, hide controls and exit
             if (!pageInfo || !prevBtn || !nextBtn) {
                 if (paginationControls) paginationControls.style.display = 'none';
                 return;
             }
 
-            let currentPage = 1; // Always start at page 1 when pagination is re-initialized
+            let currentPage = 1;
             const totalPages = Math.ceil(totalRows / rowsPerPage);
 
             function updateTableDisplay() {
-                // First, hide all rows that are not already hidden by client-side search.
-                // This ensures we start with a clean slate for pagination display.
                 allTableRows.forEach(row => {
-                    // Only hide if it's currently visible or if search is empty (meaning it's "eligible" for pagination)
                     if (row.style.display !== 'none' || searchInput.value === '') {
                         row.style.display = 'none';
                     }
@@ -1668,21 +1318,17 @@
                 const start = (currentPage - 1) * rowsPerPage;
                 const end = start + rowsPerPage;
 
-                // Display only the rows for the current page from the `rowsCurrentlyVisibleBySearch` array
                 for (let i = start; i < end && i < rowsCurrentlyVisibleBySearch.length; i++) {
-                    rowsCurrentlyVisibleBySearch[i].style.display = ''; // Show this row
+                    rowsCurrentlyVisibleBySearch[i].style.display = '';
                 }
 
-                // Update page information text
                 const currentStartRow = totalRows === 0 ? 0 : start + 1;
                 const currentEndRow = Math.min(end, totalRows);
                 pageInfo.textContent = `Showing ${currentStartRow}-${currentEndRow} of ${totalRows} records`;
 
-                // Update pagination button states (disabled/enabled)
                 prevBtn.disabled = currentPage === 1;
                 nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 
-                // Dynamically show/hide pagination controls based on total rows
                 if (totalRows === 0) {
                     if (paginationControls) paginationControls.style.display = 'none';
                 } else {
@@ -1690,16 +1336,14 @@
                 }
             }
 
-            // Initial call to update table display based on current page
             updateTableDisplay();
 
-            // Event listeners for pagination buttons
             prevBtn.addEventListener('click', function() {
                 if (currentPage > 1) {
                     currentPage--;
                     updateTableDisplay();
                     const tableScrollContainer = document.querySelector('.table-scroll-container');
-                    if (tableScrollContainer) tableScrollContainer.scrollTop = 0; // Scroll to top on page change
+                    if (tableScrollContainer) tableScrollContainer.scrollTop = 0;
                 }
             });
 
@@ -1708,66 +1352,58 @@
                     currentPage++;
                     updateTableDisplay();
                     const tableScrollContainer = document.querySelector('.table-scroll-container');
-                    if (tableScrollContainer) tableScrollContainer.scrollTop = 0; // Scroll to top on page change
+                    if (tableScrollContainer) tableScrollContainer.scrollTop = 0;
                 }
             });
         }
-    }); // End DOMContentLoaded
+    });
 
-    // --- Export to Excel Function ---
-function exportToExcel() {
-    const table = document.getElementById('cargoTable');
-    if (!table) {
-        console.error("Table with ID 'cargoTable' not found. Cannot export.");
-        return;
-    }
-
-    const wb = XLSX.utils.book_new();
-    const wsData = [];
-
-    // Add headers (from the first row of the table)
-    const headers = [];
-    if (table.rows.length > 0) {
-        for (let cell of table.rows[0].cells) {
-            // Exclude 'Actions' column from export
-            if (cell.textContent.trim() !== 'Actions') {
-                headers.push(cell.textContent.trim());
-            }
+    function exportToExcel() {
+        const table = document.getElementById('cargoTable');
+        if (!table) {
+            console.error("Table with ID 'cargoTable' not found. Cannot export.");
+            return;
         }
-        wsData.push(headers);
-    }
 
-    // Add data rows (only visible rows)
-    for (let i = 1; i < table.rows.length; i++) {
-        const row = table.rows[i];
-        // Only export rows that are currently displayed (not hidden by search or pagination)
-        if (row.style.display === 'none') {
-            continue;
-        }
-        const rowData = [];
-        // Iterate through cells, excluding the last one (Actions column)
-        for (let j = 0; j < row.cells.length - 1; j++) {
-            let cellData = row.cells[j].textContent.trim();
+        const wb = XLSX.utils.book_new();
+        const wsData = [];
 
-            // Special formatting for date column (assuming it's at index 1)
-            if (j === 1) { // Adjust this index if your date column is different
-                const dateValue = new Date(cellData);
-                if (!isNaN(dateValue)) {
-                    cellData = dateValue.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+        // Add headers
+        const headers = [];
+        if (table.rows.length > 0) {
+            for (let cell of table.rows[0].cells) {
+                if (cell.textContent.trim() !== 'Actions') {
+                    headers.push(cell.textContent.trim());
                 }
             }
-            rowData.push(cellData);
+            wsData.push(headers);
         }
-        wsData.push(rowData);
+
+        // Add data rows
+        for (let i = 1; i < table.rows.length; i++) {
+            const row = table.rows[i];
+            if (row.style.display === 'none') {
+                continue;
+            }
+            const rowData = [];
+            for (let j = 0; j < row.cells.length - 1; j++) {
+                let cellData = row.cells[j].textContent.trim();
+                if (j === 1) {
+                    const dateValue = new Date(cellData);
+                    if (!isNaN(dateValue)) {
+                        cellData = dateValue.toISOString().split('T')[0];
+                    }
+                }
+                rowData.push(cellData);
+            }
+            wsData.push(rowData);
+        }
+
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        XLSX.utils.book_append_sheet(wb, ws, 'Cargo Records');
+        XLSX.writeFile(wb, 'cargo_records.xlsx');
     }
 
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    XLSX.utils.book_append_sheet(wb, ws, 'Cargo Records');
-    XLSX.writeFile(wb, 'cargo_records.xlsx');
-}
-
-    // --- Modal Functions ---
-    // Made global because they are called via `onclick` in HTML
     function openTripModal(id, plateNo, eirNo, containerVanNo, size, shipper, consignee, voyageVessel, voyageNo, pickupLocation, deliveryLocation) {
         const tripIdInput = document.getElementById('trip_id');
         if (tripIdInput) tripIdInput.value = id;
@@ -1798,16 +1434,14 @@ function exportToExcel() {
         if (updateModal) updateModal.style.display = 'none';
     }
 
-    // Close modal when clicking outside (using window.onclick, make sure it's not overridden elsewhere)
     window.onclick = function(event) {
         const updateModal = document.getElementById('updateModal');
-        // Ensure updateModal exists and the click target is the modal background itself
         if (updateModal && event.target === updateModal) {
             closeModal();
         }
     }
 
-    // Form submission for update (inside DOMContentLoaded recommended, but global for consistency with your original)
+    // Form submission for update
     const updateTripForm = document.getElementById('updateTripForm');
     if (updateTripForm) {
         updateTripForm.addEventListener('submit', function(e) {
@@ -1839,7 +1473,7 @@ function exportToExcel() {
                         icon: 'success'
                     }).then(() => {
                         closeModal();
-                        window.location.reload(); // Reload page to show updated data
+                        window.location.reload();
                     });
                 } else {
                     throw new Error(data.message);
@@ -1856,10 +1490,10 @@ function exportToExcel() {
         });
     }
 
-    // Archive confirmation with SweetAlert
+    // Archive confirmation
     document.querySelectorAll('.action-form').forEach(form => {
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission initially
+            e.preventDefault();
 
             Swal.fire({
                 title: 'Archive Trip Record',
@@ -1871,7 +1505,7 @@ function exportToExcel() {
                 confirmButtonText: 'Yes, archive it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.submit(); // If confirmed, submit the form
+                    this.submit();
                 }
             });
         });
@@ -1881,7 +1515,6 @@ function exportToExcel() {
         const plateSelect = document.getElementById('plateSelect');
         const filterForm = document.getElementById('filterForm');
 
-        // Submit the form if "All Trucks" is selected and no filter is applied
         if (plateSelect && plateSelect.value === 'All Trucks' && !window.location.search.includes('plate_no=')) {
             filterForm.submit();
         }

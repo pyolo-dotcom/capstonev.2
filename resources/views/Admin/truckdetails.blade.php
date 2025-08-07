@@ -4,329 +4,551 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Truck Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
+    <link rel="icon" href="{{ asset('public/images/logo.jpg') }}" type="image/jpg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <style>
         :root {
             --primary-color: #3498db;
-           
+            --secondary-color: #2c3e50;
             --success-color: #2ecc71;
             --danger-color: #e74c3c;
             --warning-color: #f39c12;
             --info-color: #1abc9c;
             --light-color: #ecf0f1;
             --dark-color: #34495e;
+            --table-header-bg: #f4f7fa;
+            --table-border-color: #e9ecef;
+            --table-row-hover: #f8fafc;
+            --dark-text: #343a40;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins';
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f8f9fa;
+            overflow: auto;
         }
 
         .sidebar {
             width: 250px;
-            background: #343a40;
+            background: linear-gradient(180deg, #343a40, #2c3e50);
             color: white;
-            padding: 20px 0;
+            padding: 1.5rem 0;
             position: fixed;
             height: 100%;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
         }
 
-        .content {
-            margin-left: 250px;
-            padding: 25px;
-            flex-grow: 1;
-            background-color: white;
-            min-height: 100vh;
-        }
-        
         .main-content {
             margin-left: 250px;
-            padding: 25px;
-            width: calc(100% - 250px);
+            padding: 1.5rem;
+            flex-grow: 1;
+            background-color: #ffffff;
+            min-height: 100vh;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
         }
-        
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
         }
-        
+
         .header h2 {
             color: var(--secondary-color);
             font-weight: 600;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.5rem;
+            position: relative;
         }
-        
-       
-        
+
+        .header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px !important;
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            transition: all 0.3s ease !important;
+            white-space: nowrap !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1f618d) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
         .card {
             border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
             overflow: hidden;
+            background: #ffffff;
         }
-        
+
         .card-body {
-            padding: 0;
+            padding: 1rem;
         }
-        
+
         .alert {
             border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
         }
-        
+
         .table-responsive {
             overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--table-border-color);
+            max-height: calc(100vh - 250px);
+            margin-bottom: 1.5rem;
+            background: #ffffff;
         }
-        
+
         .table {
             margin-bottom: 0;
             width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
         }
-        
+
         .table thead th {
-            background-color: var(--secondary-color);
-            color: white;
-            border-bottom: none;
-            font-weight: 500;
-            padding: 15px 20px;
-        }
-        
-        .table tbody td {
-            padding: 12px 20px;
-            vertical-align: middle;
-        }
-        
-        .table tbody tr {
-            transition: all 0.2s;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .table tbody tr:last-child {
-            border-bottom: none;
-        }
-        
-        .table tbody tr:hover {
-            background-color: rgba(0,0,0,0.02);
-        }
-        
-        .btn-action {
-            padding: 6px 10px;
-            font-size: 0.85rem;
-            border-radius: 5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        
-        .btn-view {
-           background-color: rgba(0, 173, 12, 0.09);
-            color:green;
-        }
-        
-        .btn-view:hover {
-            background-color:rgba(22, 160, 132, 0.35);
-            color: green;
-        }
-        
-        .btn-edit {
-            background-color: rgba(0, 74, 173, 0.1);
-            color: #004aad;
-        }
-        
-        .btn-edit:hover {
-             background-color: rgba(0, 74, 173, 0.2);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-archive {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-        }
-        
-        .btn-archive:hover {
-             background-color: rgba(220, 53, 69, 0.2);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .empty-message {
-            padding: 40px;
+            background-color: var(--table-header-bg);
+            color: var(--dark-text);
+            border-bottom: 2px solid var(--table-border-color);
+            font-weight: 600;
+            padding: 0.75rem 1rem;
             text-align: center;
-            color: #6c757d;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            font-size: 0.95rem;
         }
-        
-        .empty-message i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #dee2e6;
+
+        .table thead th:first-child {
+            border-top-left-radius: 12px;
         }
-        
-        .action-btns {
-            display: flex;
-            gap: 6px;
-            flex-wrap: nowrap;
+
+        .table thead th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--table-border-color);
+            font-size: 0.9rem;
+            color: var(--dark-text);
+            text-align: center;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--table-row-hover);
         }
 
         .truck-image {
             width: 60px;
             height: 60px;
             object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            border: 1px solid var(--table-border-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            display: block;
+            margin: 0 auto;
         }
-        
-        .truck-image-lg {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-        }
-        
+
         .image-placeholder {
             width: 60px;
             height: 60px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
+            background-color: var(--table-header-bg);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #6c757d;
-            border: 1px dashed #dee2e6;
+            color: #adb5bd;
+            border: 1px dashed var(--table-border-color);
+            font-size: 1.5rem;
+            margin: 0 auto;
         }
-       /*changes*/
-       .top-bar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
 
-.search-container {
-    display: flex;
-    align-items: center;
-}
+        .circle-plus {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: var(--primary-color);
+        }
 
-.search-input {
-    position: relative;
-    width: 300px;
-}
+        .kebab-menu-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto;
+        }
 
-.search-input i {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-}
+        .kebab-menu-toggle {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+            border: none;
+            background: none;
+            color: var(--dark-text);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
 
-.search-input input {
-    padding-left: 35px;
-}
-.btn-primary {
-   background: none;
-    color: #1f1a5c;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    font-weight:800;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    white-space: nowrap;
-}
-.circle-plus {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border:2px solid #2f4156;
-    color: #2f4156;
-    font-weight: bold;
-    font-size: 1rem;
-}
-/*end*/
+        .kebab-menu-toggle:hover {
+            background-color: #e9ecef;
+        }
+
+        .action-btns {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100%;
+            z-index: 10;
+            flex-direction: row;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 0.5rem;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .action-btns.show {
+            display: flex;
+        }
+
+        .action-btns .btn-action {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-view {
+            color: var(--primary-color);
+            border: none;
+        }
+
+        .btn-view:hover {
+            background-color: #e7f3fe;
+            color: #1d4ed8;
+        }
+
+        .btn-edit {
+            color: var(--success-color);
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .btn-archive {
+            color: var(--danger-color);
+            border: none;
+        }
+
+        .btn-archive:hover {
+            background-color: #fee5e3;
+            color: #b91c1c;
+        }
+
+        .empty-message {
+            padding: 2.5rem;
+            text-align: center;
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .empty-message i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
+        .truck-image-lg {
+            max-width: 100%;
+            max-height: 280px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .search-container {
+            margin: 1rem 0;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
+            margin-left: auto;
+        }
+
+        .search-input input {
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--secondary-color);
+            background: #ffffff;
+            font-size: 0.95rem;
+            color: var(--dark-text);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .search-input input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background: #ffffff;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .swal2-icon.swal2-warning {
+            border-color: var(--warning-color) !important;
+            color: var(--warning-color) !important;
+        }
+
+        .swal2-icon.swal2-warning .swal2-icon-content {
+            font-size: 2.5em !important;
+        }
+
+        .swal2-title {
+            font-weight: 600 !important;
+            color: #333 !important;
+        }
+
+        .swal2-html-container {
+            color: #666 !important;
+            margin-bottom: 1.2em !important;
+        }
+
+        .swal2-confirm {
+            background-color: var(--danger-color) !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 6px !important;
+        }
+
+        .swal2-cancel {
+            background-color: #95a5a6 !important;
+            color: white !important;
+            font-weight: 600 !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 6px !important;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 position: relative;
+                height: auto;
             }
-            
-            .content {
-                margin-left: 0;
-            }
-            
+
             .main-content {
                 margin-left: 0;
-                width: 100%;
-                padding: 15px;
+                padding: 1rem;
+                border-radius: 12px;
             }
-            
-            .filter-container {
-                flex-direction: column;
-            }
-            
-            .date-filter {
-                width: 100%;
-            }
-            
-            .date-btn {
-                flex-grow: 1;
-            }
-        
-            .action-btns {
-                flex-wrap: wrap;
-                gap: 4px;
-                justify-content: center;
-            }
-            
-            .btn-action {
-                padding: 8px 12px;
-                font-size: 14px;
-                min-height: 36px;
-            }
-            
-            .table thead th, 
-            .table tbody td {
-                padding: 12px 15px;
-            }
-            
+
             .search-container {
                 flex-direction: column;
+                gap: 1rem;
             }
-            
+
             .search-input {
                 max-width: 100%;
+                margin: 0;
             }
-        
+
+            .search-input input {
+                font-size: 0.9rem;
+                padding-left: 2.2rem;
+            }
+
+            .search-input i {
+                font-size: 1rem;
+                left: 0.8rem;
+            }
+
             .table-responsive {
-                margin: 0 -15px;
+                margin: 0 -0.5rem;
+                max-height: calc(100vh - 300px);
+            }
+
+            .table thead th,
+            .table tbody td {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .truck-image,
+            .image-placeholder {
+                width: 50px;
+                height: 50px;
+            }
+
+            .circle-plus {
+                width: 20px;
+                height: 20px;
+                font-size: 0.8rem;
+            }
+
+            .btn-primary {
+                font-size: 1rem !important;
+                padding: 0.4rem 0.8rem !important;
+            }
+
+            .action-btns {
+                flex-wrap: nowrap;
+                gap: 0.3rem;
+            }
+
+            .action-btns .btn-action {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+
+            .header h2 {
+                font-size: 1.5rem;
+            }
+
+            .table thead th,
+            .table tbody td {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .truck-image,
+            .image-placeholder {
+                width: 45px;
+                height: 45px;
+            }
+
+            .search-input input {
+                padding: 0.5rem 0.8rem 0.5rem 2rem;
+                font-size: 0.85rem;
+            }
+
+            .search-input i {
+                font-size: 0.9rem;
+                left: 0.6rem;
+            }
+
+            .empty-message {
+                padding: 2rem;
+                font-size: 0.9rem;
+            }
+
+            .empty-message i {
+                font-size: 2rem;
+            }
+
+            .action-btns {
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 0.4rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .table thead th,
+            .table tbody td {
+                padding: 0.4rem 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-primary {
+                font-size: 0.9rem !important;
+                padding: 0.3rem 0.6rem !important;
+            }
+
+            .circle-plus {
+                width: 18px;
+                height: 18px;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -344,7 +566,16 @@
     <div class="main-content">
         <div class="header">
             <h2><i class="fas fa-truck-moving"></i>Truck Details</h2>
+        </div>
             
+        <div class="search-container m-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTruckModal">
+                <span class="circle-plus">+</span> Add Truck
+            </button>
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by plate number...">
+            </div>
         </div>
         
         <div class="card">
@@ -360,22 +591,7 @@
                     <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
                 </div>
                 @endif
-                <!--changes-->
-               <!-- Top Row: Add Truck (left) + Search Bar (right) -->
-<div class="top-bar-container">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTruckModal">
-        <span class="circle-plus">+</span> Add Truck
-    </button>
-
-    <div class="search-container">
-        <div class="search-input">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search by plate number...">
-        </div>
-    </div>
-</div>
-
-                
+             
                 @if($trucks->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover" id="trucksTable">
@@ -412,20 +628,25 @@
                                 <td>{{ $truck->make }}</td>
                                 <td>{{ $truck->year_model }}</td>
                                 <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewTruckModal{{ $truck->id }}">
-                                            <i class="fas fa-eye"></i> View
+                                    <div class="kebab-menu-container">
+                                        <button class="kebab-menu-toggle" type="button" aria-expanded="false" aria-label="More options">
+                                            <i class="fas fa-ellipsis-v"></i>
                                         </button>
-                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editTruckModal{{ $truck->id }}">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <form action="{{ route('admin.truckdetails.destroy', $truck->id) }}" method="POST" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-action btn-archive" onclick="return confirm('Are you sure you want to archive this truck?')">
-                                                <i class="fas fa-archive"></i> Archive
+                                        <div class="action-btns">
+                                            <button class="btn-action btn-view" data-bs-toggle="modal" data-bs-target="#viewTruckModal{{ $truck->id }}">
+                                                <i class="fas fa-eye"></i>
                                             </button>
-                                        </form>
+                                            <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editTruckModal{{ $truck->id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn-action btn-archive" onclick="confirmArchive({{ $truck->id }})">
+                                                <i class="fas fa-archive"></i>
+                                            </button>
+                                            <form id="archive-form-{{ $truck->id }}" action="{{ route('admin.truckdetails.destroy', $truck->id) }}" method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -449,8 +670,28 @@
     @include('admin.modals.edit-truck-modal')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Image preview for add form - only runs if element exists
+        document.addEventListener('click', function(event) {
+            const kebabMenuToggle = event.target.closest('.kebab-menu-toggle');
+            const kebabMenuContainer = event.target.closest('.kebab-menu-container');
+
+            document.querySelectorAll('.action-btns.show').forEach(menu => {
+                const currentMenuContainer = menu.closest('.kebab-menu-container');
+                if (currentMenuContainer !== kebabMenuContainer) {
+                    menu.classList.remove('show');
+                    currentMenuContainer.querySelector('.kebab-menu-toggle').setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            if (kebabMenuToggle) {
+                const actionBtns = kebabMenuContainer.querySelector('.action-btns');
+                actionBtns.classList.toggle('show');
+                const isExpanded = actionBtns.classList.contains('show');
+                kebabMenuToggle.setAttribute('aria-expanded', isExpanded);
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const addImageInput = document.getElementById('image');
             if (addImageInput) {
@@ -468,8 +709,7 @@
                     }
                 });
             }
-    
-            // Image preview for edit forms - only runs if elements exist
+
             document.querySelectorAll('.edit-image').forEach(input => {
                 input.addEventListener('change', function(e) {
                     const previewId = this.dataset.preview;
@@ -489,7 +729,6 @@
                 });
             });
 
-            // Search functionality
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
@@ -507,6 +746,26 @@
                 });
             }
         });
+
+        function confirmArchive(truckId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                html: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#95a5a6',
+                confirmButtonText: 'Yes, archive it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    icon: 'swal2-warning-custom'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('archive-form-' + truckId).submit();
+                }
+            });
+        }
     </script>
 </body>
 </html>
