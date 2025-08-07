@@ -33,21 +33,20 @@
         }
         
         .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: var(--secondary-color);
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            transition: all 0.3s;
-            z-index: 1000;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
+    width: 260px;
+    height: 100vh;
+    background: var(--secondary-color);
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    overflow-x: hidden;
+}
         .sidebar.collapsed {
             width: 70px;
         }
@@ -412,7 +411,7 @@
 
                 menuItems.forEach(item => {
                     item.classList.remove('active');
-                    if (item.href === currentUrl) {
+                    if (currentUrl.startsWith(item.href)) {
                         item.classList.add('active');
                     }
                 });
